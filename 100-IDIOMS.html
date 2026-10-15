@@ -1,0 +1,2284 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>100 Must-Know Idioms — Interactive Learning Activity</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts: Inter & Plus Jakarta Sans -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+  <!-- Font Awesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            display: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              200: '#c7d2fe',
+              300: '#a5b4fc',
+              400: '#818cf8',
+              500: '#6366f1',
+              600: '#4f46e5',
+              700: '#4338ca',
+              800: '#3730a3',
+              900: '#312e81',
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <style>
+    :root {
+      --font-scale: 1;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Dynamic Font Scaling Classes */
+    .scalable-idiom-front {
+      font-size: calc(2rem * var(--font-scale));
+      line-height: 1.25;
+    }
+    @media (min-width: 640px) {
+      .scalable-idiom-front {
+        font-size: calc(2.5rem * var(--font-scale));
+      }
+    }
+    .scalable-idiom-back-title {
+      font-size: calc(1.35rem * var(--font-scale));
+      line-height: 1.3;
+    }
+    .scalable-body {
+      font-size: calc(1.05rem * var(--font-scale));
+      line-height: 1.6;
+    }
+    .scalable-quiz-q {
+      font-size: calc(1.125rem * var(--font-scale));
+      line-height: 1.5;
+    }
+    .scalable-quiz-opt {
+      font-size: calc(1rem * var(--font-scale));
+      line-height: 1.5;
+    }
+    .scalable-label {
+      font-size: calc(0.78rem * var(--font-scale));
+      letter-spacing: 0.06em;
+    }
+
+    /* 3D Flipcard Perspective & Transitions */
+    .perspective-1000 {
+      perspective: 1200px;
+    }
+    .transform-style-3d {
+      transform-style: preserve-3d;
+      transition: transform 0.65s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+    .backface-hidden {
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+    }
+    .rotate-y-180 {
+      transform: rotateY(180deg);
+    }
+    .card-flipped {
+      transform: rotateY(180deg);
+    }
+
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(148, 163, 184, 0.45);
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(100, 116, 139, 0.7);
+    }
+
+    /* Subtle Decorative Background Grid */
+    .bg-grid-pattern {
+      background-size: 28px 28px;
+      background-image: radial-gradient(circle, rgba(99, 102, 241, 0.14) 1px, transparent 1px);
+    }
+    .dark .bg-grid-pattern {
+      background-image: radial-gradient(circle, rgba(129, 140, 248, 0.12) 1px, transparent 1px);
+    }
+  </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200 bg-grid-pattern">
+
+  <!-- ===================================================================== -->
+  <!-- 1. REQUIRED STUDENT NAME GATE MODAL (SHOWN BEFORE ENTERING ACTIVITY)  -->
+  <!-- ===================================================================== -->
+  <div id="student-gate-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-md transition-opacity duration-300">
+    <div class="w-full max-w-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden animate-fade-in">
+      <!-- Top Banner -->
+      <div class="bg-gradient-to-r from-brand-600 via-indigo-600 to-violet-600 p-6 sm:p-8 text-white relative overflow-hidden">
+        <div class="absolute -right-8 -top-8 w-36 h-36 rounded-full bg-white/10 blur-xl pointer-events-none"></div>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/20 text-xs font-semibold tracking-wide uppercase mb-3">
+          <i class="fa-solid fa-graduation-cap"></i> Interactive E-Book Activity
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold font-display tracking-tight">
+          100 Must-Know Idioms
+        </h1>
+        <p class="text-indigo-100 text-sm mt-1.5">
+          Master 100 essential English idioms with interactive flipcards, Vietnamese translations, and comprehension quizzes.
+        </p>
+      </div>
+
+      <!-- Form Content -->
+      <div class="p-6 sm:p-8 space-y-5">
+        <div class="grid grid-cols-3 gap-3 text-center">
+          <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700/60">
+            <div class="text-brand-600 dark:text-brand-400 font-bold text-lg font-display">100</div>
+            <div class="text-xs text-slate-500 dark:text-slate-400">Flipcards</div>
+          </div>
+          <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700/60">
+            <div class="text-emerald-600 dark:text-emerald-400 font-bold text-lg font-display">EN + VI</div>
+            <div class="text-xs text-slate-500 dark:text-slate-400">Bilingual Notes</div>
+          </div>
+          <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700/60">
+            <div class="text-amber-600 dark:text-amber-400 font-bold text-lg font-display">.MD</div>
+            <div class="text-xs text-slate-500 dark:text-slate-400">Auto Report</div>
+          </div>
+        </div>
+
+        <form id="student-gate-form" class="space-y-4" novalidate>
+          <div>
+            <label for="student-name-input" class="block text-sm font-semibold text-slate-700 dark:text-slate-200 mb-1.5">
+              Student Full Name <span class="text-rose-500">*</span>
+            </label>
+            <div class="relative">
+              <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-slate-400">
+                <i class="fa-regular fa-user"></i>
+              </span>
+              <input
+                type="text"
+                id="student-name-input"
+                required
+                autocomplete="name"
+                placeholder="e.g., Nguyen Van An"
+                class="w-full pl-10 pr-4 py-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500 text-base transition"
+              />
+            </div>
+            <p id="student-name-error" class="hidden text-xs font-medium text-rose-600 dark:text-rose-400 mt-1.5 flex items-center gap-1.5">
+              <i class="fa-solid fa-circle-exclamation"></i>
+              <span>Please enter your full name before proceeding into the activity.</span>
+            </p>
+          </div>
+
+          <div id="saved-session-notice" class="hidden p-3.5 rounded-xl bg-indigo-50 dark:bg-indigo-950/50 border border-indigo-200 dark:border-indigo-800/70 text-xs text-indigo-800 dark:text-indigo-200 flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2">
+              <i class="fa-solid fa-clock-rotate-left text-indigo-500 text-sm"></i>
+              <span id="saved-session-text">Previous progress detected. Your answers will be restored.</span>
+            </div>
+            <button type="button" id="reset-saved-btn" class="text-rose-600 dark:text-rose-400 hover:underline font-semibold shrink-0">
+              Start Fresh
+            </button>
+          </div>
+
+          <button
+            type="submit"
+            class="w-full py-3.5 px-6 rounded-xl bg-brand-600 hover:bg-brand-700 active:scale-[0.99] text-white font-semibold shadow-lg shadow-brand-500/25 transition flex items-center justify-center gap-2 text-base cursor-pointer"
+          >
+            <span>Start Learning Activity</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- 2. TOP NAVIGATION & CONTROL HEADER                                    -->
+  <!-- ===================================================================== -->
+  <header class="sticky top-0 z-30 bg-white/90 dark:bg-slate-900/90 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 transition-colors">
+    <div class="max-w-7xl mx-auto px-3 sm:px-6 py-2.5 flex flex-wrap items-center justify-between gap-3">
+      
+      <!-- Left: Brand + Mobile Drawer Button -->
+      <div class="flex items-center gap-2.5">
+        <button
+          id="toggle-sidebar-btn"
+          type="button"
+          title="Toggle Idiom Directory (1-100)"
+          class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-brand-50 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 transition flex items-center gap-2 text-sm font-medium cursor-pointer"
+        >
+          <i class="fa-solid fa-table-cells-large text-brand-600 dark:text-brand-400"></i>
+          <span class="hidden sm:inline">All 100 Idioms</span>
+        </button>
+
+        <div class="flex items-center gap-2">
+          <div class="w-9 h-9 rounded-xl bg-brand-600 text-white flex items-center justify-center font-bold font-display shadow-sm shrink-0">
+            100
+          </div>
+          <div class="hidden md:block">
+            <h1 class="text-sm font-bold font-display leading-tight text-slate-900 dark:text-white">Must-Know Idioms</h1>
+            <button id="edit-name-btn" type="button" class="text-xs text-slate-500 dark:text-slate-400 hover:text-brand-600 dark:hover:text-brand-400 flex items-center gap-1 transition cursor-pointer" title="Click to change student name">
+              <i class="fa-solid fa-user-pen text-[10px]"></i>
+              <span id="header-student-name">Student</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Center: Progress & Score Pill -->
+      <div class="flex items-center gap-3 bg-slate-100 dark:bg-slate-800/90 px-3.5 py-1.5 rounded-2xl border border-slate-200/70 dark:border-slate-700/70">
+        <div class="flex items-center gap-2">
+          <span class="text-xs font-semibold text-slate-600 dark:text-slate-300">Progress:</span>
+          <span id="progress-count-badge" class="text-xs font-bold px-2 py-0.5 rounded-lg bg-brand-100 dark:bg-brand-900/60 text-brand-700 dark:text-brand-300">
+            0 / 100
+          </span>
+        </div>
+        <div class="w-20 sm:w-28 h-2 bg-slate-200 dark:bg-slate-700 rounded-full overflow-hidden hidden sm:block">
+          <div id="header-progress-bar" class="h-full bg-gradient-to-r from-brand-500 to-emerald-500 transition-all duration-300" style="width: 0%"></div>
+        </div>
+        <div class="h-4 w-px bg-slate-300 dark:bg-slate-700"></div>
+        <div class="flex items-center gap-1.5 text-xs font-semibold">
+          <i class="fa-solid fa-circle-check text-emerald-500"></i>
+          <span id="score-count-badge" class="text-slate-700 dark:text-slate-200">0 Correct</span>
+        </div>
+      </div>
+
+      <!-- Right: Font Size Slider/Selector, Theme Toggle & Submit Assignment -->
+      <div class="flex items-center gap-2 sm:gap-2.5">
+        
+        <!-- Font Size Control Popover / Bar -->
+        <div class="flex items-center gap-1.5 bg-slate-100 dark:bg-slate-800 px-2.5 py-1.5 rounded-xl border border-slate-200/70 dark:border-slate-700" title="Adjust Font Size">
+          <i class="fa-solid fa-text-height text-xs text-slate-500 dark:text-slate-400"></i>
+          <input
+            id="font-size-slider"
+            type="range"
+            min="85"
+            max="135"
+            step="5"
+            value="100"
+            aria-label="Font size percentage"
+            class="w-16 sm:w-20 accent-brand-600 cursor-pointer h-1.5 bg-slate-300 dark:bg-slate-600 rounded-lg"
+          />
+          <span id="font-size-label" class="text-[11px] font-mono font-semibold text-slate-600 dark:text-slate-300 w-9 text-right">100%</span>
+        </div>
+
+        <!-- Light/Dark Mode Button -->
+        <button
+          id="theme-toggle-btn"
+          type="button"
+          aria-label="Toggle Light or Dark Mode"
+          title="Switch Light / Dark Mode"
+          class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200/70 dark:border-slate-700 transition cursor-pointer"
+        >
+          <i id="theme-icon" class="fa-solid fa-moon text-sm"></i>
+        </button>
+
+        <!-- SUBMIT ASSIGNMENT BUTTON -->
+        <button
+          id="submit-assignment-header-btn"
+          type="button"
+          class="px-3.5 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 active:scale-[0.98] text-white font-semibold text-xs sm:text-sm shadow-md shadow-emerald-600/20 transition flex items-center gap-1.5 cursor-pointer"
+        >
+          <i class="fa-solid fa-file-arrow-down"></i>
+          <span>SUBMIT ASSIGNMENT</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ===================================================================== -->
+  <!-- 3. MAIN WORKSPACE: SIDEBAR DRAWER + SINGLE-PAGE FLIPCARD & QUIZ       -->
+  <!-- ===================================================================== -->
+  <div class="flex-1 max-w-7xl w-full mx-auto flex relative">
+
+    <!-- Mobile Backdrop for Sidebar -->
+    <div id="sidebar-backdrop" class="fixed inset-0 z-20 bg-slate-900/50 backdrop-blur-xs hidden lg:hidden"></div>
+
+    <!-- Collapsible Idiom Navigator Sidebar -->
+    <aside
+      id="idiom-sidebar"
+      class="fixed lg:static inset-y-0 left-0 z-30 w-80 bg-white dark:bg-slate-900 border-r border-slate-200 dark:border-slate-800 flex flex-col transition-all duration-300 -translate-x-full lg:translate-x-0 lg:w-80 shrink-0 h-[calc(100vh-57px)] sticky top-[57px]"
+    >
+      <!-- Sidebar Search & Filter Header -->
+      <div class="p-4 border-b border-slate-200 dark:border-slate-800 space-y-3">
+        <div class="flex items-center justify-between">
+          <h2 class="font-bold text-sm font-display text-slate-800 dark:text-slate-100 flex items-center gap-2">
+            <i class="fa-solid fa-compass text-brand-500"></i>
+            <span>Idiom Navigator (1–100)</span>
+          </h2>
+          <button id="close-sidebar-mobile-btn" type="button" class="lg:hidden p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200">
+            <i class="fa-solid fa-xmark"></i>
+          </button>
+        </div>
+
+        <!-- Search Input -->
+        <div class="relative">
+          <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+          <input
+            type="text"
+            id="idiom-search-input"
+            placeholder="Search idiom or #..."
+            class="w-full pl-8 pr-8 py-2 text-xs rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800 text-slate-800 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-brand-500"
+          />
+          <button id="clear-search-btn" type="button" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 text-xs">
+            <i class="fa-solid fa-circle-xmark"></i>
+          </button>
+        </div>
+
+        <!-- Filter Pills -->
+        <div class="grid grid-cols-4 gap-1 bg-slate-100 dark:bg-slate-800 p-1 rounded-xl text-[11px] font-semibold">
+          <button type="button" data-filter="all" class="filter-tab-btn py-1 rounded-lg bg-white dark:bg-slate-700 text-brand-600 dark:text-brand-300 shadow-xs transition cursor-pointer">All</button>
+          <button type="button" data-filter="todo" class="filter-tab-btn py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 transition cursor-pointer">To Do</button>
+          <button type="button" data-filter="correct" class="filter-tab-btn py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 transition cursor-pointer">Correct</button>
+          <button type="button" data-filter="wrong" class="filter-tab-btn py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 transition cursor-pointer">Review</button>
+        </div>
+      </div>
+
+      <!-- Number Grid / List -->
+      <div id="idiom-nav-list" class="flex-1 overflow-y-auto p-3 space-y-1.5">
+        <!-- Populated dynamically by JS -->
+      </div>
+
+      <!-- Sidebar Footer Legend -->
+      <div class="p-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50/60 dark:bg-slate-900/60 flex items-center justify-between text-[11px] text-slate-500 dark:text-slate-400">
+        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block"></span> Correct</span>
+        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block"></span> Incorrect</span>
+        <span class="flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full bg-slate-300 dark:bg-slate-700 inline-block"></span> Unanswered</span>
+      </div>
+    </aside>
+
+    <!-- Main Single-Idiom Learning Stage -->
+    <main class="flex-1 px-4 sm:px-8 py-6 max-w-4xl mx-auto w-full space-y-6">
+
+      <!-- Top Bar: Student Mobile Banner + Idiom Quick Jump & Navigation -->
+      <div class="flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-slate-900 p-3.5 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-xs">
+        <div class="flex items-center gap-2">
+          <button
+            id="prev-idiom-btn"
+            type="button"
+            class="px-3.5 py-2 rounded-xl border border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 text-slate-700 dark:text-slate-200 font-semibold text-xs sm:text-sm transition flex items-center gap-1.5 disabled:opacity-40 disabled:pointer-events-none cursor-pointer"
+          >
+            <i class="fa-solid fa-chevron-left text-xs"></i>
+            <span>Previous</span>
+          </button>
+
+          <div class="relative">
+            <select
+              id="quick-jump-select"
+              aria-label="Jump to Idiom"
+              class="appearance-none bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-100 font-semibold text-xs sm:text-sm rounded-xl pl-3 pr-8 py-2 focus:outline-none focus:ring-2 focus:ring-brand-500 cursor-pointer max-w-[190px] sm:max-w-xs truncate"
+            >
+              <!-- Populated by JS -->
+            </select>
+            <i class="fa-solid fa-chevron-down text-[10px] text-slate-400 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+          </div>
+
+          <button
+            id="next-idiom-btn"
+            type="button"
+            class="px-3.5 py-2 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs sm:text-sm transition flex items-center gap-1.5 disabled:opacity-40 disabled:pointer-events-none cursor-pointer shadow-xs"
+          >
+            <span>Next</span>
+            <i class="fa-solid fa-chevron-right text-xs"></i>
+          </button>
+        </div>
+
+        <!-- Quick Font Size Preset Pills + Random Unanswered Button -->
+        <div class="flex items-center gap-2">
+          <div class="hidden sm:flex items-center bg-slate-100 dark:bg-slate-800 p-1 rounded-xl border border-slate-200/70 dark:border-slate-700 text-xs font-bold">
+            <button type="button" data-scale="90" class="font-preset-btn px-2 py-1 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer" title="Small Font">S</button>
+            <button type="button" data-scale="100" class="font-preset-btn px-2 py-1 rounded-lg bg-white dark:bg-slate-700 text-brand-600 dark:text-brand-300 shadow-xs cursor-pointer" title="Medium Font">M</button>
+            <button type="button" data-scale="115" class="font-preset-btn px-2 py-1 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer" title="Large Font">L</button>
+            <button type="button" data-scale="130" class="font-preset-btn px-2 py-1 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer" title="Extra Large Font">XL</button>
+          </div>
+
+          <button
+            id="next-unanswered-btn"
+            type="button"
+            title="Jump to next unanswered idiom"
+            class="px-3 py-2 rounded-xl bg-amber-50 dark:bg-amber-950/50 hover:bg-amber-100 dark:hover:bg-amber-900/60 text-amber-700 dark:text-amber-300 border border-amber-200 dark:border-amber-800/70 text-xs font-semibold transition flex items-center gap-1.5 cursor-pointer"
+          >
+            <i class="fa-solid fa-forward-step"></i>
+            <span class="hidden sm:inline">Next Unanswered</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- ================================================================= -->
+      <!-- UPPER SECTION: INTERACTIVE 3D CLICK-TO-FLIP FLIPCARD              -->
+      <!-- ================================================================= -->
+      <section aria-label="Idiom Flipcard">
+        <div class="perspective-1000 w-full">
+          <div
+            id="flipcard-inner"
+            role="button"
+            tabindex="0"
+            aria-label="Click or press Spacebar to flip card"
+            class="transform-style-3d relative w-full min-h-[320px] sm:min-h-[350px] cursor-pointer select-none rounded-3xl"
+          >
+            <!-- FRONT OF FLIPCARD -->
+            <div class="backface-hidden absolute inset-0 w-full h-full bg-white dark:bg-slate-900 rounded-3xl border-2 border-slate-200/90 dark:border-slate-800 shadow-xl hover:shadow-2xl hover:border-brand-400 dark:hover:border-brand-500 transition-all p-6 sm:p-10 flex flex-col justify-between overflow-hidden">
+              <!-- Decorative Background Accent -->
+              <div class="absolute -right-12 -bottom-12 w-52 h-52 rounded-full bg-brand-500/5 dark:bg-brand-400/5 pointer-events-none"></div>
+
+              <!-- Card Top Header -->
+              <div class="flex items-center justify-between gap-2 z-10">
+                <div class="flex items-center gap-2">
+                  <span id="card-number-badge" class="px-3.5 py-1 rounded-full bg-brand-100 dark:bg-brand-950 text-brand-700 dark:text-brand-300 font-bold text-xs sm:text-sm border border-brand-200 dark:border-brand-800">
+                    Idiom #1 of 100
+                  </span>
+                  <span id="card-status-pill" class="px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                    Unanswered
+                  </span>
+                </div>
+
+                <button
+                  id="speak-front-btn"
+                  type="button"
+                  title="Listen to pronunciation"
+                  class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-brand-100 dark:hover:bg-brand-900/50 text-slate-600 dark:text-slate-300 hover:text-brand-600 transition cursor-pointer"
+                >
+                  <i class="fa-solid fa-volume-high"></i>
+                </button>
+              </div>
+
+              <!-- Center Idiom Expression -->
+              <div class="my-auto py-6 text-center z-10 px-2">
+                <span class="uppercase tracking-widest text-[11px] font-bold text-brand-600 dark:text-brand-400 block mb-2">
+                  English Idiom
+                </span>
+                <h2 id="card-front-idiom" class="scalable-idiom-front font-extrabold font-display text-slate-900 dark:text-white tracking-tight">
+                  "A hot potato"
+                </h2>
+              </div>
+
+              <!-- Card Footer Prompt -->
+              <div class="flex items-center justify-center gap-2 text-xs sm:text-sm font-medium text-slate-500 dark:text-slate-400 z-10 pt-2 border-t border-slate-100 dark:border-slate-800/80">
+                <i class="fa-solid fa-rotate text-brand-500 animate-spin" style="animation-duration: 6s;"></i>
+                <span>Click card or press <kbd class="px-1.5 py-0.5 text-xs rounded bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-mono">Space</kbd> to flip for Meaning, Example &amp; Vietnamese</span>
+              </div>
+            </div>
+
+            <!-- BACK (REVERSE) OF FLIPCARD -->
+            <div class="backface-hidden rotate-y-180 absolute inset-0 w-full h-full bg-gradient-to-br from-indigo-950 via-slate-900 to-slate-950 text-white rounded-3xl border-2 border-indigo-500/40 shadow-2xl p-6 sm:p-8 flex flex-col justify-between overflow-y-auto">
+              <!-- Top Row -->
+              <div class="flex items-center justify-between gap-2 border-b border-white/10 pb-3">
+                <div class="flex items-center gap-2">
+                  <span id="card-back-number" class="px-2.5 py-0.5 rounded-lg bg-indigo-500/20 border border-indigo-400/30 text-indigo-200 font-bold text-xs">
+                    #1
+                  </span>
+                  <h3 id="card-back-idiom" class="scalable-idiom-back-title font-bold font-display text-white">
+                    A hot potato
+                  </h3>
+                </div>
+
+                <div class="flex items-center gap-2 shrink-0">
+                  <button
+                    id="speak-back-btn"
+                    type="button"
+                    title="Listen to idiom and example"
+                    class="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-indigo-200 transition cursor-pointer text-xs flex items-center gap-1.5"
+                  >
+                    <i class="fa-solid fa-volume-high"></i>
+                    <span class="hidden sm:inline">Listen</span>
+                  </button>
+                  <span class="text-xs text-indigo-300 flex items-center gap-1 bg-white/5 px-2.5 py-1 rounded-lg">
+                    <i class="fa-solid fa-rotate-left"></i> Flip back
+                  </span>
+                </div>
+              </div>
+
+              <!-- Middle Content: Meaning, Example, Vietnamese Translation -->
+              <div class="grid grid-cols-1 gap-3.5 my-auto py-3">
+                <!-- English Meaning -->
+                <div class="p-3.5 rounded-2xl bg-white/5 border border-white/10">
+                  <div class="scalable-label uppercase font-bold text-indigo-300 flex items-center gap-1.5 mb-1">
+                    <i class="fa-solid fa-lightbulb text-amber-400"></i>
+                    <span>Meaning</span>
+                  </div>
+                  <p id="card-back-meaning" class="scalable-body font-semibold text-white">
+                    Something that is difficult or dangerous to deal with.
+                  </p>
+                </div>
+
+                <!-- Vietnamese Translation -->
+                <div class="p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-400/25">
+                  <div class="scalable-label uppercase font-bold text-emerald-300 flex items-center gap-1.5 mb-1">
+                    <i class="fa-solid fa-language text-emerald-400"></i>
+                    <span>Nghĩa Tiếng Việt (Vietnamese Translation)</span>
+                  </div>
+                  <p id="card-back-vi" class="scalable-body font-medium text-emerald-100">
+                    Vấn đề nan giải, nhạy cảm (điều khó khăn hoặc nguy hiểm khi giải quyết).
+                  </p>
+                </div>
+
+                <!-- Example Sentence -->
+                <div class="p-3.5 rounded-2xl bg-amber-500/10 border border-amber-400/20">
+                  <div class="scalable-label uppercase font-bold text-amber-300 flex items-center gap-1.5 mb-1">
+                    <i class="fa-solid fa-quote-left text-amber-400"></i>
+                    <span>Example in Context</span>
+                  </div>
+                  <p id="card-back-example" class="scalable-body italic text-slate-100">
+                    "Terrorism is a political hot potato in Afghanistan."
+                  </p>
+                </div>
+              </div>
+
+              <!-- Bottom Hint -->
+              <div class="text-center text-[11px] text-indigo-300/80 pt-1">
+                Click anywhere on the card to flip back to the front
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ================================================================= -->
+      <!-- LOWER SECTION: MULTIPLE-CHOICE COMPREHENSION CHECK                -->
+      <!-- ================================================================= -->
+      <section aria-label="Comprehension Check" class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-md p-6 sm:p-8 space-y-5">
+        <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-4">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400 flex items-center gap-1.5">
+              <i class="fa-solid fa-list-check"></i>
+              Comprehension Quiz
+            </span>
+            <h3 id="quiz-question-prompt" class="scalable-quiz-q font-bold text-slate-900 dark:text-white mt-1">
+              What is the correct meaning of the idiom <span class="text-brand-600 dark:text-brand-400">"A hot potato"</span>?
+            </h3>
+          </div>
+
+          <button
+            id="retry-question-btn"
+            type="button"
+            class="hidden px-3 py-1.5 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-300 text-xs font-semibold transition items-center gap-1.5 cursor-pointer"
+          >
+            <i class="fa-solid fa-rotate-right"></i>
+            <span>Try Again</span>
+          </button>
+        </div>
+
+        <!-- 4 Multiple Choice Options Container -->
+        <div id="quiz-options-container" class="grid grid-cols-1 gap-3">
+          <!-- Populated dynamically by JS -->
+        </div>
+
+        <!-- Instant Feedback Box -->
+        <div id="quiz-feedback-box" class="hidden rounded-2xl p-4 border transition-all">
+          <!-- Populated dynamically by JS -->
+        </div>
+
+        <!-- Bottom Action Bar inside Quiz Card -->
+        <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-wrap items-center justify-between gap-3">
+          <div class="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2">
+            <span><i class="fa-regular fa-keyboard mr-1"></i>Shortcuts: <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-mono">←</kbd> <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-mono">→</kbd> Navigate, <kbd class="px-1.5 py-0.5 rounded bg-slate-100 dark:bg-slate-800 border border-slate-300 dark:border-slate-700 font-mono">1-4</kbd> Select Option</span>
+          </div>
+
+          <div class="flex items-center gap-2.5 ml-auto">
+            <button
+              id="submit-assignment-bottom-btn"
+              type="button"
+              class="px-4 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs sm:text-sm shadow-sm transition flex items-center gap-2 cursor-pointer"
+            >
+              <i class="fa-solid fa-file-export"></i>
+              <span>SUBMIT ASSIGNMENT (.MD)</span>
+            </button>
+            <button
+              id="bottom-next-btn"
+              type="button"
+              class="px-4 py-2.5 rounded-xl bg-brand-600 hover:bg-brand-700 text-white font-semibold text-xs sm:text-sm shadow-sm transition flex items-center gap-1.5 cursor-pointer"
+            >
+              <span>Next Idiom</span>
+              <i class="fa-solid fa-arrow-right"></i>
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- 4. ASSIGNMENT SUBMISSION & MARKDOWN EXPORT MODAL                      -->
+  <!-- ===================================================================== -->
+  <div id="submit-modal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-slate-900/75 backdrop-blur-xs">
+    <div class="w-full max-w-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+      <!-- Modal Header -->
+      <div class="p-6 bg-gradient-to-r from-emerald-600 to-teal-600 text-white flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <div class="w-11 h-11 rounded-2xl bg-white/20 flex items-center justify-center text-xl">
+            <i class="fa-solid fa-file-circle-check"></i>
+          </div>
+          <div>
+            <h2 class="text-xl font-extrabold font-display">Assignment Submission Ready</h2>
+            <p id="export-filename-preview" class="text-xs text-emerald-100 font-mono mt-0.5">
+              IDIOMS100-STUDENT-2026-10-15.md
+            </p>
+          </div>
+        </div>
+        <button id="close-submit-modal-btn" type="button" class="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition cursor-pointer">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Modal Body -->
+      <div class="p-6 overflow-y-auto space-y-4 flex-1">
+        <!-- Stats Summary -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+          <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+            <div class="text-xs text-slate-500 dark:text-slate-400">Student</div>
+            <div id="modal-student-name" class="font-bold text-sm text-slate-900 dark:text-white truncate mt-0.5">-</div>
+          </div>
+          <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+            <div class="text-xs text-slate-500 dark:text-slate-400">Completed</div>
+            <div id="modal-completed-stat" class="font-bold text-sm text-brand-600 dark:text-brand-400 mt-0.5">0 / 100</div>
+          </div>
+          <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+            <div class="text-xs text-slate-500 dark:text-slate-400">Correct Score</div>
+            <div id="modal-score-stat" class="font-bold text-sm text-emerald-600 dark:text-emerald-400 mt-0.5">0 / 100</div>
+          </div>
+          <div class="p-3 rounded-2xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700">
+            <div class="text-xs text-slate-500 dark:text-slate-400">Accuracy</div>
+            <div id="modal-accuracy-stat" class="font-bold text-sm text-amber-600 dark:text-amber-400 mt-0.5">0%</div>
+          </div>
+        </div>
+
+        <div id="incomplete-warning-banner" class="hidden p-3.5 rounded-2xl bg-amber-50 dark:bg-amber-950/60 border border-amber-200 dark:border-amber-800 text-amber-800 dark:text-amber-200 text-xs flex items-start gap-2.5">
+          <i class="fa-solid fa-triangle-exclamation text-amber-500 text-sm mt-0.5"></i>
+          <div>
+            <strong>Note:</strong> You have <span id="unanswered-count-text" class="font-bold">0</span> unanswered idioms remaining. Your Markdown file has been generated with your current progress, or you can close this window to continue answering before re-submitting.
+          </div>
+        </div>
+
+        <!-- Markdown Preview Area -->
+        <div>
+          <div class="flex items-center justify-between mb-1.5">
+            <label for="markdown-preview-textarea" class="text-xs font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">
+              Generated Markdown Report Preview
+            </label>
+            <button id="copy-markdown-btn" type="button" class="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:underline flex items-center gap-1 cursor-pointer">
+              <i class="fa-regular fa-copy"></i>
+              <span id="copy-markdown-text">Copy Markdown to Clipboard</span>
+            </button>
+          </div>
+          <textarea
+            id="markdown-preview-textarea"
+            readonly
+            rows="9"
+            class="w-full p-3.5 rounded-2xl bg-slate-900 text-slate-100 font-mono text-xs border border-slate-700 focus:outline-none"
+          ></textarea>
+        </div>
+      </div>
+
+      <!-- Modal Footer -->
+      <div class="p-4 sm:px-6 bg-slate-50 dark:bg-slate-800/60 border-t border-slate-200 dark:border-slate-800 flex flex-wrap items-center justify-end gap-3">
+        <button
+          id="continue-studying-btn"
+          type="button"
+          class="px-4 py-2.5 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-700 dark:text-slate-200 text-xs sm:text-sm font-semibold hover:bg-slate-100 dark:hover:bg-slate-800 transition cursor-pointer"
+        >
+          Keep Studying
+        </button>
+        <button
+          id="download-md-again-btn"
+          type="button"
+          class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-semibold shadow-md shadow-emerald-600/20 transition flex items-center gap-2 cursor-pointer"
+        >
+          <i class="fa-solid fa-download"></i>
+          <span>Download .MD File</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- 5. COMPLETE CURATED 100 IDIOMS DATASET & APPLICATION LOGIC            -->
+  <!-- ===================================================================== -->
+  <script>
+    /**
+     * All 100 Idioms curated directly from "100 Must Know Idioms" PDF e-book,
+     * enriched with accurate Vietnamese translations & explanations.
+     */
+    const IDIOMS_DATA = [
+      {
+        id: 1,
+        idiom: "A hot potato",
+        meaning: "Something that is difficult or dangerous to deal with.",
+        example: "Terrorism is a political hot potato in Afghanistan.",
+        vi: "Vấn đề nan giải, nhạy cảm (điều khó khăn hoặc nguy hiểm khi giải quyết)."
+      },
+      {
+        id: 2,
+        idiom: "A penny for your thoughts",
+        meaning: "Way of asking what someone is thinking.",
+        example: "After several minutes of silence he finally looked at her and said, \"A penny for your thoughts, Lily.\"",
+        vi: "Bạn đang nghĩ gì thế? (Cách hỏi xem ai đó đang suy nghĩ điều gì)."
+      },
+      {
+        id: 3,
+        idiom: "Actions speak louder than words",
+        meaning: "What you do is more significant than what you say.",
+        example: "He: I am sorry. I'll try to be a better person henceforth. She: Actions speak louder than words.",
+        vi: "Hành động có giá trị hơn lời nói (việc bạn làm quan trọng hơn điều bạn nói)."
+      },
+      {
+        id: 4,
+        idiom: "Add insult to injury",
+        meaning: "To make a bad situation worse.",
+        example: "Their basement was flooded, and then, to add insult to injury, a pipe burst in the kitchen.",
+        vi: "Xát muối vào vết thương (làm cho một tình huống tồi tệ càng thêm trầm trọng)."
+      },
+      {
+        id: 5,
+        idiom: "An arm and a leg",
+        meaning: "A lot of money.",
+        example: "It's the best cruise in the world, but it will cost you an arm and a leg.",
+        vi: "Giá cắt cổ; tốn rất nhiều tiền."
+      },
+      {
+        id: 6,
+        idiom: "At the drop of a hat",
+        meaning: "Immediately; without any hesitation.",
+        example: "Ellie was always ready to go shopping at the drop of a hat.",
+        vi: "Ngay lập tức; không chút do dự."
+      },
+      {
+        id: 7,
+        idiom: "Back to the drawing board",
+        meaning: "Start something all over again.",
+        example: "I failed this semester, but now I am back to the drawing board.",
+        vi: "Làm lại từ đầu (bắt đầu lại kế hoạch mới sau khi thất bại)."
+      },
+      {
+        id: 8,
+        idiom: "Ball is in your court",
+        meaning: "It is up to you to take the next step.",
+        example: "I've made my decision, now the ball is in your court.",
+        vi: "Quyền quyết định thuộc về bạn (đến lượt bạn thực hiện bước tiếp theo)."
+      },
+      {
+        id: 9,
+        idiom: "Barking up the wrong tree",
+        meaning: "Looking in the wrong place; accusing the wrong person.",
+        example: "He did not commit the crime, you're barking up the wrong tree.",
+        vi: "Nhầm địa chỉ (tìm kiếm sai chỗ hoặc buộc tội nhầm người)."
+      },
+      {
+        id: 10,
+        idiom: "Be glad to see the back of",
+        meaning: "Be glad to see someone leave.",
+        example: "I never liked her. I'll be glad to see the back of her.",
+        vi: "Vui mừng khi thấy ai đó rời đi."
+      },
+      {
+        id: 11,
+        idiom: "Beat around the bush",
+        meaning: "Avoid answering a question; not speaking directly about the issue.",
+        example: "Tell me what the problem is, stop beating around the bush.",
+        vi: "Vòng vo tam quốc (né tránh trả lời câu hỏi; không nói thẳng vào vấn đề)."
+      },
+      {
+        id: 12,
+        idiom: "Best of both the worlds",
+        meaning: "Situation wherein one can enjoy two different opportunities.",
+        example: "She had the privilege of a professor and freedom of a student. She had the best of both worlds.",
+        vi: "Vẹn cả đôi đường (tình huống có thể tận hưởng lợi ích của hai cơ hội khác nhau)."
+      },
+      {
+        id: 13,
+        idiom: "Best thing since sliced bread",
+        meaning: "A good idea or plan; an excellent new invention.",
+        example: "I love your idea. It's the best thing since sliced bread.",
+        vi: "Một ý tưởng hay kế hoạch tuyệt vời; một phát minh mới xuất sắc."
+      },
+      {
+        id: 14,
+        idiom: "Bite off more than you can chew",
+        meaning: "To take on a task that is way too big.",
+        example: "Our boss bit off more than she could chew when she promised the client we'd have the project ready by next week.",
+        vi: "Ôm đồm quá sức (nhận một nhiệm vụ quá lớn vượt quá khả năng)."
+      },
+      {
+        id: 15,
+        idiom: "Blessing in disguise",
+        meaning: "Something good that isn't recognized at first.",
+        example: "Ashok's losing his job was a blessing in disguise; it gave him an opportunity to pursue higher studies.",
+        vi: "Trong cái rủi có cái may (điều tốt đẹp ban đầu không được nhận ra)."
+      },
+      {
+        id: 16,
+        idiom: "Burn the midnight oil",
+        meaning: "To stay up working, especially studying, late at night.",
+        example: "She's been burning the midnight oil for the last few months; her hard work will definitely pay off in the coming exams.",
+        vi: "Thức khuya đèn sách (thức khuya làm việc, đặc biệt là học tập)."
+      },
+      {
+        id: 17,
+        idiom: "Don't judge a book by its cover",
+        meaning: "Don't judge something primarily by its appearance.",
+        example: "She: He doesn't look intelligent. He: You can't judge a book by its cover.",
+        vi: "Đừng trông mặt mà bắt hình dong (đừng đánh giá điều gì chủ yếu qua vẻ bề ngoài)."
+      },
+      {
+        id: 18,
+        idiom: "Caught between two stools",
+        meaning: "When someone finds it difficult to choose between two alternatives.",
+        example: "He had committed to both and now he's caught between two stools.",
+        vi: "Tiến thoái lưỡng nan (gặp khó khăn khi phải lựa chọn giữa hai phương án)."
+      },
+      {
+        id: 19,
+        idiom: "Cross that bridge when you come to it",
+        meaning: "Deal with a problem if and when it becomes necessary.",
+        example: "He: I think I need to hire a lawyer. She: Cross that bridge when you come to it.",
+        vi: "Nước đến chân mới nhảy (chỉ giải quyết vấn đề khi nó thực sự xảy ra và cần thiết)."
+      },
+      {
+        id: 20,
+        idiom: "Cry over spilled milk",
+        meaning: "To be unhappy about something that cannot be undone.",
+        example: "It can't be helped, don't cry over spilled milk.",
+        vi: "Tiếc rẻ chuyện đã qua (buồn bã vô ích về điều đã xảy ra không thể sửa chữa)."
+      },
+      {
+        id: 21,
+        idiom: "Curiosity killed the cat",
+        meaning: "Being too curious can get you into trouble.",
+        example: "Don't ask about his divorce - curiosity killed the cat!",
+        vi: "Tò mò quá mức có thể rước họa vào thân."
+      },
+      {
+        id: 22,
+        idiom: "Cut corners",
+        meaning: "To take shortcuts; when something is done badly to save money.",
+        example: "They always put quality first; they won't cut corners just to save money.",
+        vi: "Đi đường tắt; làm ẩu hoặc cắt xén quy trình để tiết kiệm tiền bạc."
+      },
+      {
+        id: 23,
+        idiom: "Cut the mustard",
+        meaning: "Perform satisfactorily; to succeed.",
+        example: "We need a better catcher; this one just doesn't cut the mustard.",
+        vi: "Đạt yêu cầu, làm việc hiệu quả và thành công."
+      },
+      {
+        id: 24,
+        idiom: "Devil's advocate",
+        meaning: "To present a counter argument.",
+        example: "The teacher always played devil's advocate to provoke discussion in the classroom.",
+        vi: "Người phản biện (đưa ra lập luận trái chiều để kích thích thảo luận)."
+      },
+      {
+        id: 25,
+        idiom: "Don't count your chickens before the eggs have hatched",
+        meaning: "Don't make plans for something that might not happen.",
+        example: "You might not win the prize and you've already spent the money? Don't count your chickens before the eggs have hatched.",
+        vi: "Chưa đỗ ông nghè đã đe hàng tổng (đừng vội lập kế hoạch cho điều chưa chắc đã xảy ra)."
+      },
+      {
+        id: 26,
+        idiom: "Don't give up the day job",
+        meaning: "You're not very good at something. You could definitely not do it professionally.",
+        example: "Why did you invest in business even after failing in it in the past? Don't give up the day job!",
+        vi: "Đừng bỏ nghề chính (bạn không giỏi việc này đến mức có thể làm chuyên nghiệp đâu)."
+      },
+      {
+        id: 27,
+        idiom: "Don't put all your eggs in one basket",
+        meaning: "Don't focus all of your attention on one thing or one area.",
+        example: "I know you love Harvard, but don't put all your eggs in one basket. Apply to other colleges too.",
+        vi: "Đừng bỏ tất cả trứng vào một giỏ (đừng dồn mọi sự chú ý hay nguồn lực vào một nơi duy nhất)."
+      },
+      {
+        id: 28,
+        idiom: "Drastic times call for drastic measures",
+        meaning: "When you're extremely desperate you need to take drastic actions.",
+        example: "Yes we had to let go of five of our workers! Drastic times call for drastic measures.",
+        vi: "Thời thế cấp bách đòi hỏi những biện pháp quyết liệt."
+      },
+      {
+        id: 29,
+        idiom: "Elvis has left the building",
+        meaning: "The show has come to an end. It's all over.",
+        example: "We waited for another performance by the band but it looked like Elvis had left the building.",
+        vi: "Buổi biểu diễn đã kết thúc; mọi chuyện đã hoàn toàn chấm dứt."
+      },
+      {
+        id: 30,
+        idiom: "Every cloud has a silver lining",
+        meaning: "Be optimistic, even difficult times will lead to better days.",
+        example: "I'm sorry your business is going badly, but remember every cloud has a silver lining.",
+        vi: "Sau cơn mưa trời lại sáng (hãy lạc quan, ngay cả lúc khó khăn cũng sẽ dẫn đến những ngày tốt đẹp hơn)."
+      },
+      {
+        id: 31,
+        idiom: "Far cry from",
+        meaning: "A thing that is very different from something else.",
+        example: "What you did was a far cry from what you said you were going to do.",
+        vi: "Khác một trời một vực (rất khác biệt so với một thứ khác)."
+      },
+      {
+        id: 32,
+        idiom: "Feel a bit under the weather",
+        meaning: "Feeling sick or unhealthy.",
+        example: "I'm not coming to office today, I'm feeling a bit under the weather.",
+        vi: "Cảm thấy hơi mệt mỏi, khó ở, không khỏe trong người."
+      },
+      {
+        id: 33,
+        idiom: "Give the benefit of doubt",
+        meaning: "Believe someone's statement without proof.",
+        example: "I knew him since the past 5 years, so I gave him the benefit of doubt.",
+        vi: "Tạm tin lời ai đó dù chưa có bằng chứng xác thực."
+      },
+      {
+        id: 34,
+        idiom: "Hear through the grapevine",
+        meaning: "To hear news from someone who heard that news from someone else.",
+        example: "I heard through the grapevine that she's pregnant.",
+        vi: "Nghe đồn, nghe tin hành lang truyền tai nhau."
+      },
+      {
+        id: 35,
+        idiom: "Hit the nail on the head",
+        meaning: "To do or say exactly the right thing.",
+        example: "You've spotted the flaw, Robert. You've hit the nail on the head.",
+        vi: "Nói trúng phóc (làm hoặc nói hoàn toàn chính xác trọng tâm)."
+      },
+      {
+        id: 36,
+        idiom: "Hit the sack/sheets/hay",
+        meaning: "To go to bed.",
+        example: "I'm exhausted. I think I'll just hit the sack.",
+        vi: "Đi ngủ."
+      },
+      {
+        id: 37,
+        idiom: "In the heat of the moment",
+        meaning: "Overwhelmed by what's happening at the moment.",
+        example: "He doesn't hate you. He just said that in the heat of the moment.",
+        vi: "Trong lúc nóng giận / bị cuốn theo cảm xúc nhất thời."
+      },
+      {
+        id: 38,
+        idiom: "It takes two to tango",
+        meaning: "Both people involved in a bad situation are responsible for it.",
+        example: "He blamed her for his lack of attention; well it takes two to tango.",
+        vi: "Một bàn tay vỗ không kêu (cả hai bên liên quan trong một tình huống xấu đều có trách nhiệm)."
+      },
+      {
+        id: 39,
+        idiom: "Jump on the bandwagon",
+        meaning: "Join a popular trend or activity.",
+        example: "So many people are playing that game that I might as well jump on the bandwagon and check it out.",
+        vi: "Chạy theo trào lưu (tham gia vào một xu hướng hoặc hoạt động đang phổ biến)."
+      },
+      {
+        id: 40,
+        idiom: "Keep something at bay",
+        meaning: "Keep something away.",
+        example: "A good way to keep your anxiety at bay is through meditation.",
+        vi: "Ngăn chặn, đẩy lùi, giữ cho cái gì tránh xa."
+      },
+      {
+        id: 41,
+        idiom: "Kill two birds with one stone",
+        meaning: "To solve two problems at a time with just one action.",
+        example: "John practiced his words while peeling the potatoes. He was killing two birds with one stone.",
+        vi: "Một mũi tên trúng hai đích (giải quyết hai vấn đề cùng lúc chỉ bằng một hành động)."
+      },
+      {
+        id: 42,
+        idiom: "Last straw",
+        meaning: "The final problem in a series of problems.",
+        example: "This is the last straw. I'm calling the police.",
+        vi: "Giọt nước tràn ly (vấn đề cuối cùng trong một chuỗi rắc rối làm mất hết kiên nhẫn)."
+      },
+      {
+        id: 43,
+        idiom: "Let sleeping dogs lie",
+        meaning: "Leave something alone if it might cause trouble.",
+        example: "I thought I would ask him if he wanted me to pay him back right away, but then I decided to let the sleeping dogs lie.",
+        vi: "Chuyện đã yên thì đừng khơi lại (để yên mọi việc nếu chạm vào có thể gây rắc rối)."
+      },
+      {
+        id: 44,
+        idiom: "Let the cat out of the bag",
+        meaning: "To reveal a secret / To share information that was previously concealed.",
+        example: "It's our secret. Don't let the cat out of the bag.",
+        vi: "Để lộ bí mật (tiết lộ thông tin trước đó được giấu kín)."
+      },
+      {
+        id: 45,
+        idiom: "Make a long story short",
+        meaning: "Come to the point - leave out the details.",
+        example: "And - to make the long story short - I never got back the money I lent him.",
+        vi: "Nói tóm lại là (đi thẳng vào ý chính, bỏ qua các chi tiết dài dòng)."
+      },
+      {
+        id: 46,
+        idiom: "Method in the madness",
+        meaning: "A purpose in what one is doing, even though it seems to be crazy.",
+        example: "What I'm doing might seem strange, but there is method in my madness.",
+        vi: "Có chủ đích hợp lý đằng sau hành động tưởng chừng như điên rồ."
+      },
+      {
+        id: 47,
+        idiom: "Miss the boat",
+        meaning: "To miss out on something.",
+        example: "Pay attention, John, or you'll miss the boat and never learn algebra.",
+        vi: "Bỏ lỡ cơ hội."
+      },
+      {
+        id: 48,
+        idiom: "Not a spark of decency",
+        meaning: "A person who has no manners.",
+        example: "Her brother has not a spark of decency. I don't like the way he acts in public.",
+        vi: "Không có một chút phép tắc hay sự lịch sự, tử tế nào."
+      },
+      {
+        id: 49,
+        idiom: "Not playing with the full deck",
+        meaning: "Someone who is mentally, psychologically or intellectually deficient.",
+        example: "He's an intelligent guy, but with all that crazy things he does, I wonder if he's not playing with the full deck.",
+        vi: "Đầu óc không bình thường, thiếu tỉnh táo hoặc suy giảm về mặt trí tuệ/tâm lý."
+      },
+      {
+        id: 50,
+        idiom: "On the ball",
+        meaning: "When someone understands a situation well; attentive.",
+        example: "If you were on the ball, this wouldn't have happened.",
+        vi: "Nhạy bén, hiểu rõ tình hình và luôn chú tâm."
+      },
+      {
+        id: 51,
+        idiom: "Off the record",
+        meaning: "Not made as an official or attributable statement; unofficial; confidential.",
+        example: "He accepted his fault off the record and hence it could not be used by the prosecutor in the court.",
+        vi: "Không chính thức, mang tính bảo mật riêng tư (không dùng để trích dẫn công khai)."
+      },
+      {
+        id: 52,
+        idiom: "Oldest trick in the book",
+        meaning: "A well known and much used trick/method.",
+        example: "Oldest trick in the book to treat cold and cough is drinking turmeric milk.",
+        vi: "Mánh khóe / phương pháp xưa như trái đất (rất quen thuộc và được sử dụng nhiều)."
+      },
+      {
+        id: 53,
+        idiom: "Off the cuff",
+        meaning: "Without preparation; spontaneous.",
+        example: "She has a reputation of handling off the cuff interviews very well.",
+        vi: "Ứng khẩu, tự phát, không chuẩn bị trước."
+      },
+      {
+        id: 54,
+        idiom: "Old habits die hard",
+        meaning: "People find it difficult to change their accustomed behavior.",
+        example: "She retired last month, but still gets up at the same time in the morning. Old habits die hard.",
+        vi: "Giang sơn dễ đổi, bản tính khó dời (thói quen cũ rất khó thay đổi)."
+      },
+      {
+        id: 55,
+        idiom: "Once in a blue moon",
+        meaning: "Very rarely.",
+        example: "Jill has a very rocky relationship with her father. She speaks to him once in a blue moon.",
+        vi: "Rất hiếm khi (năm thì mười họa)."
+      },
+      {
+        id: 56,
+        idiom: "Open the floodgates",
+        meaning: "Release something that was previously under control.",
+        example: "Economists fear that relaxing price control will open the floodgates to inflation.",
+        vi: "Mở đường / tháo khoán cho thứ gì đó trước đây vốn đang được kiểm soát tràn ra."
+      },
+      {
+        id: 57,
+        idiom: "Out of the blue",
+        meaning: "Happen unexpectedly.",
+        example: "She had given up all hope when out of the blue she got a call from Harvard.",
+        vi: "Bất ngờ, đột ngột không báo trước."
+      },
+      {
+        id: 58,
+        idiom: "Out on a limb",
+        meaning: "Do something risky or something that others do not support (leaving the doer in a difficult situation).",
+        example: "She was out on a limb with her project - nobody supported her idea.",
+        vi: "Đơn độc mạo hiểm (làm điều rủi ro hoặc không được ai ủng hộ, tự đặt mình vào thế khó)."
+      },
+      {
+        id: 59,
+        idiom: "Over the top",
+        meaning: "Totally excessive and not suitable for the occasion.",
+        example: "Her sari was way over the top for a somber occasion like this.",
+        vi: "Quá lố, thái quá và không phù hợp với hoàn cảnh."
+      },
+      {
+        id: 60,
+        idiom: "Pen is mightier than the sword",
+        meaning: "Words and communication have a greater effect than war.",
+        example: "A simple handwritten note put an end to their week long cold war - pen is mightier than the sword.",
+        vi: "Ngòi bút mạnh hơn lưỡi kiếm (lời nói và giao tiếp có sức ảnh hưởng lớn hơn chiến tranh/bạo lực)."
+      },
+      {
+        id: 61,
+        idiom: "Push one's luck",
+        meaning: "Trying to obtain more than what one has (risk spoiling the current situation).",
+        example: "You have my permission to go to your friends' place but don't push your luck by planning a night out.",
+        vi: "Được voi đòi tiên (cố đòi hỏi thêm và liều lĩnh làm hỏng tình hình tốt hiện tại)."
+      },
+      {
+        id: 62,
+        idiom: "Raining cats and dogs",
+        meaning: "Raining heavily.",
+        example: "We'll have to cancel the trip, it's raining cats and dogs here.",
+        vi: "Mưa như trút nước, mưa rất to."
+      },
+      {
+        id: 63,
+        idiom: "Reap the harvest",
+        meaning: "Benefit or suffer as a direct result of past actions.",
+        example: "When he cleared IIT-JEE, he reaped the harvest of all his hard work.",
+        vi: "Gặt hái thành quả (hoặc nhận lãnh kết quả trực tiếp từ hành động trong quá khứ)."
+      },
+      {
+        id: 64,
+        idiom: "Roll up one's sleeves",
+        meaning: "Get ready for hard work.",
+        example: "My brother said he would roll up his sleeves and do whatever it takes to support the family.",
+        vi: "Xắn tay áo lên (sẵn sàng bắt tay vào làm việc chăm chỉ, vất vả)."
+      },
+      {
+        id: 65,
+        idiom: "See eye to eye",
+        meaning: "To be in agreement with.",
+        example: "She was glad her roommate saw eye to eye on the choice of the flat.",
+        vi: "Đồng quan điểm, hoàn toàn nhất trí với nhau."
+      },
+      {
+        id: 66,
+        idiom: "Shot in the dark",
+        meaning: "A complete guess (may or may not be close to the truth).",
+        example: "He didn't know too much about programming, so answering the interviewer's question was merely a shot in the dark.",
+        vi: "Đoán mò (một sự phỏng đoán hoàn toàn may rủi)."
+      },
+      {
+        id: 67,
+        idiom: "Sink your teeth into",
+        meaning: "Do something with a lot of energy and enthusiasm.",
+        example: "Robin immediately sank his teeth into his new job.",
+        vi: "Đam mê dấn thân (làm việc gì đó với rất nhiều năng lượng và sự nhiệt huyết)."
+      },
+      {
+        id: 68,
+        idiom: "Skating on thin ice",
+        meaning: "Do or say something risky or something that could cause trouble.",
+        example: "Don't say anything that hurts her self esteem or you could be skating on thin ice.",
+        vi: "Đi trên băng mỏng (làm hoặc nói điều liều lĩnh có thể gây rắc rối)."
+      },
+      {
+        id: 69,
+        idiom: "Stand in a good stead",
+        meaning: "To be useful or be of good service to someone.",
+        example: "Being fluent in German will stand you in a good stead when applying for an MS in Germany.",
+        vi: "Có ích lớn, mang lại lợi thế tốt cho ai đó."
+      },
+      {
+        id: 70,
+        idiom: "Strike while the iron is hot",
+        meaning: "To act at the right time.",
+        example: "The price of gold is at a 10 year low, strike while the iron is hot and invest in it right away.",
+        vi: "Rèn sắt khi còn nóng (hành động chớp thời cơ ngay lúc thuận lợi nhất)."
+      },
+      {
+        id: 71,
+        idiom: "Take a back seat",
+        meaning: "Choose to be less important in a role.",
+        example: "He finally decided to take a back seat and let his son run the family business.",
+        vi: "Lùi về phía sau, chọn đóng vai trò ít quan trọng hơn."
+      },
+      {
+        id: 72,
+        idiom: "Take with a grain/pinch of salt",
+        meaning: "To doubt the accuracy of information.",
+        example: "A lot is said about the celebrities in media, but that information should be taken with a grain of salt.",
+        vi: "Bán tín bán nghi (nghi ngờ độ chính xác của thông tin, không tin tuyệt đối)."
+      },
+      {
+        id: 73,
+        idiom: "Take a nosedive",
+        meaning: "Rapid drop or decrease in value.",
+        example: "The share prices took a nosedive when there were rumors of the company's CEO resigning.",
+        vi: "Lao dốc không phanh (sụt giảm nhanh chóng về giá trị)."
+      },
+      {
+        id: 74,
+        idiom: "Take the plunge",
+        meaning: "Venture into something of one's interest despite the risks involved.",
+        example: "Jack finally took the plunge and opened a restaurant.",
+        vi: "Quyết định dấn thân vào việc mình yêu thích bất chấp rủi ro."
+      },
+      {
+        id: 75,
+        idiom: "Taste of one's own medicine",
+        meaning: "Treat people the same (unpleasant) way they treated you.",
+        example: "People who often disregard others should be given a taste of their own medicine.",
+        vi: "Gậy ông đập lưng ông (đối xử với người khác theo đúng cách khó chịu mà họ đã đối xử với mình)."
+      },
+      {
+        id: 76,
+        idiom: "Think the world of",
+        meaning: "Admire someone very much.",
+        example: "Emily is a wonderful teacher - children think the world of her.",
+        vi: "Hết lòng ngưỡng mộ, yêu quý ai đó rất nhiều."
+      },
+      {
+        id: 77,
+        idiom: "Tight spot",
+        meaning: "A difficult situation.",
+        example: "The recent lawsuit has put the firm in a tight spot.",
+        vi: "Tình thế ngặt nghèo, hoàn cảnh khó khăn."
+      },
+      {
+        id: 78,
+        idiom: "Tongue in cheek",
+        meaning: "(of a remark) Supposed to be taken in funny or ironic sense.",
+        example: "Her comment was taken more seriously than intended. It was supposed to be tongue in cheek.",
+        vi: "Nói đùa, châm biếm hài hước (không có ý nghiêm túc)."
+      },
+      {
+        id: 79,
+        idiom: "Turn a blind eye",
+        meaning: "Pretend not to notice.",
+        example: "People tend to turn a blind eye to crime against women.",
+        vi: "Nhắm mắt làm ngơ (giả vờ như không nhận thấy)."
+      },
+      {
+        id: 80,
+        idiom: "Walk on eggshells",
+        meaning: "Be extremely cautious about one's words or actions.",
+        example: "Celebrities are scrutinized by the media for all their actions so they're required to walk on eggshells.",
+        vi: "Đi trên vỏ trứng (cực kỳ thận trọng, dè dặt trong lời nói hoặc hành động)."
+      },
+      {
+        id: 81,
+        idiom: "Want someone's head on a platter",
+        meaning: "Want someone to be punished severely.",
+        example: "\"I want that murderer's head on a platter!\", said the Chief of police.",
+        vi: "Muốn ai đó bị trừng phạt thật nghiêm khắc."
+      },
+      {
+        id: 82,
+        idiom: "Watch (someone) like a hawk",
+        meaning: "Keep eyes on or watch carefully.",
+        example: "The examiner watched the test takers like a hawk.",
+        vi: "Canh chừng như diều hâu (theo dõi, quan sát ai đó cực kỳ kỹ lưỡng)."
+      },
+      {
+        id: 83,
+        idiom: "Water under the bridge",
+        meaning: "Something bad that happened in the past but is no longer important.",
+        example: "The couple had a serious fight in the past but that water is under the bridge now.",
+        vi: "Chuyện cũ bỏ qua (điều tồi tệ đã xảy ra trong quá khứ nhưng nay không còn quan trọng nữa)."
+      },
+      {
+        id: 84,
+        idiom: "Wave a dead chicken",
+        meaning: "Do some useless, unhelpful thing in the hope that it will solve a problem.",
+        example: "Restarting the laptop once the motherboard has crashed is like waving a dead chicken.",
+        vi: "Làm chuyện vô ích với hy vọng hão huyền rằng sẽ giải quyết được vấn đề."
+      },
+      {
+        id: 85,
+        idiom: "Weak in the knees",
+        meaning: "Barely able to stand because of emotion, fear or illness.",
+        example: "The shock of being summoned by the Supreme Court made me go weak in the knees.",
+        vi: "Bủn rủn đầu gối / tay chân (hầu như không đứng vững vì xúc động, sợ hãi hoặc ốm yếu)."
+      },
+      {
+        id: 86,
+        idiom: "Wear many hats",
+        meaning: "Do many different types of tasks.",
+        example: "We have such a small number of employees that one is often supposed to wear many hats.",
+        vi: "Đảm nhận nhiều vai trò, làm nhiều loại công việc khác nhau."
+      },
+      {
+        id: 87,
+        idiom: "Weather the storm",
+        meaning: "Succeed in surviving a difficult period of time.",
+        example: "Given the current global market conditions, the Indian economy is weathering the storm pretty well.",
+        vi: "Vượt qua giông bão (sống sót và vượt qua giai đoạn khó khăn thành công)."
+      },
+      {
+        id: 88,
+        idiom: "Wet behind the ears",
+        meaning: "Inexperienced and immature.",
+        example: "Instead of a full time job, she should be offered an internship as she is still wet behind the ears.",
+        vi: "Miệng còn hôi sữa (còn non nớt và thiếu kinh nghiệm)."
+      },
+      {
+        id: 89,
+        idiom: "Whale of a time",
+        meaning: "Enjoy a lot.",
+        example: "She had a whale of a time in Goa with her girl gang.",
+        vi: "Có khoảng thời gian vô cùng vui vẻ, tận hưởng hết mình."
+      },
+      {
+        id: 90,
+        idiom: "Whistle in the dark",
+        meaning: "Pretend to be brave in a scary situation.",
+        example: "Upon being attacked, she blew a whistle in the dark which surprised her attackers.",
+        vi: "Giả vờ dũng cảm trong tình huống đáng sợ."
+      },
+      {
+        id: 91,
+        idiom: "Why keep a dog and bark for yourself",
+        meaning: "If someone or something can do a job for you, why do it yourself?",
+        example: "My sister has a printer, but she continues to write notes manually. Why keep a dog and bark for yourself?",
+        vi: "Đã có người hoặc công cụ làm giúp việc đó thì sao phải tự mình làm?"
+      },
+      {
+        id: 92,
+        idiom: "Wide off the mark",
+        meaning: "Incorrect; Inadequate; Not what is expected.",
+        example: "Her answer was wide off the mark; it was impossible for me to give a better rating to it.",
+        vi: "Sai lệch hoàn toàn; không chính xác hoặc không đạt kỳ vọng."
+      },
+      {
+        id: 93,
+        idiom: "Wild goose chase",
+        meaning: "Waste time looking for something that has little chance of being found.",
+        example: "She tried to find out who the anonymous caller was, but it turned out to be a wild goose chase.",
+        vi: "Tìm kiếm vô vọng (lãng phí thời gian tìm thứ gần như không thể tìm thấy)."
+      },
+      {
+        id: 94,
+        idiom: "Wipe the slate clean",
+        meaning: "Make a fresh start.",
+        example: "When Mike was leaving home, he decided to wipe the slate clean with his dad.",
+        vi: "Xóa sạch chuyện cũ để làm lại từ đầu."
+      },
+      {
+        id: 95,
+        idiom: "Wolf in sheep's clothing",
+        meaning: "Dangerous person pretending to be harmless.",
+        example: "I thought she was a good person, but I realized that she was a wolf in a sheep's clothing when she backstabbed me during the selection process.",
+        vi: "Sói đội lốt cừu (kẻ nguy hiểm giả vờ vô hại, hiền lành)."
+      },
+      {
+        id: 96,
+        idiom: "Work your fingers to the bone",
+        meaning: "Extreme hard work.",
+        example: "She totally deserves the success; she worked her fingers to the bone when she started out as a model.",
+        vi: "Làm việc quần quật, vô cùng vất vả."
+      },
+      {
+        id: 97,
+        idiom: "Worm's eye view",
+        meaning: "A perspective seen from below or from a low or inferior position.",
+        example: "The trainees get only a worm's eye view of the corporate structure.",
+        vi: "Góc nhìn từ dưới lên (góc nhìn từ vị trí thấp kém)."
+      },
+      {
+        id: 98,
+        idiom: "Worth one's salt",
+        meaning: "Good or competent at the job or profession specified.",
+        example: "She deserves respect as she is totally worth her salt.",
+        vi: "Xứng đáng với đồng lương (giỏi giang, có năng lực trong công việc)."
+      },
+      {
+        id: 99,
+        idiom: "Wrap one's brain around",
+        meaning: "Concentrate on something in an effort to understand.",
+        example: "I really need to wrap my brain around this concept before the exam.",
+        vi: "Tập trung vắt óc suy nghĩ để cố gắng hiểu điều gì đó."
+      },
+      {
+        id: 100,
+        idiom: "Zero in on something",
+        meaning: "Focus all attention onto one thing.",
+        example: "The teacher immediately zeroed in on the weaker students of the class.",
+        vi: "Tập trung toàn bộ sự chú ý vào một mục tiêu duy nhất."
+      }
+    ];
+
+    // =========================================================================
+    // DETERMINISTIC MULTIPLE-CHOICE QUESTION GENERATOR
+    // =========================================================================
+    // Creates 4 well-balanced options (A, B, C, D) for each idiom using a
+    // deterministic pseudo-random shuffle so options stay consistent per idiom.
+    function generateQuizData() {
+      return IDIOMS_DATA.map((item, idx) => {
+        const d1 = IDIOMS_DATA[(idx + 17) % IDIOMS_DATA.length].meaning;
+        const d2 = IDIOMS_DATA[(idx + 43) % IDIOMS_DATA.length].meaning;
+        const d3 = IDIOMS_DATA[(idx + 71) % IDIOMS_DATA.length].meaning;
+
+        const rawOptions = [
+          { text: item.meaning, isCorrect: true },
+          { text: d1, isCorrect: false },
+          { text: d2, isCorrect: false },
+          { text: d3, isCorrect: false }
+        ];
+
+        // Deterministic shuffle based on item.id
+        const shuffled = [...rawOptions];
+        let seed = item.id * 9301 + 49297;
+        for (let i = shuffled.length - 1; i > 0; i--) {
+          seed = (seed * 233280 + 137) % 1000000;
+          const j = seed % (i + 1);
+          const temp = shuffled[i];
+          shuffled[i] = shuffled[j];
+          shuffled[j] = temp;
+        }
+
+        return {
+          ...item,
+          options: shuffled
+        };
+      });
+    }
+
+    const ENRICHED_IDIOMS = generateQuizData();
+
+    // =========================================================================
+    // APPLICATION STATE & STORAGE
+    // =========================================================================
+    const STORAGE_KEY = 'idioms100_learning_state_v1';
+
+    const state = {
+      studentName: '',
+      currentIndex: 0, // 0 to 99
+      isFlipped: false,
+      answers: {}, // { [idiomId]: { selectedIndex: number, selectedText: string, isCorrect: boolean, timestamp: string } }
+      filter: 'all', // 'all' | 'todo' | 'correct' | 'wrong'
+      searchQuery: '',
+      fontScale: 100, // 85 to 135
+      darkMode: false
+    };
+
+    function loadStateFromStorage() {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY);
+        if (!raw) return false;
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed === 'object') {
+          state.studentName = parsed.studentName || '';
+          state.currentIndex = typeof parsed.currentIndex === 'number' ? Math.min(99, Math.max(0, parsed.currentIndex)) : 0;
+          state.answers = parsed.answers || {};
+          state.fontScale = parsed.fontScale || 100;
+          state.darkMode = Boolean(parsed.darkMode);
+          return true;
+        }
+      } catch (e) {
+        console.warn('Could not read saved state:', e);
+      }
+      return false;
+    }
+
+    function saveStateToStorage() {
+      try {
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          studentName: state.studentName,
+          currentIndex: state.currentIndex,
+          answers: state.answers,
+          fontScale: state.fontScale,
+          darkMode: state.darkMode
+        }));
+      } catch (e) {
+        console.warn('Could not save state:', e);
+      }
+    }
+
+    // =========================================================================
+    // DOM ELEMENT REFERENCES
+    // =========================================================================
+    const gateModal = document.getElementById('student-gate-modal');
+    const gateForm = document.getElementById('student-gate-form');
+    const studentNameInput = document.getElementById('student-name-input');
+    const studentNameError = document.getElementById('student-name-error');
+    const savedSessionNotice = document.getElementById('saved-session-notice');
+    const savedSessionText = document.getElementById('saved-session-text');
+    const resetSavedBtn = document.getElementById('reset-saved-btn');
+
+    const headerStudentName = document.getElementById('header-student-name');
+    const editNameBtn = document.getElementById('edit-name-btn');
+    const progressCountBadge = document.getElementById('progress-count-badge');
+    const headerProgressBar = document.getElementById('header-progress-bar');
+    const scoreCountBadge = document.getElementById('score-count-badge');
+
+    const fontSizeSlider = document.getElementById('font-size-slider');
+    const fontSizeLabel = document.getElementById('font-size-label');
+    const fontPresetBtns = document.querySelectorAll('.font-preset-btn');
+
+    const themeToggleBtn = document.getElementById('theme-toggle-btn');
+    const themeIcon = document.getElementById('theme-icon');
+
+    const toggleSidebarBtn = document.getElementById('toggle-sidebar-btn');
+    const closeSidebarMobileBtn = document.getElementById('close-sidebar-mobile-btn');
+    const idiomSidebar = document.getElementById('idiom-sidebar');
+    const sidebarBackdrop = document.getElementById('sidebar-backdrop');
+    const idiomSearchInput = document.getElementById('idiom-search-input');
+    const clearSearchBtn = document.getElementById('clear-search-btn');
+    const filterTabBtns = document.querySelectorAll('.filter-tab-btn');
+    const idiomNavList = document.getElementById('idiom-nav-list');
+
+    const prevIdiomBtn = document.getElementById('prev-idiom-btn');
+    const nextIdiomBtn = document.getElementById('next-idiom-btn');
+    const bottomNextBtn = document.getElementById('bottom-next-btn');
+    const nextUnansweredBtn = document.getElementById('next-unanswered-btn');
+    const quickJumpSelect = document.getElementById('quick-jump-select');
+
+    const flipcardInner = document.getElementById('flipcard-inner');
+    const cardNumberBadge = document.getElementById('card-number-badge');
+    const cardStatusPill = document.getElementById('card-status-pill');
+    const cardFrontIdiom = document.getElementById('card-front-idiom');
+    const cardBackNumber = document.getElementById('card-back-number');
+    const cardBackIdiom = document.getElementById('card-back-idiom');
+    const cardBackMeaning = document.getElementById('card-back-meaning');
+    const cardBackVi = document.getElementById('card-back-vi');
+    const cardBackExample = document.getElementById('card-back-example');
+    const speakFrontBtn = document.getElementById('speak-front-btn');
+    const speakBackBtn = document.getElementById('speak-back-btn');
+
+    const quizQuestionPrompt = document.getElementById('quiz-question-prompt');
+    const quizOptionsContainer = document.getElementById('quiz-options-container');
+    const quizFeedbackBox = document.getElementById('quiz-feedback-box');
+    const retryQuestionBtn = document.getElementById('retry-question-btn');
+
+    const submitAssignmentHeaderBtn = document.getElementById('submit-assignment-header-btn');
+    const submitAssignmentBottomBtn = document.getElementById('submit-assignment-bottom-btn');
+    const submitModal = document.getElementById('submit-modal');
+    const closeSubmitModalBtn = document.getElementById('close-submit-modal-btn');
+    const continueStudyingBtn = document.getElementById('continue-studying-btn');
+    const downloadMdAgainBtn = document.getElementById('download-md-again-btn');
+    const copyMarkdownBtn = document.getElementById('copy-markdown-btn');
+    const copyMarkdownText = document.getElementById('copy-markdown-text');
+    const exportFilenamePreview = document.getElementById('export-filename-preview');
+    const modalStudentName = document.getElementById('modal-student-name');
+    const modalCompletedStat = document.getElementById('modal-completed-stat');
+    const modalScoreStat = document.getElementById('modal-score-stat');
+    const modalAccuracyStat = document.getElementById('modal-accuracy-stat');
+    const incompleteWarningBanner = document.getElementById('incomplete-warning-banner');
+    const unansweredCountText = document.getElementById('unanswered-count-text');
+    const markdownPreviewTextarea = document.getElementById('markdown-preview-textarea');
+
+    // =========================================================================
+    // THEME & FONT SCALE CONTROLS
+    // =========================================================================
+    function applyTheme(isDark) {
+      state.darkMode = isDark;
+      const htmlEl = document.documentElement;
+      if (isDark) {
+        htmlEl.classList.add('dark');
+        htmlEl.classList.remove('light');
+        themeIcon.className = 'fa-solid fa-sun text-amber-400 text-sm';
+      } else {
+        htmlEl.classList.remove('dark');
+        htmlEl.classList.add('light');
+        themeIcon.className = 'fa-solid fa-moon text-slate-700 text-sm';
+      }
+      saveStateToStorage();
+    }
+
+    function applyFontScale(scalePercent) {
+      const clamped = Math.min(135, Math.max(85, Number(scalePercent) || 100));
+      state.fontScale = clamped;
+      document.documentElement.style.setProperty('--font-scale', (clamped / 100).toFixed(2));
+      fontSizeSlider.value = clamped;
+      fontSizeLabel.textContent = `${clamped}%`;
+
+      fontPresetBtns.forEach(btn => {
+        const presetVal = Number(btn.dataset.scale);
+        if (presetVal === clamped) {
+          btn.className = 'font-preset-btn px-2 py-1 rounded-lg bg-white dark:bg-slate-700 text-brand-600 dark:text-brand-300 shadow-xs cursor-pointer';
+        } else {
+          btn.className = 'font-preset-btn px-2 py-1 rounded-lg text-slate-500 dark:text-slate-400 hover:text-slate-900 dark:hover:text-white cursor-pointer';
+        }
+      });
+
+      saveStateToStorage();
+    }
+
+    // =========================================================================
+    // SPEECH SYNTHESIS (AUDIO PRONUNCIATION HELPER)
+    // =========================================================================
+    function speakText(text) {
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      const utterance = new SpeechSynthesisUtterance(text);
+      utterance.lang = 'en-US';
+      utterance.rate = 0.95;
+      window.speechSynthesis.speak(utterance);
+    }
+
+    // =========================================================================
+    // RENDER PROGRESS, SIDEBAR, QUICK JUMP & CURRENT IDIOM
+    // =========================================================================
+    function getStats() {
+      const answeredIds = Object.keys(state.answers);
+      const answeredCount = answeredIds.length;
+      const correctCount = answeredIds.filter(id => state.answers[id]?.isCorrect).length;
+      const accuracy = answeredCount > 0 ? Math.round((correctCount / answeredCount) * 100) : 0;
+      return { answeredCount, correctCount, accuracy };
+    }
+
+    function updateHeaderStats() {
+      const { answeredCount, correctCount } = getStats();
+      progressCountBadge.textContent = `${answeredCount} / 100`;
+      headerProgressBar.style.width = `${answeredCount}%`;
+      scoreCountBadge.textContent = `${correctCount} Correct`;
+      headerStudentName.textContent = state.studentName || 'Student';
+    }
+
+    function populateQuickJumpSelect() {
+      quickJumpSelect.innerHTML = '';
+      ENRICHED_IDIOMS.forEach((item, index) => {
+        const ans = state.answers[item.id];
+        const statusSymbol = ans ? (ans.isCorrect ? '✓ ' : '✗ ') : '';
+        const option = document.createElement('option');
+        option.value = index;
+        option.textContent = `#${item.id} ${statusSymbol}${item.idiom}`;
+        if (index === state.currentIndex) option.selected = true;
+        quickJumpSelect.appendChild(option);
+      });
+    }
+
+    function renderSidebarList() {
+      idiomNavList.innerHTML = '';
+      const query = state.searchQuery.trim().toLowerCase();
+
+      const filtered = ENRICHED_IDIOMS.filter((item) => {
+        const ans = state.answers[item.id];
+        if (state.filter === 'todo' && ans) return false;
+        if (state.filter === 'correct' && (!ans || !ans.isCorrect)) return false;
+        if (state.filter === 'wrong' && (!ans || ans.isCorrect)) return false;
+
+        if (query) {
+          const matchId = String(item.id) === query || `#${item.id}` === query;
+          const matchIdiom = item.idiom.toLowerCase().includes(query);
+          const matchMeaning = item.meaning.toLowerCase().includes(query);
+          const matchVi = item.vi.toLowerCase().includes(query);
+          return matchId || matchIdiom || matchMeaning || matchVi;
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        idiomNavList.innerHTML = `
+          <div class="p-6 text-center text-xs text-slate-400 dark:text-slate-500">
+            <i class="fa-solid fa-magnifying-glass mb-2 text-base block"></i>
+            No idioms match this filter.
+          </div>
+        `;
+        return;
+      }
+
+      filtered.forEach((item) => {
+        const index = item.id - 1;
+        const ans = state.answers[item.id];
+        const isCurrent = index === state.currentIndex;
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.dataset.index = index;
+
+        let badgeClass = 'bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300';
+        let statusIcon = '';
+        if (ans) {
+          if (ans.isCorrect) {
+            badgeClass = 'bg-emerald-500 text-white';
+            statusIcon = '<i class="fa-solid fa-check text-emerald-500 text-xs shrink-0"></i>';
+          } else {
+            badgeClass = 'bg-rose-500 text-white';
+            statusIcon = '<i class="fa-solid fa-xmark text-rose-500 text-xs shrink-0"></i>';
+          }
+        }
+
+        const activeRing = isCurrent
+          ? 'ring-2 ring-brand-500 bg-brand-50/90 dark:bg-brand-950/60 font-semibold'
+          : 'hover:bg-slate-100 dark:hover:bg-slate-800/70';
+
+        btn.className = `w-full text-left px-3 py-2 rounded-xl transition flex items-center justify-between gap-2.5 cursor-pointer ${activeRing}`;
+        btn.innerHTML = `
+          <div class="flex items-center gap-2.5 min-w-0">
+            <span class="w-6 h-6 rounded-lg text-[11px] font-bold flex items-center justify-center shrink-0 ${badgeClass}">
+              ${item.id}
+            </span>
+            <span class="text-xs text-slate-800 dark:text-slate-200 truncate">${item.idiom}</span>
+          </div>
+          ${statusIcon}
+        `;
+
+        btn.addEventListener('click', () => {
+          goToIdiom(index);
+          if (window.innerWidth < 1024) {
+            closeMobileSidebar();
+          }
+        });
+
+        idiomNavList.appendChild(btn);
+      });
+    }
+
+    function setCardFlip(flipped) {
+      state.isFlipped = flipped;
+      if (state.isFlipped) {
+        flipcardInner.classList.add('card-flipped');
+      } else {
+        flipcardInner.classList.remove('card-flipped');
+      }
+    }
+
+    function renderCurrentIdiom() {
+      const current = ENRICHED_IDIOMS[state.currentIndex];
+      const existingAnswer = state.answers[current.id];
+
+      // Reset card to front when switching idioms
+      setCardFlip(false);
+
+      // Update Top/Bottom Prev & Next Buttons
+      prevIdiomBtn.disabled = state.currentIndex === 0;
+      nextIdiomBtn.disabled = state.currentIndex === ENRICHED_IDIOMS.length - 1;
+      bottomNextBtn.disabled = state.currentIndex === ENRICHED_IDIOMS.length - 1;
+
+      // Update Flipcard Front & Back
+      cardNumberBadge.textContent = `Idiom #${current.id} of 100`;
+      cardFrontIdiom.textContent = `"${current.idiom}"`;
+
+      cardBackNumber.textContent = `#${current.id}`;
+      cardBackIdiom.textContent = current.idiom;
+      cardBackMeaning.textContent = current.meaning;
+      cardBackVi.textContent = current.vi;
+      cardBackExample.textContent = `"${current.example}"`;
+
+      // Update Card Status Pill
+      if (!existingAnswer) {
+        cardStatusPill.className = 'px-2.5 py-1 rounded-full text-xs font-semibold bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400';
+        cardStatusPill.innerHTML = '<i class="fa-regular fa-circle mr-1"></i>Unanswered';
+      } else if (existingAnswer.isCorrect) {
+        cardStatusPill.className = 'px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-300/50';
+        cardStatusPill.innerHTML = '<i class="fa-solid fa-circle-check mr-1"></i>Completed (Correct)';
+      } else {
+        cardStatusPill.className = 'px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300 border border-rose-300/50';
+        cardStatusPill.innerHTML = '<i class="fa-solid fa-circle-xmark mr-1"></i>Needs Review';
+      }
+
+      // Render Multiple Choice Question below Flipcard
+      quizQuestionPrompt.innerHTML = `What is the correct meaning of the idiom <span class="text-brand-600 dark:text-brand-400">"${current.idiom}"</span>?`;
+      renderQuizOptions(current, existingAnswer);
+
+      // Sync Quick Jump & Sidebar
+      populateQuickJumpSelect();
+      renderSidebarList();
+      updateHeaderStats();
+      saveStateToStorage();
+    }
+
+    function renderQuizOptions(currentItem, existingAnswer) {
+      quizOptionsContainer.innerHTML = '';
+      const letters = ['A', 'B', 'C', 'D'];
+
+      currentItem.options.forEach((opt, optIndex) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+
+        let containerStyle = 'border-slate-200 dark:border-slate-800 bg-slate-50/70 dark:bg-slate-800/50 hover:border-brand-400 dark:hover:border-brand-500 hover:bg-brand-50/40 dark:hover:bg-slate-800 text-slate-800 dark:text-slate-100';
+        let badgeStyle = 'bg-white dark:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-600';
+        let rightIcon = '';
+
+        if (existingAnswer) {
+          const isSelected = existingAnswer.selectedIndex === optIndex;
+          if (opt.isCorrect) {
+            containerStyle = 'border-emerald-500 bg-emerald-50/90 dark:bg-emerald-950/50 text-emerald-950 dark:text-emerald-100 ring-1 ring-emerald-500';
+            badgeStyle = 'bg-emerald-600 text-white border-emerald-600';
+            rightIcon = '<i class="fa-solid fa-circle-check text-emerald-600 dark:text-emerald-400 text-lg shrink-0"></i>';
+          } else if (isSelected && !opt.isCorrect) {
+            containerStyle = 'border-rose-500 bg-rose-50/90 dark:bg-rose-950/50 text-rose-950 dark:text-rose-100 ring-1 ring-rose-500';
+            badgeStyle = 'bg-rose-600 text-white border-rose-600';
+            rightIcon = '<i class="fa-solid fa-circle-xmark text-rose-600 dark:text-rose-400 text-lg shrink-0"></i>';
+          } else {
+            containerStyle = 'border-slate-200/60 dark:border-slate-800/60 bg-slate-50/30 dark:bg-slate-900/30 text-slate-400 dark:text-slate-500 opacity-75';
+          }
+        }
+
+        btn.className = `w-full text-left p-4 rounded-2xl border-2 transition-all flex items-center justify-between gap-3 cursor-pointer ${containerStyle}`;
+        btn.innerHTML = `
+          <div class="flex items-start sm:items-center gap-3.5">
+            <span class="w-8 h-8 rounded-xl font-bold text-sm flex items-center justify-center shrink-0 transition ${badgeStyle}">
+              ${letters[optIndex]}
+            </span>
+            <span class="scalable-quiz-opt font-medium">${opt.text}</span>
+          </div>
+          ${rightIcon}
+        `;
+
+        btn.addEventListener('click', () => {
+          handleSelectAnswer(currentItem, optIndex);
+        });
+
+        quizOptionsContainer.appendChild(btn);
+      });
+
+      // Show or Hide Feedback Box & Retry Button
+      if (existingAnswer) {
+        retryQuestionBtn.classList.remove('hidden');
+        retryQuestionBtn.classList.add('inline-flex');
+        quizFeedbackBox.classList.remove('hidden');
+
+        if (existingAnswer.isCorrect) {
+          quizFeedbackBox.className = 'rounded-2xl p-4 border bg-emerald-50/80 dark:bg-emerald-950/40 border-emerald-200 dark:border-emerald-800/80 text-emerald-900 dark:text-emerald-100';
+          quizFeedbackBox.innerHTML = `
+            <div class="flex items-start gap-3">
+              <i class="fa-solid fa-circle-check text-emerald-600 dark:text-emerald-400 text-xl mt-0.5"></i>
+              <div class="space-y-1 text-sm">
+                <div class="font-bold">Excellent! That is the correct meaning.</div>
+                <div class="text-emerald-800 dark:text-emerald-200"><strong>Meaning:</strong> ${currentItem.meaning}</div>
+                <div class="text-emerald-700 dark:text-emerald-300"><strong>Tiếng Việt:</strong> ${currentItem.vi}</div>
+              </div>
+            </div>
+          `;
+        } else {
+          quizFeedbackBox.className = 'rounded-2xl p-4 border bg-rose-50/80 dark:bg-rose-950/40 border-rose-200 dark:border-rose-800/80 text-rose-900 dark:text-rose-100';
+          quizFeedbackBox.innerHTML = `
+            <div class="flex items-start gap-3">
+              <i class="fa-solid fa-circle-exclamation text-rose-600 dark:text-rose-400 text-xl mt-0.5"></i>
+              <div class="space-y-1 text-sm">
+                <div class="font-bold">Not quite right — flip the card above or review the correct meaning below:</div>
+                <div class="text-rose-800 dark:text-rose-200"><strong>Correct Meaning:</strong> ${currentItem.meaning}</div>
+                <div class="text-rose-700 dark:text-rose-300"><strong>Tiếng Việt:</strong> ${currentItem.vi}</div>
+              </div>
+            </div>
+          `;
+        }
+      } else {
+        retryQuestionBtn.classList.add('hidden');
+        retryQuestionBtn.classList.remove('inline-flex');
+        quizFeedbackBox.classList.add('hidden');
+      }
+    }
+
+    function handleSelectAnswer(currentItem, selectedIndex) {
+      const chosenOption = currentItem.options[selectedIndex];
+      state.answers[currentItem.id] = {
+        selectedIndex,
+        selectedText: chosenOption.text,
+        isCorrect: chosenOption.isCorrect,
+        timestamp: new Date().toISOString()
+      };
+
+      renderQuizOptions(currentItem, state.answers[currentItem.id]);
+      populateQuickJumpSelect();
+      renderSidebarList();
+      updateHeaderStats();
+
+      // Update Card Status Pill immediately
+      if (chosenOption.isCorrect) {
+        cardStatusPill.className = 'px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-950/80 text-emerald-700 dark:text-emerald-300 border border-emerald-300/50';
+        cardStatusPill.innerHTML = '<i class="fa-solid fa-circle-check mr-1"></i>Completed (Correct)';
+      } else {
+        cardStatusPill.className = 'px-2.5 py-1 rounded-full text-xs font-semibold bg-rose-100 dark:bg-rose-950/80 text-rose-700 dark:text-rose-300 border border-rose-300/50';
+        cardStatusPill.innerHTML = '<i class="fa-solid fa-circle-xmark mr-1"></i>Needs Review';
+      }
+
+      saveStateToStorage();
+    }
+
+    function goToIdiom(index) {
+      const target = Math.min(ENRICHED_IDIOMS.length - 1, Math.max(0, Number(index)));
+      state.currentIndex = target;
+      renderCurrentIdiom();
+    }
+
+    function jumpToNextUnanswered() {
+      for (let offset = 1; offset <= ENRICHED_IDIOMS.length; offset++) {
+        const candidateIdx = (state.currentIndex + offset) % ENRICHED_IDIOMS.length;
+        const candidateId = ENRICHED_IDIOMS[candidateIdx].id;
+        if (!state.answers[candidateId]) {
+          goToIdiom(candidateIdx);
+          return;
+        }
+      }
+      // If all 100 are answered, open the submission modal
+      openSubmitAssignmentModal();
+    }
+
+    // =========================================================================
+    // MARKDOWN REPORT GENERATION & FILE DOWNLOAD
+    // =========================================================================
+    function getTodayFormattedDate() {
+      const now = new Date();
+      const yyyy = now.getFullYear();
+      const mm = String(now.getMonth() + 1).padStart(2, '0');
+      const dd = String(now.getDate()).padStart(2, '0');
+      return `${yyyy}-${mm}-${dd}`;
+    }
+
+    function sanitizeStudentNameForFilename(name) {
+      const cleaned = (name || 'STUDENT')
+        .trim()
+        .replace(/[^a-zA-Z0-9\u00C0-\u1EF9\s_-]/g, '')
+        .replace(/\s+/g, '_');
+      return cleaned || 'STUDENT';
+    }
+
+    function buildAssignmentFilename() {
+      const safeName = sanitizeStudentNameForFilename(state.studentName);
+      const today = getTodayFormattedDate();
+      return `IDIOMS100-${safeName}-${today}.md`;
+    }
+
+    function generateMarkdownReport() {
+      const { answeredCount, correctCount, accuracy } = getStats();
+      const today = getTodayFormattedDate();
+      const nowTimestamp = new Date().toLocaleString();
+
+      let md = `# 100 Must-Know Idioms — Student Assignment Report\n\n`;
+      md += `- **Student Name:** ${state.studentName}\n`;
+      md += `- **Date Submitted:** ${today} (${nowTimestamp})\n`;
+      md += `- **Progress Completed:** ${answeredCount} / 100 Idioms\n`;
+      md += `- **Comprehension Score:** ${correctCount} / 100 (${accuracy}% Accuracy on answered items)\n\n`;
+      md += `---\n\n`;
+      md += `## Summary of All 100 Idioms\n\n`;
+      md += `| # | Idiom | Status | Student's Selected Answer | Correct Meaning | Nghĩa Tiếng Việt |\n`;
+      md += `|---|-------|--------|---------------------------|-----------------|------------------|\n`;
+
+      ENRICHED_IDIOMS.forEach((item) => {
+        const ans = state.answers[item.id];
+        const statusText = !ans ? '⏳ Unanswered' : (ans.isCorrect ? '✅ Correct' : '❌ Incorrect');
+        const studentChoice = ans ? ans.selectedText.replace(/\|/g, '\\|') : '_Not answered_';
+        const cleanMeaning = item.meaning.replace(/\|/g, '\\|');
+        const cleanVi = item.vi.replace(/\|/g, '\\|');
+        md += `| ${item.id} | **${item.idiom}** | ${statusText} | ${studentChoice} | ${cleanMeaning} | ${cleanVi} |\n`;
+      });
+
+      md += `\n---\n\n`;
+      md += `## Detailed Study Log & Examples\n\n`;
+
+      ENRICHED_IDIOMS.forEach((item) => {
+        const ans = state.answers[item.id];
+        const badge = !ans ? '⏳ Unanswered' : (ans.isCorrect ? '✅ Correct' : '❌ Incorrect');
+        md += `### ${item.id}. ${item.idiom} (${badge})\n`;
+        md += `- **Meaning:** ${item.meaning}\n`;
+        md += `- **Vietnamese:** ${item.vi}\n`;
+        md += `- **Example:** *${item.example}*\n`;
+        if (ans) {
+          md += `- **Student Answer:** ${ans.selectedText}\n`;
+        }
+        md += `\n`;
+      });
+
+      return md;
+    }
+
+    function triggerMarkdownFileDownload(filename, content) {
+      const blob = new Blob([content], { type: 'text/markdown;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1500);
+    }
+
+    function openSubmitAssignmentModal() {
+      const { answeredCount, correctCount, accuracy } = getStats();
+      const filename = buildAssignmentFilename();
+      const mdContent = generateMarkdownReport();
+
+      exportFilenamePreview.textContent = filename;
+      modalStudentName.textContent = state.studentName;
+      modalCompletedStat.textContent = `${answeredCount} / 100`;
+      modalScoreStat.textContent = `${correctCount} / 100`;
+      modalAccuracyStat.textContent = `${accuracy}%`;
+      markdownPreviewTextarea.value = mdContent;
+
+      const remaining = 100 - answeredCount;
+      if (remaining > 0) {
+        incompleteWarningBanner.classList.remove('hidden');
+        unansweredCountText.textContent = remaining;
+      } else {
+        incompleteWarningBanner.classList.add('hidden');
+      }
+
+      submitModal.classList.remove('hidden');
+      submitModal.classList.add('flex');
+
+      // Automatically download the .md file upon clicking SUBMIT ASSIGNMENT
+      triggerMarkdownFileDownload(filename, mdContent);
+    }
+
+    function closeSubmitAssignmentModal() {
+      submitModal.classList.add('hidden');
+      submitModal.classList.remove('flex');
+    }
+
+    // =========================================================================
+    // SIDEBAR DRAWER HELPERS
+    // =========================================================================
+    function toggleSidebar() {
+      const isMobile = window.innerWidth < 1024;
+      if (isMobile) {
+        const isClosed = idiomSidebar.classList.contains('-translate-x-full');
+        if (isClosed) {
+          idiomSidebar.classList.remove('-translate-x-full');
+          sidebarBackdrop.classList.remove('hidden');
+        } else {
+          closeMobileSidebar();
+        }
+      } else {
+        idiomSidebar.classList.toggle('lg:hidden');
+      }
+    }
+
+    function closeMobileSidebar() {
+      idiomSidebar.classList.add('-translate-x-full');
+      sidebarBackdrop.classList.add('hidden');
+    }
+
+    // =========================================================================
+    // EVENT LISTENERS INITIALIZATION
+    // =========================================================================
+    function initEventListeners() {
+      // 1. Student Name Gate Submission
+      gateForm.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const trimmedName = studentNameInput.value.trim();
+        if (!trimmedName) {
+          studentNameError.classList.remove('hidden');
+          studentNameInput.focus();
+          return;
+        }
+        studentNameError.classList.add('hidden');
+        state.studentName = trimmedName;
+        gateModal.classList.add('hidden');
+        updateHeaderStats();
+        renderCurrentIdiom();
+        saveStateToStorage();
+      });
+
+      studentNameInput.addEventListener('input', () => {
+        if (studentNameInput.value.trim()) {
+          studentNameError.classList.add('hidden');
+        }
+      });
+
+      // Allow changing student name from header
+      editNameBtn.addEventListener('click', () => {
+        studentNameInput.value = state.studentName;
+        gateModal.classList.remove('hidden');
+        studentNameInput.focus();
+      });
+
+      // Reset saved progress button inside onboarding modal
+      resetSavedBtn.addEventListener('click', () => {
+        state.answers = {};
+        state.currentIndex = 0;
+        localStorage.removeItem(STORAGE_KEY);
+        savedSessionNotice.classList.add('hidden');
+        updateHeaderStats();
+        renderCurrentIdiom();
+      });
+
+      // 2. Flipcard Flip Interaction
+      flipcardInner.addEventListener('click', (e) => {
+        if (e.target.closest('#speak-front-btn') || e.target.closest('#speak-back-btn')) {
+          return;
+        }
+        setCardFlip(!state.isFlipped);
+      });
+
+      flipcardInner.addEventListener('keydown', (e) => {
+        if (e.key === ' ' || e.key === 'Enter') {
+          e.preventDefault();
+          setCardFlip(!state.isFlipped);
+        }
+      });
+
+      // Audio buttons on Flipcard
+      speakFrontBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const item = ENRICHED_IDIOMS[state.currentIndex];
+        speakText(item.idiom);
+      });
+
+      speakBackBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const item = ENRICHED_IDIOMS[state.currentIndex];
+        speakText(`${item.idiom}. Meaning: ${item.meaning}. Example: ${item.example}`);
+      });
+
+      // 3. Navigation Controls
+      prevIdiomBtn.addEventListener('click', () => {
+        if (state.currentIndex > 0) goToIdiom(state.currentIndex - 1);
+      });
+
+      nextIdiomBtn.addEventListener('click', () => {
+        if (state.currentIndex < ENRICHED_IDIOMS.length - 1) goToIdiom(state.currentIndex + 1);
+      });
+
+      bottomNextBtn.addEventListener('click', () => {
+        if (state.currentIndex < ENRICHED_IDIOMS.length - 1) goToIdiom(state.currentIndex + 1);
+      });
+
+      nextUnansweredBtn.addEventListener('click', jumpToNextUnanswered);
+
+      quickJumpSelect.addEventListener('change', (e) => {
+        goToIdiom(Number(e.target.value));
+      });
+
+      retryQuestionBtn.addEventListener('click', () => {
+        const current = ENRICHED_IDIOMS[state.currentIndex];
+        delete state.answers[current.id];
+        renderCurrentIdiom();
+      });
+
+      // 4. Font Size Slider & Preset Buttons
+      fontSizeSlider.addEventListener('input', (e) => {
+        applyFontScale(e.target.value);
+      });
+
+      fontPresetBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          applyFontScale(btn.dataset.scale);
+        });
+      });
+
+      // 5. Light / Dark Mode Toggle
+      themeToggleBtn.addEventListener('click', () => {
+        applyTheme(!state.darkMode);
+      });
+
+      // 6. Sidebar Toggle, Search & Filter Tabs
+      toggleSidebarBtn.addEventListener('click', toggleSidebar);
+      closeSidebarMobileBtn.addEventListener('click', closeMobileSidebar);
+      sidebarBackdrop.addEventListener('click', closeMobileSidebar);
+
+      idiomSearchInput.addEventListener('input', (e) => {
+        state.searchQuery = e.target.value;
+        if (state.searchQuery) {
+          clearSearchBtn.classList.remove('hidden');
+        } else {
+          clearSearchBtn.classList.add('hidden');
+        }
+        renderSidebarList();
+      });
+
+      clearSearchBtn.addEventListener('click', () => {
+        state.searchQuery = '';
+        idiomSearchInput.value = '';
+        clearSearchBtn.classList.add('hidden');
+        renderSidebarList();
+      });
+
+      filterTabBtns.forEach((btn) => {
+        btn.addEventListener('click', () => {
+          state.filter = btn.dataset.filter;
+          filterTabBtns.forEach((b) => {
+            if (b.dataset.filter === state.filter) {
+              b.className = 'filter-tab-btn py-1 rounded-lg bg-white dark:bg-slate-700 text-brand-600 dark:text-brand-300 shadow-xs transition cursor-pointer';
+            } else {
+              b.className = 'filter-tab-btn py-1 rounded-lg text-slate-600 dark:text-slate-400 hover:text-slate-900 transition cursor-pointer';
+            }
+          });
+          renderSidebarList();
+        });
+      });
+
+      // 7. Submit Assignment Modal & Download Actions
+      submitAssignmentHeaderBtn.addEventListener('click', openSubmitAssignmentModal);
+      submitAssignmentBottomBtn.addEventListener('click', openSubmitAssignmentModal);
+      closeSubmitModalBtn.addEventListener('click', closeSubmitAssignmentModal);
+      continueStudyingBtn.addEventListener('click', closeSubmitAssignmentModal);
+
+      downloadMdAgainBtn.addEventListener('click', () => {
+        const filename = buildAssignmentFilename();
+        const mdContent = generateMarkdownReport();
+        triggerMarkdownFileDownload(filename, mdContent);
+      });
+
+      copyMarkdownBtn.addEventListener('click', () => {
+        markdownPreviewTextarea.select();
+        document.execCommand('copy');
+        copyMarkdownText.textContent = 'Copied to Clipboard!';
+        setTimeout(() => {
+          copyMarkdownText.textContent = 'Copy Markdown to Clipboard';
+        }, 2000);
+      });
+
+      // 8. Global Keyboard Shortcuts
+      document.addEventListener('keydown', (e) => {
+        // Ignore shortcuts when typing in an input or when modals are open
+        if (
+          !gateModal.classList.contains('hidden') ||
+          !submitModal.classList.contains('hidden') ||
+          ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName)
+        ) {
+          return;
+        }
+
+        if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          if (state.currentIndex > 0) goToIdiom(state.currentIndex - 1);
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          if (state.currentIndex < ENRICHED_IDIOMS.length - 1) goToIdiom(state.currentIndex + 1);
+        } else if (e.key === ' ') {
+          if (document.activeElement !== flipcardInner) {
+            e.preventDefault();
+            setCardFlip(!state.isFlipped);
+          }
+        } else if (['1', '2', '3', '4'].includes(e.key)) {
+          const optIdx = Number(e.key) - 1;
+          const current = ENRICHED_IDIOMS[state.currentIndex];
+          handleSelectAnswer(current, optIdx);
+        }
+      });
+    }
+
+    // =========================================================================
+    // INITIALIZE APPLICATION ON LOAD
+    // =========================================================================
+    window.addEventListener('DOMContentLoaded', () => {
+      const hadSaved = loadStateFromStorage();
+
+      // Apply saved or system theme and font scale
+      applyTheme(state.darkMode);
+      applyFontScale(state.fontScale);
+
+      // If previous progress exists, pre-fill student name in the required gate
+      if (hadSaved && (state.studentName || Object.keys(state.answers).length > 0)) {
+        studentNameInput.value = state.studentName;
+        const count = Object.keys(state.answers).length;
+        if (count > 0) {
+          savedSessionNotice.classList.remove('hidden');
+          savedSessionText.textContent = `Welcome back! ${count} of 100 answers saved in this browser.`;
+        }
+      }
+
+      initEventListeners();
+      renderCurrentIdiom();
+      studentNameInput.focus();
+    });
+  </script>
+</body>
+</html>
