@@ -1,0 +1,2005 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SOVRÆGENCY Atelier: Ecosystem Review & Refined Operating Model</title>
+  
+  <!-- Font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Mermaid.js for Diagrams -->
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+
+  <style>
+    :root {
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      
+      /* Light Theme */
+      --bg-body: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-sidebar: #f1f5f9;
+      --bg-card: #ffffff;
+      --bg-table-zebra: #f8fafc;
+      --bg-code: #0f172a;
+      --text-main: #0f172a;
+      --text-muted: #64748b;
+      --text-lead: #334155;
+      --border-subtle: #e2e8f0;
+      --border-strong: #cbd5e1;
+      --primary: #0284c7;
+      --primary-hover: #0369a1;
+      --primary-tint: #e0f2fe;
+      --accent: #d97706;
+      --accent-tint: #fef3c7;
+      --callout-bg: #f0fdf4;
+      --callout-border: #86efac;
+      --callout-text: #166534;
+      --nav-active: #0284c7;
+      --nav-active-bg: #e0f2fe;
+      --shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    }
+
+    [data-theme="dark"] {
+      /* Dark Theme */
+      --bg-body: #090d16;
+      --bg-surface: #0f172a;
+      --bg-sidebar: #0d1322;
+      --bg-card: #111827;
+      --bg-table-zebra: #141e33;
+      --bg-code: #050811;
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-lead: #cbd5e1;
+      --border-subtle: #1e293b;
+      --border-strong: #334155;
+      --primary: #38bdf8;
+      --primary-hover: #7dd3fc;
+      --primary-tint: #0c4a6e;
+      --accent: #f59e0b;
+      --accent-tint: #451a03;
+      --callout-bg: #062817;
+      --callout-border: #166534;
+      --callout-text: #86efac;
+      --nav-active: #38bdf8;
+      --nav-active-bg: #0c4a6e44;
+      --shadow: 0 4px 6px -1px rgb(0 0 0 / 0.5), 0 2px 4px -2px rgb(0 0 0 / 0.5);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      line-height: 1.65;
+      font-size: 15px;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      transition: background-color 0.25s ease, color 0.25s ease;
+    }
+
+    /* Top Progress Bar */
+    #progress-bar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 3px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+      width: 0%;
+      z-index: 1000;
+      transition: width 0.1s ease-out;
+    }
+
+    /* App Layout */
+    .app-container {
+      display: flex;
+      min-height: 100vh;
+    }
+
+    /* Sidebar Navigation */
+    .sidebar {
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      width: 320px;
+      background-color: var(--bg-sidebar);
+      border-right: 1px solid var(--border-subtle);
+      display: flex;
+      flex-direction: column;
+      z-index: 50;
+      transition: transform 0.3s ease;
+    }
+
+    .sidebar-header {
+      padding: 1.25rem 1.25rem 1rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .brand-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .brand-title span {
+      color: var(--primary);
+    }
+
+    .sidebar-search {
+      margin-top: 0.75rem;
+      position: relative;
+    }
+
+    .sidebar-search input {
+      width: 100%;
+      padding: 0.5rem 0.75rem 0.5rem 2rem;
+      border-radius: 6px;
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-surface);
+      color: var(--text-main);
+      font-size: 0.85rem;
+      font-family: inherit;
+      outline: none;
+      transition: border-color 0.2s;
+    }
+
+    .sidebar-search input:focus {
+      border-color: var(--primary);
+    }
+
+    .sidebar-search svg {
+      position: absolute;
+      left: 0.65rem;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 14px;
+      height: 14px;
+      fill: var(--text-muted);
+    }
+
+    .sidebar-nav {
+      flex: 1;
+      overflow-y: auto;
+      padding: 1rem 0.75rem;
+    }
+
+    .nav-group-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      padding: 0.5rem 0.5rem 0.25rem;
+      margin-top: 0.5rem;
+    }
+
+    .nav-item {
+      display: block;
+      padding: 0.45rem 0.65rem;
+      margin: 0.15rem 0;
+      border-radius: 6px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 0.85rem;
+      line-height: 1.35;
+      transition: all 0.15s ease;
+    }
+
+    .nav-item:hover {
+      color: var(--text-main);
+      background-color: var(--border-subtle);
+    }
+
+    .nav-item.active {
+      color: var(--nav-active);
+      background-color: var(--nav-active-bg);
+      font-weight: 600;
+    }
+
+    /* Top Action Bar (Mobile Hamburger + Theme Toggle) */
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 0.75rem;
+      padding: 0.75rem 2rem;
+      background: rgba(15, 23, 42, 0.02);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+    }
+
+    [data-theme="dark"] .topbar {
+      background: rgba(15, 23, 42, 0.4);
+    }
+
+    .btn-icon {
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      padding: 0.45rem 0.75rem;
+      border-radius: 8px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.825rem;
+      font-weight: 500;
+      transition: all 0.2s;
+    }
+
+    .btn-icon:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .mobile-menu-btn {
+      display: none;
+      margin-right: auto;
+    }
+
+    /* Main Content */
+    .main-wrapper {
+      margin-left: 320px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .content-container {
+      max-width: 960px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 1.5rem 3rem 6rem;
+    }
+
+    /* Typography */
+    h1, h2, h3, h4, h5, h6 {
+      color: var(--text-main);
+      font-weight: 700;
+      line-height: 1.25;
+      scroll-margin-top: 5rem;
+    }
+
+    h1 {
+      font-size: 2.25rem;
+      letter-spacing: -0.02em;
+      margin-bottom: 0.5rem;
+    }
+
+    .doc-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      padding-bottom: 1.5rem;
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .doc-meta span strong {
+      color: var(--text-main);
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      margin-top: 3.5rem;
+      margin-bottom: 1rem;
+      padding-bottom: 0.4rem;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    h3 {
+      font-size: 1.18rem;
+      margin-top: 2rem;
+      margin-bottom: 0.75rem;
+      color: var(--text-lead);
+    }
+
+    p {
+      margin-bottom: 1.15rem;
+      color: var(--text-lead);
+    }
+
+    strong {
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    a {
+      color: var(--primary);
+      text-decoration: none;
+      border-bottom: 1px dotted var(--primary);
+      transition: border-bottom-style 0.15s;
+    }
+
+    a:hover {
+      border-bottom-style: solid;
+    }
+
+    ul, ol {
+      margin-bottom: 1.25rem;
+      padding-left: 1.5rem;
+      color: var(--text-lead);
+    }
+
+    li {
+      margin-bottom: 0.45rem;
+    }
+
+    /* Tables */
+    .table-wrapper {
+      width: 100%;
+      overflow-x: auto;
+      margin: 1.5rem 0 2rem;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+      background-color: var(--bg-card);
+      box-shadow: var(--shadow);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.875rem;
+      text-align: left;
+    }
+
+    th {
+      background-color: var(--bg-sidebar);
+      color: var(--text-main);
+      font-weight: 600;
+      padding: 0.75rem 1rem;
+      border-bottom: 2px solid var(--border-subtle);
+      white-space: nowrap;
+    }
+
+    td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-lead);
+      vertical-align: top;
+    }
+
+    tr:nth-child(even) td {
+      background-color: var(--bg-table-zebra);
+    }
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* Callouts & Quotes */
+    .callout {
+      margin: 1.75rem 0;
+      padding: 1.25rem 1.5rem;
+      background-color: var(--callout-bg);
+      border-left: 4px solid var(--callout-border);
+      border-radius: 0 8px 8px 0;
+      color: var(--callout-text);
+      font-size: 0.92rem;
+    }
+
+    .callout-title {
+      font-weight: 700;
+      text-transform: uppercase;
+      font-size: 0.78rem;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+    }
+
+    .callout p {
+      color: inherit;
+      margin-bottom: 0.75rem;
+    }
+
+    .callout p:last-child {
+      margin-bottom: 0;
+    }
+
+    .callout ol, .callout ul {
+      color: inherit;
+    }
+
+    /* Code Blocks */
+    pre {
+      background-color: var(--bg-code);
+      color: #e2e8f0;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      padding: 1rem 1.25rem;
+      border-radius: 8px;
+      overflow-x: auto;
+      margin: 1.25rem 0 1.75rem;
+      border: 1px solid var(--border-subtle);
+    }
+
+    code {
+      font-family: var(--font-mono);
+      font-size: 0.85em;
+      background-color: var(--bg-sidebar);
+      color: var(--primary);
+      padding: 0.15rem 0.35rem;
+      border-radius: 4px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    pre code {
+      background: transparent;
+      border: none;
+      padding: 0;
+      color: inherit;
+    }
+
+    /* Mermaid Diagrams */
+    .mermaid-container {
+      margin: 2rem 0;
+      padding: 1.5rem;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 8px;
+      display: flex;
+      justify-content: center;
+      overflow-x: auto;
+    }
+
+    /* Badge */
+    .badge {
+      display: inline-block;
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      padding: 0.15rem 0.45rem;
+      border-radius: 4px;
+      background: var(--primary-tint);
+      color: var(--primary);
+      letter-spacing: 0.03em;
+    }
+
+    /* Back to Top */
+    #back-to-top {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-main);
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: var(--shadow);
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.2s ease;
+      z-index: 90;
+    }
+
+    #back-to-top.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    #back-to-top:hover {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    /* Mobile Drawer */
+    .drawer-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 45;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .drawer-overlay.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    @media (max-width: 992px) {
+      .sidebar {
+        transform: translateX(-100%);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      .main-wrapper {
+        margin-left: 0;
+      }
+
+      .mobile-menu-btn {
+        display: inline-flex;
+      }
+
+      .content-container {
+        padding: 1rem 1.5rem 4rem;
+      }
+
+      h1 {
+        font-size: 1.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Progress Bar -->
+  <div id="progress-bar"></div>
+
+  <!-- Mobile Drawer Overlay -->
+  <div class="drawer-overlay" id="drawer-overlay" onclick="toggleMobileNav()"></div>
+
+  <div class="app-container">
+
+    <!-- Sidebar TOC -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="brand-title">
+          <span>SOVRÆG</span> Atelier
+        </div>
+        <div class="sidebar-search">
+          <svg viewBox="0 0 24 24"><path d="M21.71 20.29l-5.4-5.39A7.9 7.9 0 0 0 18 10a8 8 0 1 0-8 8 7.9 7.9 0 0 0 4.9-1.69l5.39 5.4a1 1 0 0 0 1.42 0 1 1 0 0 0 0-1.42zM4 10a6 6 0 1 1 6 6 6 6 0 0 1-6-6z"/></svg>
+          <input type="text" id="filter-input" placeholder="Filter sections..." oninput="filterNavigation(this.value)">
+        </div>
+      </div>
+
+      <nav class="sidebar-nav" id="sidebar-nav">
+        <div class="nav-group-label">Analysis & Orientation</div>
+        <a href="#summary" class="nav-item">Executive Summary</a>
+        <a href="#sec-1" class="nav-item">1. Principal Finding</a>
+        <a href="#sec-2" class="nav-item">2. Scope & Evidence Discipline</a>
+        <a href="#sec-3" class="nav-item">3. What to Preserve & Change</a>
+        <a href="#sec-4" class="nav-item">4. Resolve Vocabulary</a>
+
+        <div class="nav-group-label">Critique & Structural Core</div>
+        <a href="#sec-5" class="nav-item">5. Findings Materially Changing Blueprint</a>
+        <a href="#sec-6" class="nav-item">6. Smaller Core & Composable Profiles</a>
+        <a href="#sec-7" class="nav-item">7. Reframe Twelve Models</a>
+        <a href="#sec-8" class="nav-item">8. Learning & Assessment Design</a>
+        <a href="#sec-9" class="nav-item">9. Testable Technical Promises</a>
+
+        <div class="nav-group-label">Governance & Execution</div>
+        <a href="#sec-10" class="nav-item">10. Privacy, Evidence & Trust</a>
+        <a href="#sec-11" class="nav-item">11. Rights & Institutional Relations</a>
+        <a href="#sec-12" class="nav-item">12. Six-Stage Operating Lifecycle</a>
+        <a href="#sec-13" class="nav-item">13. Unit Economics & Capacity</a>
+        <a href="#sec-14" class="nav-item">14. Federation & Commons Governance</a>
+
+        <div class="nav-group-label">Roadmap & Deliverables</div>
+        <a href="#sec-15" class="nav-item">15. Product & Ecosystem Augmentations</a>
+        <a href="#sec-16" class="nav-item">16. 90-Day Validation Sequence</a>
+        <a href="#sec-17" class="nav-item">17. Source Document Corrections</a>
+        <a href="#sec-18" class="nav-item">18. Replacement Ecosystem Thesis</a>
+      </nav>
+    </aside>
+
+    <!-- Main Content Wrapper -->
+    <div class="main-wrapper">
+      
+      <!-- Top Bar -->
+      <div class="topbar">
+        <button class="btn-icon mobile-menu-btn" onclick="toggleMobileNav()" aria-label="Toggle Navigation">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          <span>Menu</span>
+        </button>
+
+        <button class="btn-icon" id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle Theme">
+          <svg id="theme-icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+          <svg id="theme-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+          <span id="theme-text">Dark Mode</span>
+        </button>
+      </div>
+
+      <!-- Main Reader Content -->
+      <main class="content-container">
+
+        <header>
+          <h1>SOVRÆGENCY Atelier: ecosystem review and refined operating model</h1>
+          <div class="doc-meta">
+            <span><strong>Date:</strong> 17 October 2026</span>
+            <span><strong>Status:</strong> Proposed architecture and operating design</span>
+            <span><span class="badge">Reference Architecture</span></span>
+          </div>
+          <p><em>Not a claim that the described software, partnerships, or business results already exist.</em></p>
+        </header>
+
+        <!-- Prompt & Response Summary -->
+        <section id="summary" class="callout">
+          <div class="callout-title">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/></svg>
+            Prompt & Response Summary
+          </div>
+          <p><strong>PROMPT:</strong> perform a deep analysis of <strong>SOVRAEGENCY ATELIER - OPERATIONS MODEL BLUEPRINT and related documents and their concepts ... refine and augment the ecosystem</strong></p>
+          <p><strong>RESPONSE SUMMARY:</strong> Analysis of all three documents and related architecture diagrams produced a 7,300-word ecosystem review and refined operating model. The originals remain unchanged.</p>
+          <p><strong>My central recommendation: preserve the shared Foundry, but make its invariants smaller and its operating profiles composable.</strong> The strongest proposition is portable learning, credible assessment, and practical learner and operator autonomy.</p>
+          <ol>
+            <li><strong>Separate evidence, assessment, and recognition.</strong> Artifact hashes establish integrity; they do not establish mastery. Credentials communicate an issuer’s claims; acceptance still depends on the receiving institution or employer. This distinction is explicit in the <a href="https://www.w3.org/TR/vc-data-model-2.0/" target="_blank" rel="noopener noreferrer">W3C credential model</a>.</li>
+            <li><strong>Reorganize the twelve models into compatible profiles.</strong> They currently mix markets, channels, governance arrangements, and assurance requirements. A manufacturing apprenticeship should combine ACADEMIA, ENTERPRISE, FAB, and GUILD without requiring separate platforms.</li>
+            <li><strong>Make sovereignty demonstrable.</strong> Define it through export, restoration, delegated authority, continued access, and the ability to change providers. Self-hosting and becoming a company-of-one should be optional.</li>
+            <li><strong>Replace universal pedagogy with configurable structures.</strong> Hexagons and three rings remain useful visual conventions. Node counts, branching limits, mandatory content reduction, and machine grading should depend on the learning purpose.</li>
+            <li><strong>Account for assessment and support labor.</strong> The listed weekly activities total three hours, despite the stated 4.5-hour commitment. More importantly, neither figure adequately accounts for learner review and support. Batch signing accelerates issuance, not assessment.</li>
+            <li><strong>Build federation around maintained usefulness.</strong> Add scoped recognition agreements, maintenance funding, learner representation, and dispute procedures. The proposed mutual-credit system needs explicit counterparties, credit limits, and settlement rules.</li>
+          </ol>
+          <p>The recommended first deployment is one sponsored academic module with <strong>3–5 competencies</strong>, tested export and recovery, calibrated assessment, and fully measured delivery costs. Its results should determine the next expansion.</p>
+        </section>
+
+        <!-- 1. Principal Finding -->
+        <section id="sec-1">
+          <h2>1. Principal finding</h2>
+          <p>The ecosystem’s strongest proposition is <strong>turning domain knowledge into portable learning experiences, assessable work, and credible recognition while preserving meaningful control for learners and educators</strong>.</p>
+          <p>The documents already contain a useful production method: an Atelier pairs a domain specialist with an instructional systems architect; the Foundry supplies reusable components; learners retain their work; operators can eventually leave the originating studio. This is worth preserving.</p>
+          <p>The central refinement is to distinguish five things the current model repeatedly collapses:</p>
+          <ol>
+            <li>A reusable technical mechanism from a universal pedagogical rule.</li>
+            <li>An artifact’s integrity from the validity of a capability claim.</li>
+            <li>A technically verifiable credential from recognition by an institution or employer.</li>
+            <li>Local data custody from privacy, durability, and freedom from dependency.</li>
+            <li>A broad ecosystem opportunity from an economically supportable first product.</li>
+          </ol>
+          <p><strong>Recommended direction:</strong> establish a small, versioned interoperability core; compose domain, delivery, assurance, rights, and commercial profiles around it; validate one academic use case before expanding into a federation of operators.</p>
+          <p>The long-term moat is likely to be trusted assessment practice, reusable instructional components, reliable operator support, and recognition relationships. The documents provide no evidence that a distinctive credential signature or hexagonal interface alone creates defensibility.</p>
+        </section>
+
+        <!-- 2. Scope and evidence discipline -->
+        <section id="sec-2">
+          <h2>2. Scope and evidence discipline</h2>
+          <p>The review covers the complete text of the three named documents, the related visualized architecture note, and its two linked diagrams. Embedded prompts, sample agreements, named signatories, and suggested follow-up tasks were treated as reference content, not instructions to execute.</p>
+          
+          <h3>Local reference map</h3>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Reference</th>
+                  <th>Role in the review</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Operations Model Blueprint</strong></td>
+                  <td>Integrated architecture, twelve profiles, engagement lifecycle, production cadence, federation and telemetry</td>
+                </tr>
+                <tr>
+                  <td><strong>Academia</strong></td>
+                  <td>Detailed sprint, intake, IP template, ingestion rules, graph examples and cockpit payloads</td>
+                </tr>
+                <tr>
+                  <td><strong>Polymorphic Architecture</strong></td>
+                  <td>Shared-core thesis, ingestion adapters, commercial models and routing</td>
+                </tr>
+                <tr>
+                  <td><strong>Visualized Architecture</strong></td>
+                  <td>Two visual summaries reinforcing the same architectural assumptions</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <p>The text is strongest as a design vision. It includes no measured pilot outcomes, implementation conformance reports, customer commitments, detailed studio labor accounts, or documented recognition agreements. These omissions do not establish that such evidence is unavailable elsewhere; they limit what these documents substantiate.</p>
+          <p>Unresolved markers such as <code>[cite: 1]</code> and <code></code> are not usable references. Statements about textbook pricing, royalties, creator margins, developer grant pools, and staffing savings need attributable evidence or explicit hypothesis labels.</p>
+          <p>In this report, <strong>findings</strong> follow from the supplied text; <strong>proposals</strong> are design recommendations; numerical scenarios are <strong>illustrations</strong>, not forecasts. External technical checks use primary standards and documentation linked beside the relevant claim. No conclusion about Vietnamese legal compliance or professional-board acceptance is made.</p>
+        </section>
+
+        <!-- 3. What to preserve and what to change -->
+        <section id="sec-3">
+          <h2>3. What to preserve and what to change</h2>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Preserve</th>
+                  <th>Refine</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Artifact-centered learning</td>
+                  <td>Match evidence to the claim; retain reading, conceptual depth and reflection where valuable</td>
+                </tr>
+                <tr>
+                  <td>Atelier co-creation</td>
+                  <td>Give it a bounded scope, cost model and explicit acceptance criteria</td>
+                </tr>
+                <tr>
+                  <td>Shared Foundry infrastructure</td>
+                  <td>Standardize contracts while allowing different evaluators and runtime targets</td>
+                </tr>
+                <tr>
+                  <td>Local-first practice</td>
+                  <td>Add tested backup, export, synchronization and recovery paths</td>
+                </tr>
+                <tr>
+                  <td>Learner-held credentials</td>
+                  <td>Add issuer authority, assessment context, status and recognition agreements</td>
+                </tr>
+                <tr>
+                  <td>Operator autonomy</td>
+                  <td>Measure the ability to leave, recover and delegate; self-hosting is optional</td>
+                </tr>
+                <tr>
+                  <td>Modular SYNCTESS units</td>
+                  <td>Make the hexagonal layout and three-ring arrangement presentation presets</td>
+                </tr>
+                <tr>
+                  <td>Bilateral discovery</td>
+                  <td>Make reuse permissions and institutional authorization explicit</td>
+                </tr>
+                <tr>
+                  <td>Federation and commons</td>
+                  <td>Fund maintenance and create accountable governance before introducing mutual credit</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>An especially important change is the definition of sovereignty. It should mean <strong>effective rights and practical capabilities to retain, inspect, export, recover, delegate, and exit</strong>. Requiring every educator to manage servers, cryptographic hardware, media production and a business can reduce their effective autonomy.</p>
+        </section>
+
+        <!-- 4. Resolve the ecosystem's vocabulary -->
+        <section id="sec-4">
+          <h2>4. Resolve the ecosystem’s vocabulary</h2>
+          <p>The brand vocabulary is rich, but several terms currently denote overlapping organizations, applications, assets and procedures. Assign each a single primary responsibility.</p>
+          
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Construct</th>
+                  <th>Refined definition</th>
+                  <th>Boundary</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>SOVRÆG LABS</strong></td>
+                  <td>Originating organization that maintains the Foundry and incubates operator practices</td>
+                  <td>Its commercial control is distinct from any future commons authority</td>
+                </tr>
+                <tr>
+                  <td><strong>Foundry Matrix</strong></td>
+                  <td>Versioned compilation, packaging, validation and extension framework</td>
+                  <td>Does not decide whether a learner deserves credit or an employer should hire them</td>
+                </tr>
+                <tr>
+                  <td><strong>SOVRÆGENCY</strong></td>
+                  <td>Accountable operating unit with a sponsor, service commitments, rights policy and economics</td>
+                  <td>May be a department, cooperative, enterprise team or company; no mandatory new legal entity</td>
+                </tr>
+                <tr>
+                  <td><strong>Atelier</strong></td>
+                  <td>Time-bounded co-design and implementation service</td>
+                  <td>Distinct from the permanent operating unit it helps establish</td>
+                </tr>
+                <tr>
+                  <td><strong>SYNCFORGE</strong></td>
+                  <td>Authoring workspace and release workflow</td>
+                  <td>Owns definitions and provenance, not the learner’s complete activity record</td>
+                </tr>
+                <tr>
+                  <td><strong>SYNCZ</strong></td>
+                  <td>Versioned interactive component with declared permissions and supported runtimes</td>
+                  <td>May simulate, guide or evaluate; interactivity alone is not assessment validity</td>
+                </tr>
+                <tr>
+                  <td><strong>SYNCTESS</strong></td>
+                  <td>Competency specification connecting claim, task, rubric and acceptable evidence</td>
+                  <td>The hexagon is a visual identity, not its semantic definition</td>
+                </tr>
+                <tr>
+                  <td><strong>SYNCZINE</strong></td>
+                  <td>Portable publication containing learning definitions, permitted assets and runtime dependencies</td>
+                  <td>Learner state and issuer secrets remain separate; a print zine is one rendition</td>
+                </tr>
+                <tr>
+                  <td><strong>SOVRÆLEX</strong></td>
+                  <td>Learner workspace for practice, evidence, export and controlled sharing</td>
+                  <td>Must not treat its own self-reported results as independent certification</td>
+                </tr>
+                <tr>
+                  <td><strong>SOVRÆGIS</strong></td>
+                  <td>Operator workspace for support, assessment decisions and authorized issuance</td>
+                  <td>Canonicalize this name; retain SOVRAEGIX only as a documented legacy alias if necessary</td>
+                </tr>
+                <tr>
+                  <td><strong>SYNTHCRED</strong></td>
+                  <td>Issuer-signed achievement claim with evidence references and assurance context</td>
+                  <td>Does not confer professional authority merely through cryptography</td>
+                </tr>
+                <tr>
+                  <td><strong>SOVRÆGOS</strong></td>
+                  <td>Operating lifecycle and role playbooks</td>
+                  <td>Avoid making it sound like another required runtime</td>
+                </tr>
+                <tr>
+                  <td><strong>Alchemosaic Commons</strong></td>
+                  <td>Governed exchange of reusable resources, mappings and recognized practices</td>
+                  <td>Membership, technical compatibility and recognition are separate statuses</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Use stable ASCII identifiers in files and protocols; retain the branded typography in presentation. Define singular/plural forms once. Avoid adding another brand for every missing function: an assessment policy, rights manifest and recognition registry can keep descriptive names.</p>
+
+          <h3>The two value loops</h3>
+          <p>The learning loop is <strong>explanation → practice → evidence → feedback → revision → assessment</strong>. Recognition may follow, but a useful learning experience does not require a badge for every action.</p>
+          <p>The production loop is <strong>observe a need → design → publish → operate → evaluate → improve</strong>. CODE+V belongs here as a production discipline, with verification and validation distinguished: verification checks whether the package behaves as specified; validation checks whether it supports the intended learning and assessment purpose.</p>
+          <p>The federation loop is <strong>contribute → review → adopt → maintain → reciprocate</strong>. Counting contributions without adoption and maintenance creates output volume rather than shared value.</p>
+        </section>
+
+        <!-- 5. Findings that materially change the blueprint -->
+        <section id="sec-5">
+          <h2>5. Findings that materially change the blueprint</h2>
+          
+          <h3>5.1 Hashes cannot establish mastery</h3>
+          <p>The blueprint gates progress on artifact hashes and allows review of hashes to support credential issuance. A digest can establish that supplied bytes match a committed value. It cannot establish who did the work, whether the work is correct, whether the task measures the intended capability, or whether the learner can perform in a new situation.</p>
+          <p>Likewise, a learner signature authenticates a message under a learner-controlled key. A modified local client can sign a false pass result. Hashing and signing do not create a trusted execution environment.</p>
+          <p><strong>Replacement:</strong> separate the artifact, evaluation result, assessor decision and issued claim. An assessor needs the authorized evidence or a defensible evaluation record, not just a hash. W3C explicitly distinguishes credential verification from evaluating the truth of its claims. <a href="https://www.w3.org/TR/vc-data-model-2.0/" target="_blank" rel="noopener noreferrer">W3C VC Data Model</a></p>
+
+          <h3>5.2 The current core is over-specified</h3>
+          <p>Three rings, a fixed node range, in-degree/out-degree caps of three, BBS signing, browser WASM, and a single cohort dashboard are all declared or implied invariants. They are implementation or curriculum choices.</p>
+          <p>The shared core should instead understand versioned capabilities, prerequisite expressions, evidence contracts, permissions, packages and extension interfaces. Domain-specific behavior belongs in tested profiles and plugins. Enterprise policy cannot live solely in a legal wrapper: its restrictions must actually affect export, storage, retention and runtime permissions.</p>
+
+          <h3>5.3 Assessment and credential recognition lack an accountable institution</h3>
+          <p>Two independent signatures can strengthen a review process but cannot make a claim universally accepted. Cross-credit requires an accepting institution’s rules, mappings and authority. Regulated training requires the relevant body’s acceptance. Physical equipment access requires a separate authorization decision.</p>
+          <p><strong>Replacement:</strong> record who recognizes which credential, for what purpose, under which version of an agreement. Publish recognition as scoped relationships rather than a universal property of SYNTHCRED.</p>
+
+          <h3>5.4 Local-first is being asked to guarantee too much</h3>
+          <p>Offline practice, live instructor visibility, immediate remote issuance, fresh revocation information and no communication infrastructure cannot all be guaranteed simultaneously.</p>
+          <p><strong>Replacement:</strong> publish a service capability table: practice works offline; submission and issuance synchronize later; verification reports whether current credential status was checked. A dashboard must display “last synchronized” and “unknown,” rather than interpreting missing data as lack of progress.</p>
+
+          <h3>5.5 Sovereignty conflicts with some commercial rules</h3>
+          <p>Academia forbids recurring student access fees; MEDIA introduces paid cryptographic unlocks; GUILD limits distribution to cohort duration; compiler royalties may make rebuilding dependent on the Foundry. These can coexist only when their scopes are explicit.</p>
+          <p><strong>Replacement:</strong> distinguish acquired publication access, optional future editions, assessment services, mentoring, enterprise support and hosted operation. Do not disable an already-acquired learning package when a service subscription ends. An offline unlock cannot guarantee that decrypted content will never be copied.</p>
+
+          <h3>5.6 The single lifecycle assumes everyone becomes a media entrepreneur</h3>
+          <p>An enterprise trainer or university lecturer does not necessarily need a camera rig, 500 printed zines, collector subscriptions, a company registration or self-hosted email. These requirements obstruct the otherwise polymorphic architecture.</p>
+          <p><strong>Replacement:</strong> retain one readiness framework with optional institutional, creator and venture tracks. MEDIA can use the production studio recipe. ACADEMIA can mature as a supported departmental service.</p>
+
+          <h3>5.7 Confidential discovery needs reciprocal governance</h3>
+          <p>The Prismatic model appropriately recognizes that one-to-one conversations can surface difficulties that public meetings miss. Its language of “asymmetric extraction,” concealed partitioning and bypassing procurement risks contradicting the promised trust relationship.</p>
+          <p><strong>Replacement:</strong> disclose the studio’s purpose; protect attributable statements; obtain permission for reusable patterns; use necessary organizational authorization before deploying with real learners or proprietary materials. Treat statements about Vietnamese hierarchy and face as hypotheses to explore with participants, not universal explanations of their behavior.</p>
+
+          <h3>5.8 The economics hide the labor being transferred</h3>
+          <p>An 18-hour faculty cap bounds the faculty’s contribution, not the studio’s total cost. A zero-price pilot still consumes engineering, assessment, onboarding and support capacity. The documents do not show that automation offsets these costs.</p>
+          <p><strong>Replacement:</strong> record all delivery labor, explicit subsidy and recurring obligations. Scale after repeat delivery costs and credible willingness to pay are observed.</p>
+        </section>
+
+        <!-- 6. A smaller shared core with composable profiles -->
+        <section id="sec-6">
+          <h2>6. A smaller shared core with composable profiles</h2>
+          
+          <div class="mermaid-container">
+            <div class="mermaid">
+flowchart TD
+    A[Source assets and rights records] --> B[Atelier: domain review and learning design]
+    B --> C[Versioned learning intermediate representation]
+    P[Domain, delivery, assurance, rights and business profiles] --> C
+    C --> D[Foundry: validate, build, test and sign release]
+    D --> E[Portable SYNCZINE publication]
+    E --> F[SOVRAELEX: local practice and private evidence]
+    F -->|Authorized submission| G[SOVRAEGIS: evaluation and assessor decision]
+    G --> H[Authorized issuer: SYNTHCRED]
+    H --> I[Learner-controlled presentation]
+    I --> J[Verifier: integrity, issuer authority and acceptance policy]
+    G -->|Approved reusable findings| B
+            </div>
+          </div>
+
+          <p>A canonical <strong>learning intermediate representation</strong> is a better conceptual center than an AST alone. Source documents have parse trees; curricula have typed relationships and prerequisite expressions. Keep those distinct so the source parser does not determine instructional meaning.</p>
+
+          <h3>What the core guarantees</h3>
+          <ol>
+            <li>Stable identifiers, versioned schemas and explicit migrations.</li>
+            <li>Well-formed learning and evidence definitions.</li>
+            <li>Valid prerequisite expressions and resolvable dependencies.</li>
+            <li>Declared execution capabilities, permissions and resource limits.</li>
+            <li>Content integrity and publisher attribution for released packages.</li>
+            <li>Exportable learner records and interoperable submission envelopes.</li>
+            <li>Explicit assessment and credential profiles.</li>
+            <li>Accessibility and localization metadata with release checks.</li>
+          </ol>
+          <p>It does not guarantee that all tasks are objectively machine-gradable, every runtime produces identical timing, or all verifiers accept the same achievement.</p>
+
+          <h3>Profile composition</h3>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Axis</th>
+                  <th>Examples</th>
+                  <th>Question it answers</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Domain</td>
+                  <td>Programming, language, design, manufacturing</td>
+                  <td>What capabilities and evidence are meaningful?</td>
+                </tr>
+                <tr>
+                  <td>Source</td>
+                  <td>Syllabus, media, SOP, code repository, interview</td>
+                  <td>How are candidate materials ingested?</td>
+                </tr>
+                <tr>
+                  <td>Delivery</td>
+                  <td>Self-paced, cohort, apprenticeship, workshop</td>
+                  <td>How do learners receive help and feedback?</td>
+                </tr>
+                <tr>
+                  <td>Execution</td>
+                  <td>Browser offline, desktop sandbox, institution-managed lab</td>
+                  <td>What environment can perform the activity?</td>
+                </tr>
+                <tr>
+                  <td>Assurance</td>
+                  <td>Self-practice, machine-checked, assessor-reviewed, independently observed</td>
+                  <td>How strong is the basis of the achievement claim?</td>
+                </tr>
+                <tr>
+                  <td>Rights and data</td>
+                  <td>Open publication, institution-restricted, enterprise-confidential</td>
+                  <td>What may be reused, disclosed, retained and exported?</td>
+                </tr>
+                <tr>
+                  <td>Recognition</td>
+                  <td>Community, employer, institution, professional body</td>
+                  <td>Who accepts the claim and for which purpose?</td>
+                </tr>
+                <tr>
+                  <td>Commercial</td>
+                  <td>Sponsored access, implementation fee, service subscription, publication sale</td>
+                  <td>Who pays, for what, and under what continuing obligations?</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Example: a manufacturing apprenticeship can combine ACADEMIA’s institutional sponsor, FAB’s physical assessment, ENTERPRISE’s confidential procedures, and GUILD’s cohort mentorship. One composition is easier to govern than four competing model assignments.</p>
+        </section>
+
+        <!-- 7. Reframe the twelve models as market profiles -->
+        <section id="sec-7">
+          <h2>7. Reframe the twelve models as market profiles</h2>
+          <p>The following priorities are judgments based on the supplied design, not market research or established demand.</p>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Profile</th>
+                  <th>Primary paid outcome</th>
+                  <th>Buyer or sponsor</th>
+                  <th>Distinct requirement</th>
+                  <th>Recommended role</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>ACADEMIA</strong></td>
+                  <td>Reusable teaching module with defensible assessment and lower access burden</td>
+                  <td>Department or institution</td>
+                  <td>Academic authorization, rights and outcome evaluation</td>
+                  <td>First reference deployment, if a committed sponsor exists</td>
+                </tr>
+                <tr>
+                  <td><strong>MEDIA</strong></td>
+                  <td>Audience participation and worthwhile learning products</td>
+                  <td>Creator; optionally audience</td>
+                  <td>Acquisition costs, editorial quality, conversion and support</td>
+                  <td>Later distribution experiment</td>
+                </tr>
+                <tr>
+                  <td><strong>PRO / VENTURES</strong></td>
+                  <td>Repeatable expert diagnostic or training delivery</td>
+                  <td>Specialist practice or client</td>
+                  <td>Confidential IP, expert judgment and bounded customization</td>
+                  <td>Candidate for second, paid deployment</td>
+                </tr>
+                <tr>
+                  <td><strong>GUILD</strong></td>
+                  <td>Sustainable cohort delivery and credible portfolios</td>
+                  <td>Academy or learners</td>
+                  <td>Mentor capacity and assessment consistency</td>
+                  <td>Adjacent replication profile</td>
+                </tr>
+                <tr>
+                  <td><strong>ENTERPRISE</strong></td>
+                  <td>Demonstrated readiness on specific internal procedures</td>
+                  <td>Team sponsor with IT/HR oversight</td>
+                  <td>Data control, access policy and operational integration</td>
+                  <td>Later, bounded non-regulated pilot</td>
+                </tr>
+                <tr>
+                  <td><strong>PROTOCOL</strong></td>
+                  <td>Successful developer onboarding</td>
+                  <td>Maintainer, vendor or foundation</td>
+                  <td>Reproducible environments and version maintenance</td>
+                  <td>Technical adjacency; not inherently Web3</td>
+                </tr>
+                <tr>
+                  <td><strong>REGULATED</strong></td>
+                  <td>Accepted continuing education evidence</td>
+                  <td>Authorized provider or employer</td>
+                  <td>Formal acceptance and domain oversight</td>
+                  <td>Defer recognition claims until a partner is established</td>
+                </tr>
+                <tr>
+                  <td><strong>FAB</strong></td>
+                  <td>Safe progression from simulation to supervised physical practice</td>
+                  <td>Training institution or employer</td>
+                  <td>Observed assessment and accountable equipment authorization</td>
+                  <td>Add only with qualified physical supervision</td>
+                </tr>
+                <tr>
+                  <td><strong>CIVIC / NGO</strong></td>
+                  <td>Accessible learning under real infrastructure constraints</td>
+                  <td>Public or philanthropic sponsor</td>
+                  <td>Language, shared devices, offline distribution, support continuity</td>
+                  <td>Mission profile requiring funded operations</td>
+                </tr>
+                <tr>
+                  <td><strong>STUDIO</strong></td>
+                  <td>Repeatable branded delivery for clients</td>
+                  <td>Production agency</td>
+                  <td>Quality assurance, support boundaries and trademark terms</td>
+                  <td>Channel after the method is repeatable</td>
+                </tr>
+                <tr>
+                  <td><strong>CONSORTIUM</strong></td>
+                  <td>Reduced effort in mutually agreed recognition</td>
+                  <td>Member institutions</td>
+                  <td>Versioned equivalence mappings and governance</td>
+                  <td>Federation overlay, not first product</td>
+                </tr>
+                <tr>
+                  <td><strong>AUTODIDACT</strong></td>
+                  <td>Useful study and peer feedback with portable evidence</td>
+                  <td>Learner community or sponsor</td>
+                  <td>Low administrative burden and transparent assurance</td>
+                  <td>Commons participation; monetization unproven</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Route intake across these axes, recording a primary market profile and compatible overlays. FAB should not automatically be a P2P/commons branch. STUDIO is a channel arrangement. CONSORTIUM is a governance relationship. REGULATED is an assurance and recognition constraint. Treating them as mutually exclusive loses useful information.</p>
+          <p>A viable first offer is: <strong>“Co-design and operate one portable learning module, with a usable learner export, a calibrated assessment, and an agreed support period.”</strong> Its completion criteria are more credible than a guaranteed full-course replacement in four weeks.</p>
+        </section>
+
+        <!-- 8. Strengthen learning and assessment design -->
+        <section id="sec-8">
+          <h2>8. Strengthen learning and assessment design</h2>
+          
+          <h3>8.1 Preserve epistemic breadth</h3>
+          <p>The Academia worksheet requires at least 30% “bloat reduction.” No evidence establishes that this is appropriate for each course. History, theoretical foundations, sustained reading and ambiguity can be essential to expert judgment.</p>
+          <p>Replace CORE/ELECT/BLOAT with <strong>essential explanation / practice / reference / optional enrichment / removable duplication</strong>. Require a reason for every deletion. Measure alignment and learner burden, not a predetermined percentage of removed prose.</p>
+          <p>A richer competency statement is: <strong>“Given a specified context and permitted resources, the learner performs or explains X to criterion Y, and can justify the result and its limitations.”</strong> This accommodates essays, dialogue, design, interpretation and scientific uncertainty alongside executable tasks.</p>
+
+          <h3>8.2 Separate three graphs</h3>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Graph</th>
+                  <th>Semantics</th>
+                  <th>Permitted structure</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Concept relationships</strong></td>
+                  <td>Related ideas, contrasts, explanations</td>
+                  <td>Cycles allowed</td>
+                </tr>
+                <tr>
+                  <td><strong>Prerequisite conditions</strong></td>
+                  <td>What must be satisfied before an assessed activity</td>
+                  <td>Acyclic dependencies in the initial implementation</td>
+                </tr>
+                <tr>
+                  <td><strong>Learning activity transitions</strong></td>
+                  <td>Retry, feedback, reflection, remediation, resubmission</td>
+                  <td>Loops allowed</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Hexagons and rings can render these relationships, but should not define them. Offer a list and a recommended route for users who find a spatial map difficult.</p>
+          <p>Use “three recommended active activities” as a configurable focus aid, not a universal ban on access. Recognition of prior learning should allow a learner to satisfy prerequisites through assessed evidence rather than compulsory repetition of Ring 0.</p>
+
+          <h3>8.3 Distinguish progression states</h3>
+          <pre><code>Unavailable → Available → Practicing → Submitted → Under review
+                                             ↘ Revision requested → Resubmitted
+                                             ↘ Achievement awarded</code></pre>
+          <p>Availability follows prerequisite policy; it does not require an artifact from a task the learner cannot yet open. Local practice passes are provisional evidence. Credentials have a separate lifecycle: proposed, approved, issued, superseded or revoked. Issuance failure must not erase an assessment decision.</p>
+
+          <h3>8.4 Use descriptive assurance profiles</h3>
+          <p>These are proposed internal categories, not an external certification standard.</p>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Profile</th>
+                  <th>Evidence basis</th>
+                  <th>Appropriate claim</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Practice record</strong></td>
+                  <td>Learner-recorded activity</td>
+                  <td>“Recorded completion of this practice”</td>
+                </tr>
+                <tr>
+                  <td><strong>Machine-checked result</strong></td>
+                  <td>Named tests, artifact, environment and test version</td>
+                  <td>“Passed these checks under these conditions”</td>
+                </tr>
+                <tr>
+                  <td><strong>Assessor-reviewed achievement</strong></td>
+                  <td>Evidence examined against a versioned rubric</td>
+                  <td>“Assessed as meeting these criteria”</td>
+                </tr>
+                <tr>
+                  <td><strong>Independently observed performance</strong></td>
+                  <td>Supervised activity, oral defense or independent review</td>
+                  <td>“Demonstrated this capability in the stated setting”</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Identity assurance, task authenticity, assessor independence and recognition remain separate dimensions. Do not turn them into a single unexplained confidence score.</p>
+          <p>For machine-graded tasks, record test coverage and known limitations. Repeated concurrency tests do not prove absence of all races; measured timings do not prove asymptotic complexity. For essays and designs, require calibrated judgment. For physical work, simulations establish preparation, with a separate observed assessment before authorization.</p>
+          <p>State the permitted use of AI and collaboration in each assessment. Where independent performance matters, use explanation, unseen variations, or observed tasks. Do not infer misconduct from a small attempt count or fast completion.</p>
+        </section>
+
+        <!-- 9. Make the technical promises testable -->
+        <section id="sec-9">
+          <h2>9. Make the technical promises testable</h2>
+
+          <h3>9.1 Package and storage boundaries</h3>
+          <p>Separate four artifacts:</p>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Artifact</th>
+                  <th>Contents</th>
+                  <th>Handling</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Source project</strong></td>
+                  <td>Editable content, provenance, rubrics, manifests</td>
+                  <td>Maintainer access and rights controls</td>
+                </tr>
+                <tr>
+                  <td><strong>Released SYNCZINE</strong></td>
+                  <td>Immutable definitions, allowed assets and runtime dependencies</td>
+                  <td>Signed manifest and version-pinned distribution</td>
+                </tr>
+                <tr>
+                  <td><strong>Learner workspace</strong></td>
+                  <td>Notes, attempts, private artifacts and submissions</td>
+                  <td>Encrypted where appropriate; export and recovery</td>
+                </tr>
+                <tr>
+                  <td><strong>Issuer records</strong></td>
+                  <td>Decisions, delegated authority, credential status and audit records</td>
+                  <td>Restricted access and defined retention</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>OPFS is a browser storage facility, not a complete portable file format or backup strategy. Its contents are origin-bound and can be removed when site data is cleared. Provide explicit exported archives and test restoration on another device. <a href="https://developer.mozilla.org/en-US/docs/Web/API/File_System_API/Origin_private_file_system" target="_blank" rel="noopener noreferrer">MDN OPFS documentation</a></p>
+          <p>Do not put examiner-only solutions or secret summative test banks into a learner-controlled package and assume they remain confidential. Local formative tests can be inspectable; independent summative evaluation needs a separately governed mechanism.</p>
+
+          <h3>9.2 Runtime capability profiles</h3>
+          <p>Browser WASM, native processes and institution-managed labs have different capabilities. Emscripten documents limitations in browser filesystem, networking and execution behavior. Consequently, the existing POSIX, daemon, socket and native diagnostic examples require explicit support checks before they can be promised in the browser profile. <a href="https://emscripten.org/docs/porting/guidelines/api_limitations.html" target="_blank" rel="noopener noreferrer">Emscripten API limitations</a></p>
+          
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Target</th>
+                  <th>Suitable initial use</th>
+                  <th>Boundary</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Browser offline</strong></td>
+                  <td>Text, branching, numerical simulations and supported sandboxed code</td>
+                  <td>Declare storage and API constraints</td>
+                </tr>
+                <tr>
+                  <td><strong>Desktop sandbox</strong></td>
+                  <td>Local projects and selected toolchains</td>
+                  <td>Explicit filesystem access, resource limits and isolation</td>
+                </tr>
+                <tr>
+                  <td><strong>Managed lab</strong></td>
+                  <td>Native system behavior or controlled assessment</td>
+                  <td>Institutional provisioning and supervision</td>
+                </tr>
+                <tr>
+                  <td><strong>Physical environment</strong></td>
+                  <td>Instrumented real-world practice</td>
+                  <td>Qualified assessor and equipment policy</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Cross-platform determinism is an explicit property of a tested activity, not of all local software. Pin dependencies, input data, numeric tolerances and random seeds where applicable. Treat real networking, timing and concurrency as potentially variable. Record actual environment metadata.</p>
+
+          <h3>9.3 Release and execution controls</h3>
+          <p>Every SYNCZ component needs an owner, version, supported targets, permissions, resource budget, accessible alternative, sample evidence and test fixtures. Validate archive paths, declared assets and dependencies before opening a package. A valid signature establishes publisher attribution; it does not guarantee safe code.</p>
+          <p>For assisted ingestion, preserve source links and require domain review of generated competencies and rubrics. Imported text is data, not executable instructions. Executable MDX or other active content should enter through a restricted compilation path rather than automatic execution of arbitrary imported source.</p>
+
+          <h3>9.4 Offline behavior</h3>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Function</th>
+                  <th>Offline promise</th>
+                  <th>Reconnection behavior</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Reading and supported practice</strong></td>
+                  <td>Available with downloaded dependencies</td>
+                  <td>Optional updates</td>
+                </tr>
+                <tr>
+                  <td><strong>Saving evidence</strong></td>
+                  <td>Local save plus export</td>
+                  <td>Explicit backup or synchronization</td>
+                </tr>
+                <tr>
+                  <td><strong>Instructor feedback</strong></td>
+                  <td>Previously received feedback remains available</td>
+                  <td>Queue new requests and responses</td>
+                </tr>
+                <tr>
+                  <td><strong>Credential issuance</strong></td>
+                  <td>Possible only where the authorized issuer and required evidence are available</td>
+                  <td>Deliver queued decisions and credentials idempotently</td>
+                </tr>
+                <tr>
+                  <td><strong>Credential verification</strong></td>
+                  <td>Signature and cached trust material can be checked</td>
+                  <td>Refresh status; label stale or unavailable checks</td>
+                </tr>
+                <tr>
+                  <td><strong>Cohort analytics</strong></td>
+                  <td>Last known state only</td>
+                  <td>Show synchronization age and coverage</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>“No internet round trip for supported practice” is a defensible replacement for “zero latency.” “No central collection of private practice data by default” is preferable to an absolute “zero data leak” claim.</p>
+        </section>
+
+        <!-- 10. Privacy, evidence exchange and trust -->
+        <section id="sec-10">
+          <h2>10. Privacy, evidence exchange and trust</h2>
+          
+          <h3>10.1 Split operational records from optional diagnostics</h3>
+          <p>The current packet includes attempt count, active time, remediation history and diagnostic signatures. These can disclose a learner’s difficulties when joined to the instructor’s roster. Pseudonymous does not mean anonymous.</p>
+          <p>Maintain distinct channels:</p>
+          <ol>
+            <li><strong>Private practice:</strong> remains local by default.</li>
+            <li><strong>Assessment submission:</strong> intentionally shared evidence needed for a specified decision.</li>
+            <li><strong>Optional improvement diagnostics:</strong> minimized data used for an explicitly stated teaching or product purpose.</li>
+            <li><strong>Credential presentation:</strong> learner-selected disclosures to a named verifier.</li>
+          </ol>
+          <p>Do not bundle optional analytics consent with eligibility to receive assessment. Institution-required records need their own stated authority, purpose, access and retention terms. Corporate materials may limit what can leave a device; learner portability must explain those limits in advance.</p>
+          <p>Differential privacy requires a specified mechanism and privacy parameters; aggregation alone does not establish it. Remove the term from implementation claims until the mechanism and its utility are evaluated. <a href="https://www.nist.gov/blogs/cybersecurity-insights/differential-privacy-privacy-preserving-data-analysis-introduction-our" target="_blank" rel="noopener noreferrer">NIST introduction to differential privacy</a></p>
+
+          <h3>10.2 Minimum exchange contracts</h3>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Record</th>
+                  <th>Required meaning</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Evidence manifest</strong></td>
+                  <td>Artifact identifier, digest algorithm/value, package version, task, submission scope and retrieval permission</td>
+                </tr>
+                <tr>
+                  <td><strong>Evaluation record</strong></td>
+                  <td>Evaluator and test/rubric version, environment, result, limitations and evidence reference</td>
+                </tr>
+                <tr>
+                  <td><strong>Assessment decision</strong></td>
+                  <td>Assessor, authority, rationale, outcome, appeal path and superseded decision if applicable</td>
+                </tr>
+                <tr>
+                  <td><strong>Credential</strong></td>
+                  <td>Issuer, achievement, criteria, assurance description, evidence references, validity and status policy</td>
+                </tr>
+                <tr>
+                  <td><strong>Synchronization envelope</strong></td>
+                  <td>Schema version, sender, recipient, message ID, sequence, relevant timestamps, signature and acknowledgement</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Use durable message IDs, deduplication and conflict rules. A UUID is an identifier, not a proof. Client time is not trusted time. Define how pairwise identifiers are recovered or rotated without accidentally merging learners.</p>
+          <p>Keep the issuance key out of learner runtimes. Institutional issuers should delegate scoped authority, rather than handing private institutional keys to the Foundry. On exit, establish operator-controlled keys and publish an auditable transition; merely exporting a previously shared private key cannot prove all prior copies were destroyed.</p>
+
+          <h3>10.3 Standards implementation strategy</h3>
+          <p>Select and test an exact credential profile. Record schema/context versions, proof format, identifier resolution, status method, transport and verifier compatibility. “Uses W3C credentials” is insufficient to establish cross-product interoperability. Open Badges and CLR have their own implementation conformance programs. <a href="https://certification.imsglobal.org/certification/verifiable-credentials/" target="_blank" rel="noopener noreferrer">1EdTech credential certification</a></p>
+          <p>At review time, the W3C <strong>Data Integrity BBS Cryptosuites v1.0</strong> page identifies a Candidate Recommendation Draft dated 10 September 2026. It specifies BBS signatures, selective disclosure and unlinkable derived proofs. Treat this as a version-pinned integration choice; avoid using “BBS+” as a blanket claim of conformance. Hardware support for the selected key type also needs verification. <a href="https://www.w3.org/TR/vc-di-bbs/" target="_blank" rel="noopener noreferrer">W3C BBS cryptosuite</a></p>
+          <p>Begin with one credential format and a verifier outside SOVRÆLEX. Add selective disclosure when a concrete disclosure need and compatible verifier justify it. Shared artifact digests and disclosed identifiers can still create correlation even when a proof mechanism supports unlinkability.</p>
+          <p>Neither a blockchain nor a new DID method is necessary for the first pilot. Keep <code>did:sovraeg</code> as a proposal until its resolution, governance and recovery behavior exist. Multiple independent assessor attestations can be represented separately; they do not require a new threshold-signature protocol.</p>
+        </section>
+
+        <!-- 11. Rights and institutional relationships -->
+        <section id="sec-11">
+          <h2>11. Rights and institutional relationships</h2>
+          <p>The Academia ingestion rules contain two statements that should be withdrawn before use: redrawing a copyrighted diagram does not automatically remove rights issues, and journal articles or government reports are not categorically unrestricted. WIPO explains that online availability does not remove copyright and that exceptions differ by jurisdiction. <a href="https://www.wipo.int/en/web/copyright/faq-copyright" target="_blank" rel="noopener noreferrer">WIPO copyright guidance</a>, <a href="https://www.wipo.int/en/web/copyright/limitations/index" target="_blank" rel="noopener noreferrer">WIPO limitations and exceptions</a></p>
+          <p>Use an asset-level rights record: source, rightsholder, license or permission, permitted uses, attribution, distribution scope, expiry and restrictions. Distinguish permissions for internal review, adaptation, publication and commercial reuse. Unresolved assets stay out of a release.</p>
+          <p>The current agreement also grants a revocable production license only during the sprint while promising perpetual downstream access and future distribution. Clarify the permissions needed for continued hosting, fixes, later cohorts and sublicensing of embedded assets. Resolve faculty versus institutional ownership before promising either party exclusive ownership. These are contract-design issues for jurisdiction-specific review, not resolved legal language in this report.</p>
+          <p>A coherent contract set should identify: scope and acceptance; source and output rights; embedded software rights; maintenance and support; learner records and submission permissions; issuer authority; equipment custody if any; termination and export; complaints and remedies. Research publication consent is separate from ordinary teaching operation.</p>
+          <p>For commons publication, choose a license deliberately. CC BY-NC-SA includes a noncommercial restriction, which must be considered before promising frictionless commercial reuse across PRO or STUDIO profiles. <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="noopener noreferrer">Creative Commons license terms</a></p>
+          <p>Do not make a fee-paying credential track the only route to required recognition in an otherwise sponsored academic course. Publish which assessment and issuance services are included and which extras are genuinely optional.</p>
+        </section>
+
+        <!-- 12. Refine the six-stage operating lifecycle -->
+        <section id="sec-12">
+          <h2>12. Refine the six-stage operating lifecycle</h2>
+          <p>Preserve the six names as an organizational narrative, but replace fixed output rituals with evidence-based gates. The timings below are planning proposals, contingent on scope and existing tooling.</p>
+          
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Stage</th>
+                  <th>Work and deliverables</th>
+                  <th>Exit gate</th>
+                  <th>Accountable role</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>I. Prospection</strong></td>
+                  <td>One problem, identified sponsor, baseline, source-rights inventory, learner/device constraints and funded scope</td>
+                  <td>Authorized pilot with a measurable question and defined cost cap</td>
+                  <td>Atelier lead and sponsor</td>
+                </tr>
+                <tr>
+                  <td><strong>II. Creation</strong></td>
+                  <td>One 3–5-node module, rubric, supported runtime and exportable package; four-week sprint where feasible</td>
+                  <td>Domain approval, package tests and rehearsal completed</td>
+                  <td>Domain lead and technical lead</td>
+                </tr>
+                <tr>
+                  <td><strong>III. Incubation</strong></td>
+                  <td>Small authorized cohort, onboarding, support log, recovery drill and assessment calibration</td>
+                  <td>Critical problems resolved; real support burden measured</td>
+                  <td>Operator and assessment lead</td>
+                </tr>
+                <tr>
+                  <td><strong>IV. Crystallization</strong></td>
+                  <td>Repeat delivery, documented work, versioned fixes and cost tracking</td>
+                  <td>Repeatable quality and acceptable delivery economics</td>
+                  <td>Operator</td>
+                </tr>
+                <tr>
+                  <td><strong>V. Sovereignization</strong></td>
+                  <td>Exit rehearsal, delegated or transferred authority, recovery capability and explicit service choices</td>
+                  <td>Operator can continue with a different provider or documented replacement process</td>
+                  <td>Operator and sponsor</td>
+                </tr>
+                <tr>
+                  <td><strong>VI. Synergization</strong></td>
+                  <td>Shared component use, independent review, scoped recognition and funded maintenance</td>
+                  <td>Federation participation adds demonstrated value</td>
+                  <td>Member governance</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Remain in a stage until its evidence exists. A supported operator is a valid long-term outcome. Sovereignization must not require becoming a company-of-one.</p>
+
+          <h3>Correct the cadence before promising it</h3>
+          <p>The Blueprint’s weekly activities total <strong>180 minutes (3 hours)</strong>: 30 + 30 + 15 + 45 + 0 + 30 + 30. The stated 4.5 hours could include a 90-minute contingency, but none is allocated. It also omits substantial possibilities: assessment, support, re-recording, caption review, maintenance and distribution problems.</p>
+          <p>Publish planned production time and variable operational time separately. For example, with 30 learners, three assessed artifacts and ten minutes of review each, review alone is <strong>15 hours</strong>. A weekly 30-minute validation slot over six weeks supplies only three hours. Batch signing shortens issuance, not the time needed for meaningful judgment.</p>
+          <p>The hardware rig and 90-second activation test can remain an optional MEDIA playbook. First test existing devices; justify any equipment purchase against actual workload. Specify a tested paper-fold pattern rather than treating every eight-panel zine as the same duplex accordion format.</p>
+          <p>Replace the 500-print/36-unit autonomy gate with demonstrated recovery, sustainable operating cost, satisfactory assessments, clear authority and a successful exit rehearsal. Keep print circulation and publishing regularity as channel-specific measures.</p>
+        </section>
+
+        <!-- 13. Unit economics and capacity -->
+        <section id="sec-13">
+          <h2>13. Unit economics and capacity</h2>
+
+          <h3>13.1 Account for both sides of the Atelier</h3>
+          <p>Use the following operating-cost equation:</p>
+          <p><strong>Pilot delivery cost = design + engineering/configuration + rights/accessibility review + onboarding + assessment + support + direct expenses + contingency.</strong></p>
+          <p>Record separate hours for the domain partner and the Foundry. Record donated labor and grant subsidy even when no cash changes hands. Treat general platform R&D separately from customer delivery so neither hides the other.</p>
+          
+          <p>Illustrative capacity budget for one small pilot—not an estimate of observed performance:</p>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Foundry activity</th>
+                  <th style="text-align: right;">Hours</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Discovery and instructional design</td>
+                  <td style="text-align: right;">12</td>
+                </tr>
+                <tr>
+                  <td>Content adaptation and rubric configuration</td>
+                  <td style="text-align: right;">20</td>
+                </tr>
+                <tr>
+                  <td>Runtime configuration, packaging and technical checks</td>
+                  <td style="text-align: right;">24</td>
+                </tr>
+                <tr>
+                  <td>Rights/accessibility checks and onboarding</td>
+                  <td style="text-align: right;">8</td>
+                </tr>
+                <tr>
+                  <td>Cohort support and assessment coordination</td>
+                  <td style="text-align: right;">12</td>
+                </tr>
+                <tr>
+                  <td><strong>Subtotal</strong></td>
+                  <td style="text-align: right;"><strong>76</strong></td>
+                </tr>
+                <tr>
+                  <td>Contingency at 20%</td>
+                  <td style="text-align: right;">15.2</td>
+                </tr>
+                <tr>
+                  <td><strong>Total</strong></td>
+                  <td style="text-align: right;"><strong>91.2</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>At a hypothetical blended internal cost of $40/hour, this is $3,648 in labor. Add $352 in direct expenses and the illustrative cost is $4,000. A $5,000 fee leaves $1,000, or 20%, contribution before shared overhead and R&D. These are arithmetic examples only; replace them with locally measured costs and customer evidence.</p>
+          <p>A free pilot with the same scope requires a named $4,000 subsidy in this scenario. Label who funds it and what learning justifies the spend.</p>
+
+          <h3>13.2 Align revenue with continuing value</h3>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Offering</th>
+                  <th>Suitable charging basis</th>
+                  <th>Continuing obligation</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Atelier implementation</strong></td>
+                  <td>Fixed scoped fee with change control</td>
+                  <td>Acceptance and correction window</td>
+                </tr>
+                <tr>
+                  <td><strong>Maintained curriculum edition</strong></td>
+                  <td>Institution-funded update agreement</td>
+                  <td>Defined review cycle and supported versions</td>
+                </tr>
+                <tr>
+                  <td><strong>Assessment and moderation</strong></td>
+                  <td>Included allocation or transparent service fee</td>
+                  <td>Timely qualified review and appeal handling</td>
+                </tr>
+                <tr>
+                  <td><strong>Operator support</strong></td>
+                  <td>Optional retainer</td>
+                  <td>Response times, recovery support and upgrades</td>
+                </tr>
+                <tr>
+                  <td><strong>Creator publication</strong></td>
+                  <td>Edition sale or patron-funded release</td>
+                  <td>Disclosed access rights and included support</td>
+                </tr>
+                <tr>
+                  <td><strong>Agency channel</strong></td>
+                  <td>Training, support and authorized brand use</td>
+                  <td>Quality review and escalation arrangements</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Avoid incentives to issue unnecessary microcredentials. Separate payment for assessment work from the assessment outcome. Talent-network access must be learner opt-in; a credential should not silently become a recruitment data product.</p>
+
+          <h3>13.3 Capacity is often constrained by review</h3>
+          <p>Track assessment demand as <strong>learners × submissions per learner × review minutes</strong>, adding resubmissions and moderation. Track authoring, engineering and support capacity separately; adding more authors does not create more qualified assessors.</p>
+          <p>Before starting a new Atelier, reserve delivery capacity and an incident allowance. Measure contribution margin after support, percentage of components reused, rework, and maintenance obligations created. Revenue without these measures can conceal an expanding services burden.</p>
+        </section>
+
+        <!-- 14. Federation and commons governance -->
+        <section id="sec-14">
+          <h2>14. Federation and commons governance</h2>
+
+          <h3>14.1 Establish membership and trust before financial infrastructure</h3>
+          <p>Begin with a member agreement, shared catalog, maintenance owners, review process and dispute route. Add a recognition registry specifying issuer, achievement version, accepting organization, accepted use and expiry/review date.</p>
+          <p>Include learner and domain stakeholder representation. Restricting voting to operators who completed Stage V excludes those most affected by assessment and data policies. Define conflicts of interest, recusals, appeals, sanctions, emergency powers and operator exit.</p>
+          <p>The 15% voting cap is impossible if fewer than seven voting participants must collectively hold 100% of voting power: six × 15% = 90%. With seven or more, it still needs rules for related entities and coalitions. Use a transparent small-network constitution first; introduce concentration constraints when membership supports them.</p>
+          <p>Distinguish consent governance from majority voting and define how objections, deadlocks and time limits work. References to Ostrom or Sociocracy are inspirations; they do not themselves instantiate a governance mechanism.</p>
+
+          <h3>14.2 Repair the mutual-credit proposal</h3>
+          <p>The proposed zero-sum invariant requires a counterparty for every credit. A template contribution cannot simply earn +100 MCU unless a member or the commons treasury accepts a matching −100 MCU obligation.</p>
+          <p>Example: Studio A performs an agreed review for Studio B at 5 MCU. A is credited +5 and B is debited −5. The network total remains zero. Spending those balances can move them toward zero; there is no implied right to cash redemption.</p>
+          <p>Choose whether MCU is a strict hour unit or a negotiated service unit. Fixed awards of 50–100 MCU for a template are not grounded in an hour definition without an accepted valuation. Define credit limits, acceptance authority, default treatment, inactive members, dispute resolution and treasury obligations before launch.</p>
+          <p><strong>Proposal:</strong> initially record contributions and use ordinary funded exchanges. If recurring reciprocal demand emerges, test a small non-transferable internal accounting pilot. Mutual credit cannot pay external expenses unless a counterparty accepts it, and a balanced ledger does not establish liquidity or solvency. This is an operating-model critique, not a legal or tax design for a clearinghouse.</p>
+
+          <h3>14.3 Reward maintained usefulness</h3>
+          <p>Commons contributions should be assessed for documented rights, accessibility, adoption, defects, compatibility and maintenance responsiveness. Reward ongoing stewardship rather than raw template count or credential count.</p>
+          <p>The studio’s synthesis advantage should be reciprocal: contributors know what is reused, receive attribution where appropriate, and can access improvements under agreed terms. Confidential patterns should be generalized and approved before sharing.</p>
+        </section>
+
+        <!-- 15. Product and ecosystem augmentations -->
+        <section id="sec-15">
+          <h2>15. Product and ecosystem augmentations</h2>
+          <p>These additions address specific gaps without creating more brands or applications.</p>
+          
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Addition</th>
+                  <th>Function</th>
+                  <th>First useful version</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Component catalog</strong></td>
+                  <td>Makes reuse measurable</td>
+                  <td>Each SYNCZ has owner, version, permissions, target devices and sample evidence</td>
+                </tr>
+                <tr>
+                  <td><strong>Assessment calibration library</strong></td>
+                  <td>Supports consistent judgment</td>
+                  <td>Anchor artifacts, rubric guidance, disagreements and resolution notes</td>
+                </tr>
+                <tr>
+                  <td><strong>Rights/provenance manifest</strong></td>
+                  <td>Prevents unauthorized release and preserves attribution</td>
+                  <td>Asset source, permission and permitted distribution</td>
+                </tr>
+                <tr>
+                  <td><strong>Recognition registry</strong></td>
+                  <td>Makes acceptance discoverable</td>
+                  <td>Named acceptor, scoped achievement and agreement version</td>
+                </tr>
+                <tr>
+                  <td><strong>Operator exit kit</strong></td>
+                  <td>Converts sovereignty into a practical capability</td>
+                  <td>Export, restore, alternate operation and key transition procedures</td>
+                </tr>
+                <tr>
+                  <td><strong>Accessibility/localization profile</strong></td>
+                  <td>Includes learners excluded by a 4K desktop assumption</td>
+                  <td>Keyboard/list navigation, readable states, captions and bilingual terminology</td>
+                </tr>
+                <tr>
+                  <td><strong>Evidence and claims register</strong></td>
+                  <td>Stops aspiration becoming an unsupported promise</td>
+                  <td>Claim, owner, supporting evidence, limitations and review date</td>
+                </tr>
+                <tr>
+                  <td><strong>Sustainability ledger</strong></td>
+                  <td>Funds ongoing obligations</td>
+                  <td>Maintainer, support hours, update schedule and funding source</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>Use WCAG 2.2 as the initial web accessibility reference, with explicit checks suited to each runtime. Do not rely on colored hexagons or animation to convey essential status. <a href="https://www.w3.org/TR/WCAG22/" target="_blank" rel="noopener noreferrer">W3C WCAG 2.2</a></p>
+          <p>For Vietnamese deployments, test actual learner devices, language preferences, connectivity, institutional authority and source rights with the partner. Provide Vietnamese/English terminology where useful. Do not infer readiness from access to a high-spec operator workstation.</p>
+          <p>The cockpit’s primary job should be helping an operator decide <strong>who needs support, what evidence needs review, and what action is permitted</strong>. Put an accessible task queue first; offer the mesh as a complementary view. Display denominator, time window and synchronization coverage for every failure-rate alert.</p>
+        </section>
+
+        <!-- 16. Proposed 90-day validation sequence -->
+        <section id="sec-16">
+          <h2>16. Proposed 90-day validation sequence</h2>
+          <p>This schedule establishes a first evidence cycle; it does not promise a production platform from an unknown starting point.</p>
+
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Period</th>
+                  <th>Work</th>
+                  <th>Evidence required before proceeding</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Days 1–14</strong></td>
+                  <td>Inventory existing software; choose one sponsor and learning problem; agree rights, devices, rubric and budget</td>
+                  <td>Authorized scope, baseline and feasibility review</td>
+                </tr>
+                <tr>
+                  <td><strong>Days 15–42</strong></td>
+                  <td>Four-week Atelier for one 3–5-node module; one or two available interaction primitives</td>
+                  <td>Domain-approved package, usable export, accessible route, restoration rehearsal</td>
+                </tr>
+                <tr>
+                  <td><strong>Days 43–56</strong></td>
+                  <td>Small rehearsal and assessor calibration; fix onboarding and synchronization problems</td>
+                  <td>No unresolved release-blocking issue; documented review procedure</td>
+                </tr>
+                <tr>
+                  <td><strong>Days 57–84</strong></td>
+                  <td>Operate a bounded cohort; collect agreed outcomes, costs and support data</td>
+                  <td>Complete evidence dataset with missingness and limitations recorded</td>
+                </tr>
+                <tr>
+                  <td><strong>Days 85–90</strong></td>
+                  <td>Review outcomes and decide repeat, narrow, redesign or stop</td>
+                  <td>Explicit decision supported by operational and learning evidence</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>A cohort of roughly 15–30 learners is a planning option for usability and workflow learning, not an efficacy sample-size claim. If the tool inventory shows that the basic runtime does not exist, re-scope the first cycle to a working prototype and extend the cohort schedule.</p>
+
+          <h3>Pilot scorecard</h3>
+          <p>Set thresholds with the sponsor before launch. The following are proposed measures and candidate gates, not validated benchmarks.</p>
+          
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Dimension</th>
+                  <th>Measure</th>
+                  <th>Decision use</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Learning</strong></td>
+                  <td>Baseline and post-module performance on aligned tasks; delayed transfer where feasible</td>
+                  <td>Look for improvement and identify unsupported claims</td>
+                </tr>
+                <tr>
+                  <td><strong>Assessment</strong></td>
+                  <td>Independent scoring of a sample; all material disagreements adjudicated</td>
+                  <td>Check whether the rubric supports dependable decisions</td>
+                </tr>
+                <tr>
+                  <td><strong>Access</strong></td>
+                  <td>Onboarding completion, device failures, accessibility barriers, learner cost</td>
+                  <td>Fix exclusions before expansion</td>
+                </tr>
+                <tr>
+                  <td><strong>Portability</strong></td>
+                  <td>Sample export/import and recovery drills</td>
+                  <td>Block expansion if assessed evidence cannot be recovered</td>
+                </tr>
+                <tr>
+                  <td><strong>Credential utility</strong></td>
+                  <td>Verification in an independent implementation; documented intended acceptor</td>
+                  <td>Distinguish technical portability from actual recognition</td>
+                </tr>
+                <tr>
+                  <td><strong>Workload</strong></td>
+                  <td>All partner and studio hours, review time, support and rework</td>
+                  <td>Determine sustainable scope and pricing</td>
+                </tr>
+                <tr>
+                  <td><strong>Privacy</strong></td>
+                  <td>Outgoing-field inspection against policy; no unexplained transmissions</td>
+                  <td>Resolve before release or continued collection</td>
+                </tr>
+                <tr>
+                  <td><strong>Reuse</strong></td>
+                  <td>Effort to deliver a second module using the same contracts</td>
+                  <td>Test the shared-core thesis</td>
+                </tr>
+                <tr>
+                  <td><strong>Economics</strong></td>
+                  <td>Fully accounted delivery cost and sponsor willingness to fund a repeat</td>
+                  <td>Establish whether the offer is sustainable</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>A small uncontrolled cohort cannot demonstrate causal learning superiority. Historical comparisons may be informative but are confounded by cohort differences. Use the first cycle to establish feasibility; design stronger comparative evaluation with appropriate approvals if efficacy claims become important.</p>
+          <p>Pause expansion when no qualified assessor is available, rights remain unresolved, recovery fails, learner access is inequitable, or the sponsor cannot fund realistic delivery. These are practical decision gates, not reasons to halt low-risk design work.</p>
+
+          <h3>Build now, then later</h3>
+          <p><strong>First:</strong> editable module definition, package export/import, one supported runtime, local saving, explicit submission, review queue and one credential profile.</p>
+          <p><strong>After a successful repeat:</strong> improved authoring, component reuse, optional diagnostics, a second domain profile and supported integrations.</p>
+          <p><strong>After multiple sustainable operators:</strong> recognition agreements, federation governance, independent implementations and any selective-disclosure or mutual-credit features justified by actual demand.</p>
+        </section>
+
+        <!-- 17. Specific corrections for the source documents -->
+        <section id="sec-17">
+          <h2>17. Specific corrections for the source documents</h2>
+          <div class="table-wrapper">
+            <table>
+              <thead>
+                <tr>
+                  <th>Location</th>
+                  <th>Issue</th>
+                  <th>Proposed correction</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Blueprint, foundational architecture</td>
+                  <td>Hashes are treated as verifiable proof of capability</td>
+                  <td>Define integrity, evaluation, assessment and recognition separately</td>
+                </tr>
+                <tr>
+                  <td>Blueprint, Phase II; Academia topology rules</td>
+                  <td>Three rings and node-degree caps are universal invariants</td>
+                  <td>Make them configurable curriculum/display presets</td>
+                </tr>
+                <tr>
+                  <td>Academia, dependency matrix</td>
+                  <td>TESS-10 lists TESS-12 as an outbound unlock, but TESS-12’s prerequisites omit TESS-10</td>
+                  <td>Choose intended semantics and generate both views from one expression</td>
+                </tr>
+                <tr>
+                  <td>Academia, capstone/credential rules</td>
+                  <td>Capstone entry and summative award conditions use different descriptions</td>
+                  <td>Represent them separately and validate that both are satisfiable</td>
+                </tr>
+                <tr>
+                  <td>Academia, topology preview</td>
+                  <td>ASCII example omits nodes present in the 12-node matrix</td>
+                  <td>Generate diagrams from the canonical graph rather than maintaining duplicates</td>
+                </tr>
+                <tr>
+                  <td>Academia, telemetry payload</td>
+                  <td>The purported BLAKE3 example is exactly the SHA-256 digest of an empty byte string, confirmed during this review</td>
+                  <td>Replace with generated test vectors using the declared algorithm and actual sample artifact</td>
+                </tr>
+                <tr>
+                  <td>Academia, telemetry philosophy</td>
+                  <td>Aggregation is described as differential privacy without a mechanism</td>
+                  <td>Label aggregation accurately; add DP only with a defined budget and evaluation</td>
+                </tr>
+                <tr>
+                  <td>Academia, ingestion rights</td>
+                  <td>Redrawing and unrestricted journal/government reuse are treated as clearance</td>
+                  <td>Use an asset-level rights check and distribution-specific permission</td>
+                </tr>
+                <tr>
+                  <td>Blueprint, Phase I</td>
+                  <td>Free and integration-free are universal pilot guarantees</td>
+                  <td>State sponsor cost, explicit subsidy and minimum approved integration</td>
+                </tr>
+                <tr>
+                  <td>Blueprint, Phase III</td>
+                  <td>Equipment introduced at Stage III, but title retention references Stages I and II</td>
+                  <td>Define actual custody period, responsibilities and exit options</td>
+                </tr>
+                <tr>
+                  <td>Blueprint, Phase IV</td>
+                  <td>Activities sum to three hours, while total says 4.5</td>
+                  <td>Allocate contingency and separately budget assessment/support</td>
+                </tr>
+                <tr>
+                  <td>Blueprint, Phase V</td>
+                  <td>Public-ledger and print counts determine autonomy</td>
+                  <td>Use operational, rights, recovery and economic readiness gates</td>
+                </tr>
+                <tr>
+                  <td>Blueprint, Phase VI</td>
+                  <td>15% cap presumes a sufficiently large membership</td>
+                  <td>Adopt a small-network rule and explicit transition condition</td>
+                </tr>
+                <tr>
+                  <td>Blueprint, clearinghouse</td>
+                  <td>Positive contribution awards lack counterparties</td>
+                  <td>Require paired entries and approved liabilities</td>
+                </tr>
+                <tr>
+                  <td>Blueprint, cross-validation</td>
+                  <td>Co-signatures imply universal authority</td>
+                  <td>State independent-review scope and named recognition agreements</td>
+                </tr>
+                <tr>
+                  <td>Polymorphic Architecture, routing</td>
+                  <td>Mixed categories are exclusive branches</td>
+                  <td>Compose profile dimensions with conflict validation</td>
+                </tr>
+                <tr>
+                  <td>All documents and diagrams</td>
+                  <td>Zero latency/leakage/overhead and universal interoperability</td>
+                  <td>Replace with scoped, measured service properties</td>
+                </tr>
+                <tr>
+                  <td>All documents</td>
+                  <td>Generated-answer prompts and citation placeholders remain in specifications</td>
+                  <td>Preserve historical drafts separately; publish a clean normative specification and evidence register</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p>The same vocabulary and guarantees should be updated in the infographics. Their current prominence makes absolute claims about anonymity and zero-cloud leakage particularly easy to repeat without their qualifications.</p>
+        </section>
+
+        <!-- 18. Proposed replacement ecosystem thesis -->
+        <section id="sec-18">
+          <h2>18. Proposed replacement ecosystem thesis</h2>
+          <p>SOVRÆG LABS develops the Foundry Matrix as a shared framework for creating portable, interactive learning publications and exchanging assessable evidence. SOVRÆGENCY Ateliers pair domain specialists with instructional and technical practitioners to produce bounded, maintainable learning experiences. Autonomous operating units select compatible domain, delivery, assurance, rights and commercial profiles without fragmenting the shared framework.</p>
+          <p>Learners retain practical control over their work, with explicit submission and recovery mechanisms. SYNTHCREDS communicate scoped achievement claims issued by accountable assessors or institutions; their integrity is technically verifiable, while their recognition depends on declared acceptance policies. The Alchemosaic Commons connects operators through maintained resources, reciprocal contribution and transparent recognition agreements.</p>
+          <p>The ecosystem expands when repeated deployments demonstrate educational usefulness, reliable assessment, affordable operation and effective exit—not merely when more nodes, credentials, studios or tokens are produced.</p>
+        </section>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Back to Top Button -->
+  <button id="back-to-top" onclick="scrollToTop()" aria-label="Back to Top">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="18 15 12 9 6 15"></polyline></svg>
+  </button>
+
+  <script>
+    // Theme Management
+    function initTheme() {
+      const savedTheme = localStorage.getItem('sovraeg_theme');
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      const theme = savedTheme || (prefersDark ? 'dark' : 'light');
+      setTheme(theme);
+    }
+
+    function setTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      localStorage.setItem('sovraeg_theme', theme);
+      
+      const sunIcon = document.getElementById('theme-icon-sun');
+      const moonIcon = document.getElementById('theme-icon-moon');
+      const themeText = document.getElementById('theme-text');
+      
+      if (theme === 'dark') {
+        sunIcon.style.display = 'block';
+        moonIcon.style.display = 'none';
+        themeText.textContent = 'Light Mode';
+      } else {
+        sunIcon.style.display = 'none';
+        moonIcon.style.display = 'block';
+        themeText.textContent = 'Dark Mode';
+      }
+
+      // Re-render mermaid with appropriate theme if loaded
+      if (window.mermaid) {
+        mermaid.initialize({
+          startOnLoad: true,
+          theme: theme === 'dark' ? 'dark' : 'neutral',
+          securityLevel: 'loose',
+          fontFamily: 'Inter, sans-serif'
+        });
+      }
+    }
+
+    function toggleTheme() {
+      const currentTheme = document.documentElement.getAttribute('data-theme');
+      setTheme(currentTheme === 'dark' ? 'light' : 'dark');
+    }
+
+    // Scroll Progress & Active TOC Spy
+    window.addEventListener('scroll', () => {
+      // Progress bar
+      const winScroll = document.documentElement.scrollTop || document.body.scrollTop;
+      const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const scrolled = (winScroll / height) * 100;
+      document.getElementById('progress-bar').style.width = scrolled + '%';
+
+      // Back to top button visibility
+      const backToTop = document.getElementById('back-to-top');
+      if (winScroll > 400) {
+        backToTop.classList.add('visible');
+      } else {
+        backToTop.classList.remove('visible');
+      }
+    });
+
+    // Intersection Observer for Active TOC Link
+    const observerOptions = {
+      root: null,
+      rootMargin: '-10% 0px -75% 0px',
+      threshold: 0
+    };
+
+    const sections = document.querySelectorAll('section[id]');
+    const navItems = document.querySelectorAll('.nav-item');
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          const id = entry.target.getAttribute('id');
+          navItems.forEach(item => {
+            if (item.getAttribute('href') === `#${id}`) {
+              item.classList.add('active');
+            } else {
+              item.classList.remove('active');
+            }
+          });
+        }
+      });
+    }, observerOptions);
+
+    sections.forEach(section => observer.observe(section));
+
+    // Sidebar Filter
+    function filterNavigation(query) {
+      const filter = query.toLowerCase();
+      navItems.forEach(item => {
+        const text = item.textContent.toLowerCase();
+        if (text.includes(filter)) {
+          item.style.display = 'block';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    }
+
+    // Mobile Navigation Toggle
+    function toggleMobileNav() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('drawer-overlay');
+      sidebar.classList.toggle('open');
+      overlay.classList.toggle('active');
+    }
+
+    function scrollToTop() {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // Initialize on load
+    document.addEventListener('DOMContentLoaded', () => {
+      initTheme();
+    });
+  </script>
+</body>
+</html>
