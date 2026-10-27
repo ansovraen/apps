@@ -1,0 +1,1897 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Unit 5: Probability in the Age of AI | Review & Learning Activity</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#f0f7ff',
+              100: '#e0effe',
+              200: '#bae0fd',
+              500: '#0284c7',
+              600: '#0369a1',
+              700: '#075985',
+              800: '#0c4a6e',
+              900: '#082f49',
+            },
+            accent: {
+              50: '#fdf4ff',
+              500: '#a855f7',
+              600: '#9333ea',
+              700: '#7e22ce',
+            }
+          },
+          fontFamily: {
+            sans: ['Inter', 'system-ui', '-apple-system', 'Segoe UI', 'Roboto', 'sans-serif'],
+            mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', 'monospace']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    :root {
+      --app-font-size: 16px;
+    }
+    html {
+      font-size: var(--app-font-size);
+      scroll-behavior: smooth;
+    }
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.05);
+    }
+    .dark ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(100, 116, 139, 0.4);
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(100, 116, 139, 0.6);
+    }
+    .drop-zone-active {
+      border-color: #0284c7 !important;
+      background-color: rgba(2, 132, 199, 0.08) !important;
+      transform: scale(1.008);
+    }
+    .card-touch-selected {
+      outline: 3px solid #0284c7;
+      box-shadow: 0 10px 15px -3px rgba(2, 132, 199, 0.3);
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-slate-100 min-h-screen transition-colors duration-200 font-sans antialiased pb-28">
+
+  <!-- TOP APP NAVIGATION BAR -->
+  <header class="sticky top-0 z-40 w-full backdrop-blur-md bg-white/90 dark:bg-slate-900/90 border-b border-slate-200 dark:border-slate-800 shadow-sm transition-colors">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 py-2.5 flex flex-wrap items-center justify-between gap-4">
+      
+      <!-- Brand & Unit Title -->
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-accent-600 flex items-center justify-center text-white shadow-md shadow-brand-500/20 font-bold text-lg">
+          AI
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-semibold px-2 py-0.5 rounded-full bg-brand-100 text-brand-700 dark:bg-brand-900/60 dark:text-brand-300">
+              Unit 5 Interactive
+            </span>
+            <span class="text-xs text-slate-500 dark:text-slate-400 font-mono hidden sm:inline">
+              CRC Press © 2026
+            </span>
+          </div>
+          <h1 class="text-sm sm:text-base font-bold text-slate-900 dark:text-white leading-tight">
+            Probability in the Age of AI
+          </h1>
+        </div>
+      </div>
+
+      <!-- Controls: Student ID + Font Size + Dark Mode -->
+      <div class="flex items-center flex-wrap gap-3 sm:gap-4 ml-auto">
+        
+        <!-- Student ID Input Required -->
+        <div class="relative flex items-center">
+          <label for="studentIdInput" class="sr-only">Student ID</label>
+          <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-slate-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+            </svg>
+          </div>
+          <input 
+            type="text" 
+            id="studentIdInput" 
+            placeholder="Student ID (Required)" 
+            class="pl-8 pr-3 py-1.5 text-xs sm:text-sm font-mono rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-brand-500 w-36 sm:w-48 transition-all"
+            required
+          />
+          <span id="studentIdStatus" class="ml-2 text-xs font-semibold px-2 py-0.5 rounded bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400">
+            ID Needed
+          </span>
+        </div>
+
+        <!-- Font Size Slider -->
+        <div class="hidden md:flex items-center space-x-2 bg-slate-100 dark:bg-slate-800/80 px-2.5 py-1 rounded-lg border border-slate-200 dark:border-slate-700">
+          <span class="text-xs font-medium text-slate-500 dark:text-slate-400">A</span>
+          <input 
+            type="range" 
+            id="fontSizeSlider" 
+            min="14" 
+            max="21" 
+            value="16" 
+            class="w-16 h-1.5 bg-slate-300 dark:bg-slate-600 rounded-lg appearance-none cursor-pointer accent-brand-600"
+            title="Adjust Interface Font Size"
+          />
+          <span class="text-sm font-bold text-slate-700 dark:text-slate-300">A</span>
+        </div>
+
+        <!-- Dark/Light Mode Toggle -->
+        <button 
+          id="themeToggleBtn"
+          type="button" 
+          aria-label="Toggle Dark/Light Mode"
+          class="p-2 rounded-lg text-slate-500 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 transition"
+        >
+          <!-- Sun Icon (Light Mode) -->
+          <svg id="themeIconSun" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 9H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+          </svg>
+          <!-- Moon Icon (Dark Mode) -->
+          <svg id="themeIconMoon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+          </svg>
+        </button>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6 space-y-8">
+
+    <!-- COURSEBOOK PROFILE CARD -->
+    <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 dark:border-slate-800 transition-all">
+      <div class="flex flex-col md:flex-row gap-6 items-start">
+        
+        <!-- Textbook Cover with Fallback -->
+        <div class="w-full md:w-52 flex-shrink-0 flex justify-center">
+          <div class="relative group w-44 rounded-xl shadow-xl overflow-hidden border border-slate-300 dark:border-slate-700 bg-slate-950 transition-transform duration-300 group-hover:scale-105">
+            <img 
+              id="bookCoverImg"
+              src="COVER-FoundationsforAI.jpg" 
+              alt="Coursebook Cover: Statistics and Data Foundations for AI"
+              class="w-full h-64 object-cover"
+              onerror="this.style.display='none'; document.getElementById('coverFallback').classList.remove('hidden');"
+            />
+            <!-- Fallback 3D Book Spine card if cover file is missing in directory -->
+            <div id="coverFallback" class="hidden w-full h-64 bg-gradient-to-br from-slate-900 via-brand-900 to-slate-950 p-4 flex flex-col justify-between text-white border-l-4 border-amber-500">
+              <div>
+                <span class="text-[10px] tracking-wider uppercase font-semibold text-amber-400 block mb-1">CRC PRESS • 2026</span>
+                <h3 class="text-sm font-bold leading-snug">Statistics and Data Foundations for AI</h3>
+                <p class="text-[11px] text-slate-300 mt-2">Tamraparni Dasu &amp; Geetha Murthy</p>
+              </div>
+              <div class="pt-4 border-t border-slate-700/60 flex justify-between items-end">
+                <span class="text-[9px] font-mono text-slate-400">1st Edition</span>
+                <span class="text-[9px] px-1.5 py-0.5 rounded bg-brand-500/30 text-brand-300 border border-brand-400/40 font-mono">CRC-AI</span>
+              </div>
+            </div>
+            <div class="absolute bottom-0 inset-x-0 bg-slate-900/80 backdrop-blur-xs py-1 px-2 text-center text-[10px] font-mono text-slate-300">
+              ISBN: 978-1-003-61092-2
+            </div>
+          </div>
+        </div>
+
+        <!-- Book Metadata & Chapter Overview -->
+        <div class="flex-1 space-y-4">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="px-2.5 py-1 text-xs font-bold rounded-md bg-amber-100 text-amber-800 dark:bg-amber-950/70 dark:text-amber-300 border border-amber-200 dark:border-amber-800">
+              Official Coursebook Curriculum
+            </span>
+            <span class="px-2.5 py-1 text-xs font-semibold rounded-md bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+              Chapter 5: Probability in the Age of AI
+            </span>
+            <span class="px-2.5 py-1 text-xs font-mono rounded-md bg-emerald-100 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300">
+              Verified 2026 Edition
+            </span>
+          </div>
+
+          <div>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 dark:text-white">
+              Statistics and data foundations for AI
+            </h2>
+            <p class="text-sm text-slate-600 dark:text-slate-400 mt-1">
+              By <span class="font-semibold text-slate-800 dark:text-slate-200">Tamraparni Dasu</span> and <span class="font-semibold text-slate-800 dark:text-slate-200">Geetha Murthy</span>. First edition. | Boca Raton FL : CRC Press, 2026. | ISBN: <span class="font-mono">978-1-003-61092-2 (ebk)</span>
+            </p>
+          </div>
+
+          <p class="text-sm leading-relaxed text-slate-700 dark:text-slate-300">
+            Uncertainty is omnipresent—from stock movements and medical prognoses to autonomous driving path planning. AI-powered systems do not eliminate uncertainty; they master it through <strong>probabilistic reasoning</strong>. This unit explores how intelligent agents quantify uncertainty, calculate sample spaces, evaluate mutually exclusive and overlapping events via set operations, and fuse sensor telemetry (optical cameras, LiDAR, radar) to make safe, optimal real-time decisions.
+          </p>
+
+          <!-- Core Real-World AI Case Anchors -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 text-xs">
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <span class="font-bold text-brand-600 dark:text-brand-400 block mb-0.5">Google Lexus RX 450h</span>
+              <span class="text-slate-600 dark:text-slate-400">Autonomous sensor rack computing trajectory probabilities &amp; navigation risks.</span>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <span class="font-bold text-accent-600 dark:text-accent-400 block mb-0.5">Heathrow UVD Disinfection</span>
+              <span class="text-slate-600 dark:text-slate-400">8 terminal robots deploying probability distributions to identify objects and obstacles.</span>
+            </div>
+            <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+              <span class="font-bold text-emerald-600 dark:text-emerald-400 block mb-0.5">Vision 60 Q-UGV Robot</span>
+              <span class="text-slate-600 dark:text-slate-400">Ghost Robotics quadruped evaluating terrain traction probabilities in desert maneuvers.</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- INSTRUCTIONS BANNER -->
+    <div class="bg-gradient-to-r from-brand-50 to-blue-50 dark:from-slate-900 dark:to-brand-950/40 border border-brand-200 dark:border-brand-900/60 rounded-2xl p-4 sm:p-5 flex items-start gap-3">
+      <div class="p-2 rounded-lg bg-brand-500 text-white flex-shrink-0">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+      </div>
+      <div class="text-xs sm:text-sm">
+        <span class="font-bold text-brand-900 dark:text-brand-200">Interactive Student Instructions:</span>
+        <span class="text-slate-700 dark:text-slate-300">
+          Enter your <strong>STUDENT ID</strong> at the top bar before beginning. Complete all 8 integrated exercises below—including drag-and-drop categorization, simulated decision modeling, set theory calculations, and the mandatory <strong>handwritten paper solution photograph upload</strong>. When finished, click <strong>"SUBMIT ASSIGNMENT"</strong> to generate your dual submission (Markdown assessment report + customized solution image download).
+        </span>
+      </div>
+    </div>
+
+    <!-- ========================================================================= -->
+    <!-- ACTIVITY 1: DETERMINISTIC VS. PROBABILISTIC (DRAG & DROP CARD SORTING)   -->
+    <!-- ========================================================================= -->
+    <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 dark:border-slate-800 space-y-5">
+      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-4">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">Activity 1 • Section 5.1 &amp; Reference Box 5.2.1</span>
+          <h3 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
+            Deterministic vs. Probabilistic Reasoning in AI
+          </h3>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="act1ResetBtn" class="px-3 py-1 text-xs font-medium rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+            Reset Cards
+          </button>
+          <span id="act1ScoreBadge" class="px-3 py-1 text-xs font-bold rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+            Score: 0 / 6
+          </span>
+        </div>
+      </div>
+
+      <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+        Drag each textbook scenario card into its correct classification bucket. (On touchscreens, tap a card to select it, then tap the desired target bucket).
+      </p>
+
+      <!-- Source Unsorted Cards Pool -->
+      <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/60 min-h-[90px]">
+        <span class="text-xs font-semibold uppercase text-slate-400 dark:text-slate-500 block mb-2">Scenario Cards Pool:</span>
+        <div id="act1SourcePool" class="flex flex-wrap gap-2.5 min-h-[50px] items-center">
+          <!-- Cards injected via JS -->
+        </div>
+      </div>
+
+      <!-- Two Drop Targets -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <!-- Deterministic Box -->
+        <div id="dropZoneDeterministic" data-target="deterministic" class="drop-zone p-4 rounded-xl border-2 border-dashed border-emerald-300 dark:border-emerald-800/70 bg-emerald-50/40 dark:bg-emerald-950/20 min-h-[170px] transition-all">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-sm font-bold text-emerald-800 dark:text-emerald-300 flex items-center gap-1.5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              Deterministic Events ($P \approx 1$, Uncertainty $\approx 0$)
+            </span>
+            <span class="text-xs font-mono text-emerald-600 dark:text-emerald-400" id="detCount">0</span>
+          </div>
+          <p class="text-[11px] text-emerald-700/80 dark:text-emerald-400/80 mb-3">
+            Outcomes known in advance or with near absolute certainty governed by physical laws.
+          </p>
+          <div class="card-slot flex flex-col gap-2 min-h-[70px]"></div>
+        </div>
+
+        <!-- Probabilistic Box -->
+        <div id="dropZoneProbabilistic" data-target="probabilistic" class="drop-zone p-4 rounded-xl border-2 border-dashed border-brand-300 dark:border-brand-800/70 bg-brand-50/40 dark:bg-brand-950/20 min-h-[170px] transition-all">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-sm font-bold text-brand-800 dark:text-brand-300 flex items-center gap-1.5">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+              Probabilistic Events (Uncertainty &gt; 0, AI Reasoning)
+            </span>
+            <span class="text-xs font-mono text-brand-600 dark:text-brand-400" id="probCount">0</span>
+          </div>
+          <p class="text-[11px] text-brand-700/80 dark:text-brand-400/80 mb-3">
+            Outcomes cannot be predicted with total certainty; agent must quantify relative likelihoods.
+          </p>
+          <div class="card-slot flex flex-col gap-2 min-h-[70px]"></div>
+        </div>
+      </div>
+
+      <div id="act1Feedback" class="hidden p-3 rounded-lg text-xs font-medium"></div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- ACTIVITY 2: AUTONOMOUS TAXI AIRPORT SIMULATOR (EXAMPLE 5.1.1)            -->
+    <!-- ========================================================================= -->
+    <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 dark:border-slate-800 space-y-5">
+      <div class="border-b border-slate-100 dark:border-slate-800 pb-4">
+        <span class="text-xs font-bold uppercase tracking-wider text-accent-600 dark:text-accent-400">Activity 2 • Example 5.1.1</span>
+        <h3 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
+          Autonomous Taxi Airport Planning Simulator
+        </h3>
+        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">
+          An autonomous taxi must deliver a passenger to the airport on time. Investigate the trade-offs between the <strong>90-Minute Departure Plan</strong> and the <strong>180-Minute Departure Plan</strong> under simulated real-world risks.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+        <!-- Interactive Controls -->
+        <div class="lg:col-span-1 space-y-4 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-xl border border-slate-200 dark:border-slate-700">
+          <h4 class="text-xs font-bold uppercase text-slate-600 dark:text-slate-300">Environmental Risk Parameters</h4>
+          
+          <div>
+            <div class="flex justify-between text-xs font-medium mb-1">
+              <span>Traffic Congestion Risk $P(\text{Traffic})$:</span>
+              <span id="valTraffic" class="font-mono font-bold text-brand-600">18%</span>
+            </div>
+            <input type="range" id="sliderTraffic" min="5" max="50" value="18" class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-brand-600">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-medium mb-1">
+              <span>Early Flight Departure $P(\text{Early})$:</span>
+              <span id="valEarly" class="font-mono font-bold text-brand-600">4%</span>
+            </div>
+            <input type="range" id="sliderEarly" min="1" max="15" value="4" class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-brand-600">
+          </div>
+
+          <div>
+            <div class="flex justify-between text-xs font-medium mb-1">
+              <span>Airport Idle Wait Disutility Weight:</span>
+              <span id="valWaitPenalty" class="font-mono font-bold text-brand-600">1.5x</span>
+            </div>
+            <input type="range" id="sliderWait" min="0.5" max="3" step="0.1" value="1.5" class="w-full h-1.5 bg-slate-200 dark:bg-slate-700 rounded-lg appearance-none cursor-pointer accent-brand-600">
+          </div>
+
+          <div class="p-3 bg-amber-50 dark:bg-amber-950/30 rounded-lg border border-amber-200 dark:border-amber-900/60 text-[11px] text-amber-800 dark:text-amber-300">
+            <strong>Meteorite Collision Risk:</strong> $P(\text{Meteorite}) = 0.0000001\%$. The AI model notes this outcome exists in the sample space, but assigns it negligible decision weight.
+          </div>
+        </div>
+
+        <!-- Comparative Simulation Display -->
+        <div class="lg:col-span-2 space-y-4">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            
+            <!-- Plan A: 90 Minutes -->
+            <div id="plan90Card" class="p-4 rounded-xl border-2 border-brand-500 bg-brand-50/30 dark:bg-brand-950/20 transition-all">
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-bold text-sm text-brand-900 dark:text-brand-200">Plan A: Leave 90 Min Ahead</span>
+                <span class="text-xs px-2 py-0.5 rounded-full bg-brand-600 text-white font-semibold">AI Recommendation</span>
+              </div>
+              <ul class="text-xs space-y-1.5 text-slate-700 dark:text-slate-300 mb-3">
+                <li>• Expected Wait at Terminal: <strong id="wait90">~22 mins</strong></li>
+                <li>• Risk of Flight Delay/Miss: <strong id="risk90">1.8%</strong></li>
+                <li>• Expected Total Loss Score: <strong id="loss90" class="text-emerald-600 dark:text-emerald-400 font-mono text-sm">34.2</strong></li>
+              </ul>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 italic">
+                Balances reasonable buffer time without imposing excessive wasted productivity on the customer.
+              </p>
+            </div>
+
+            <!-- Plan B: 180 Minutes -->
+            <div id="plan180Card" class="p-4 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/50 dark:bg-slate-850 transition-all">
+              <div class="flex items-center justify-between mb-2">
+                <span class="font-bold text-sm text-slate-900 dark:text-white">Plan B: Leave 180 Min Ahead</span>
+                <span class="text-xs px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-300 font-semibold">Over-Conservative</span>
+              </div>
+              <ul class="text-xs space-y-1.5 text-slate-700 dark:text-slate-300 mb-3">
+                <li>• Expected Wait at Terminal: <strong id="wait180">~112 mins</strong></li>
+                <li>• Risk of Flight Delay/Miss: <strong id="risk180">0.05%</strong></li>
+                <li>• Expected Total Loss Score: <strong id="loss180" class="text-rose-600 dark:text-rose-400 font-mono text-sm">168.0</strong></li>
+              </ul>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400 italic">
+                Virtually eliminates flight miss risk, but causes a nearly 2-hour unproductive wait penalty.
+              </p>
+            </div>
+
+          </div>
+
+          <!-- Question Prompt -->
+          <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-850 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm space-y-3">
+            <p class="font-semibold text-slate-900 dark:text-white">
+              Analytical Question: Why does the autonomous vehicle agent systematically select the 90-minute departure plan despite traffic uncertainties?
+            </p>
+            <div class="space-y-2 text-xs">
+              <label class="flex items-start gap-2 cursor-pointer p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800">
+                <input type="radio" name="taxiReason" value="A" class="mt-0.5 text-brand-600">
+                <span>A) The agent can guarantee 100% that traffic accidents will not happen.</span>
+              </label>
+              <label class="flex items-start gap-2 cursor-pointer p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800">
+                <input type="radio" name="taxiReason" value="B" class="mt-0.5 text-brand-600">
+                <span>B) The expected loss of a virtually certain 112-minute airport delay heavily outweighs the low probability of a catastrophic road delay when speed limits are obeyed.</span>
+              </label>
+              <label class="flex items-start gap-2 cursor-pointer p-2 rounded hover:bg-slate-100 dark:hover:bg-slate-800">
+                <input type="radio" name="taxiReason" value="C" class="mt-0.5 text-brand-600">
+                <span>C) Russell &amp; Norvig's model ignores all environmental factors including early flight departures.</span>
+              </label>
+            </div>
+            <button id="act2CheckBtn" class="px-4 py-1.5 text-xs font-semibold rounded-lg bg-brand-600 hover:bg-brand-700 text-white transition">
+              Validate AI Decision Rationale
+            </button>
+            <div id="act2Feedback" class="hidden p-2.5 rounded text-xs font-medium"></div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- ACTIVITY 3: ICE CREAM PARLOR & SET THEORY EXPLORER (SECTION 5.2.1)       -->
+    <!-- ========================================================================= -->
+    <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 dark:border-slate-800 space-y-6">
+      <div class="border-b border-slate-100 dark:border-slate-800 pb-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">Activity 3 • Section 5.2.1 &amp; Figure 5.3</span>
+            <h3 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
+              Ice Cream Raffle Set Theory &amp; Venn Diagram Inspector
+            </h3>
+          </div>
+          <span id="act3ScoreBadge" class="px-3 py-1 text-xs font-bold rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+            Calculations: 0 / 5
+          </span>
+        </div>
+        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">
+          An ice cream shop buzzer randomly yields one flavor from the sample space $S$ with 10 equally likely outcomes. Explore the set relations and solve for event probabilities.
+        </p>
+      </div>
+
+      <!-- Set Definitions & Interactive Venn Visualizer -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+        
+        <!-- Left: Sets & Buttons to Highlight -->
+        <div class="lg:col-span-5 space-y-3">
+          <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-xs font-mono space-y-2">
+            <div>
+              <span class="font-bold text-slate-800 dark:text-slate-200">Sample Space $S$:</span>
+              <p class="text-slate-600 dark:text-slate-400 break-words">
+                {Chocolate, FroYo, Honey, Mango, Matcha, Mint, Rocky Road, Strawberry, Vanilla, Vegan}
+              </p>
+            </div>
+            <div class="pt-2 border-t border-slate-200 dark:border-slate-700 space-y-1">
+              <div><strong class="text-blue-600 dark:text-blue-400">Set A (Friend A):</strong> {Chocolate, Mango, Matcha, Mint, Strawberry, Vanilla}</div>
+              <div><strong class="text-pink-600 dark:text-pink-400">Set B (Friend B):</strong> {Chocolate, Honey, Rocky Road, Strawberry, Vanilla}</div>
+              <div><strong class="text-amber-600 dark:text-amber-400">Set C (Friend C):</strong> {FroYo, Honey}</div>
+              <div><strong class="text-purple-600 dark:text-purple-400">Set D (Friend D):</strong> {Rocky Road} <span class="text-[10px] text-slate-400">(Subset of B)</span></div>
+              <div><strong class="text-emerald-600 dark:text-emerald-400">Set E (Friend E):</strong> {Vegan} <span class="text-[10px] text-slate-400">(Disjoint)</span></div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap gap-1.5 text-xs">
+            <span class="text-[11px] font-semibold text-slate-500 dark:text-slate-400 w-full mb-0.5">Filter / Highlight Sets:</span>
+            <button onclick="highlightSet('all')" class="px-2.5 py-1 rounded bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 font-medium">Show All</button>
+            <button onclick="highlightSet('A')" class="px-2.5 py-1 rounded bg-blue-100 text-blue-800 dark:bg-blue-900/60 dark:text-blue-300 font-medium">Set A</button>
+            <button onclick="highlightSet('B')" class="px-2.5 py-1 rounded bg-pink-100 text-pink-800 dark:bg-pink-900/60 dark:text-pink-300 font-medium">Set B</button>
+            <button onclick="highlightSet('A_and_B')" class="px-2.5 py-1 rounded bg-purple-100 text-purple-800 dark:bg-purple-900/60 dark:text-purple-300 font-medium">$A \cap B$</button>
+            <button onclick="highlightSet('B_and_C')" class="px-2.5 py-1 rounded bg-amber-100 text-amber-800 dark:bg-amber-900/60 dark:text-amber-300 font-medium">$B \cap C$</button>
+            <button onclick="highlightSet('E')" class="px-2.5 py-1 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300 font-medium">Set E</button>
+          </div>
+        </div>
+
+        <!-- Right: Interactive SVG Venn Diagram -->
+        <div class="lg:col-span-7 bg-slate-50 dark:bg-slate-800/40 p-4 rounded-xl border border-slate-200 dark:border-slate-700 flex flex-col items-center">
+          <div class="w-full flex justify-between items-center text-xs text-slate-500 mb-2">
+            <span class="font-mono">Figure 5.3 Interactive Venn Representation</span>
+            <span class="italic text-[11px] text-slate-400">Click regions to inspect elements</span>
+          </div>
+          
+          <svg viewBox="0 0 540 290" class="w-full h-auto max-w-lg select-none">
+            <!-- Sample Space Bounding Box -->
+            <rect x="10" y="10" width="520" height="270" rx="14" class="fill-slate-100 dark:fill-slate-850 stroke-slate-300 dark:stroke-slate-700" stroke-width="2"/>
+            <text x="25" y="32" class="fill-slate-500 dark:fill-slate-400 font-mono text-xs font-bold">Sample Space S (|S| = 10)</text>
+
+            <!-- Circle A (Blue) -->
+            <circle id="vennCircleA" cx="160" cy="140" r="100" class="fill-blue-500/15 stroke-blue-500 transition-all duration-300 cursor-pointer" stroke-width="2" onclick="highlightSet('A')"/>
+            <text x="90" y="80" class="fill-blue-600 dark:fill-blue-400 font-bold text-xs pointer-events-none">Set A (|A|=6)</text>
+            
+            <!-- Unique to A elements -->
+            <g id="elemsA" class="text-[10px] font-mono fill-blue-800 dark:fill-blue-200 font-medium">
+              <text x="95" y="125">Mango</text>
+              <text x="90" y="145">Matcha</text>
+              <text x="105" y="165">Mint</text>
+            </g>
+
+            <!-- Circle B (Pink) -->
+            <circle id="vennCircleB" cx="280" cy="140" r="100" class="fill-pink-500/15 stroke-pink-500 transition-all duration-300 cursor-pointer" stroke-width="2" onclick="highlightSet('B')"/>
+            <text x="325" y="80" class="fill-pink-600 dark:fill-pink-400 font-bold text-xs pointer-events-none">Set B (|B|=5)</text>
+
+            <!-- Intersection A and B (Purple lens) -->
+            <g id="elemsAB" class="text-[9px] font-mono fill-purple-900 dark:fill-purple-200 font-bold">
+              <text x="200" y="120">Chocolate</text>
+              <text x="198" y="140">Strawberry</text>
+              <text x="206" y="160">Vanilla</text>
+            </g>
+
+            <!-- Subset D inside B (Grey/Mauve) -->
+            <circle id="vennCircleD" cx="295" cy="195" r="24" class="fill-purple-300/30 stroke-purple-500 stroke-dasharray-2 cursor-pointer" stroke-width="1.5" onclick="highlightSet('D')"/>
+            <text x="277" y="198" class="text-[8px] font-mono fill-purple-800 dark:fill-purple-200 font-semibold pointer-events-none">D: Rocky road</text>
+
+            <!-- Circle C (Yellow) overlapping B -->
+            <circle id="vennCircleC" cx="390" cy="140" r="55" class="fill-amber-500/20 stroke-amber-500 transition-all duration-300 cursor-pointer" stroke-width="2" onclick="highlightSet('C')"/>
+            <text x="385" y="105" class="fill-amber-600 dark:fill-amber-400 font-bold text-xs pointer-events-none">Set C</text>
+            <text x="400" y="145" class="text-[10px] font-mono fill-amber-800 dark:fill-amber-200 font-medium">FroYo</text>
+            
+            <!-- Intersection B and C: Honey -->
+            <text id="elemBC" x="338" y="142" class="text-[9px] font-mono fill-amber-700 dark:fill-amber-300 font-bold cursor-pointer" onclick="highlightSet('B_and_C')">Honey</text>
+
+            <!-- Disjoint Set E (Vegan) -->
+            <circle id="vennCircleE" cx="470" cy="225" r="32" class="fill-emerald-500/20 stroke-emerald-500 transition-all duration-300 cursor-pointer" stroke-width="2" onclick="highlightSet('E')"/>
+            <text x="450" y="210" class="fill-emerald-600 dark:fill-emerald-400 font-bold text-[10px] pointer-events-none">Set E</text>
+            <text x="455" y="230" class="text-[9px] font-mono fill-emerald-800 dark:fill-emerald-200 font-bold pointer-events-none">Vegan</text>
+          </svg>
+          <div id="vennInspectorText" class="mt-2 text-xs font-mono text-slate-700 dark:text-slate-300 text-center min-h-[20px]">
+            Hover or click any set button to examine membership properties.
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Probability Calculations Test -->
+      <div class="pt-4 border-t border-slate-100 dark:border-slate-800 space-y-4">
+        <h4 class="text-sm font-bold text-slate-900 dark:text-white">
+          Step-by-Step Probability Calculations:
+        </h4>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3 text-xs">
+          
+          <!-- Q1: |S| -->
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+            <label class="font-semibold text-slate-700 dark:text-slate-300 mb-1">1. Sample Space $|S|$:</label>
+            <input type="number" id="calcS" placeholder="Value?" class="p-1.5 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 font-mono text-center mb-1">
+            <span id="feedbackS" class="text-[11px] font-medium text-slate-400">Total outcomes</span>
+          </div>
+
+          <!-- Q2: |A ∩ B| -->
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+            <label class="font-semibold text-slate-700 dark:text-slate-300 mb-1">2. Cardinality $|A \cap B|$:</label>
+            <input type="number" id="calcAB" placeholder="Count?" class="p-1.5 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 font-mono text-center mb-1">
+            <span id="feedbackAB" class="text-[11px] font-medium text-slate-400">Shared elements</span>
+          </div>
+
+          <!-- Q3: P(A) -->
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+            <label class="font-semibold text-slate-700 dark:text-slate-300 mb-1">3. Probability $P(A)$:</label>
+            <input type="text" id="calcPA" placeholder="e.g. 0.6 or 6/10" class="p-1.5 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 font-mono text-center mb-1">
+            <span id="feedbackPA" class="text-[11px] font-medium text-slate-400">$|A| / |S|$</span>
+          </div>
+
+          <!-- Q4: P(A ∩ B) -->
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+            <label class="font-semibold text-slate-700 dark:text-slate-300 mb-1">4. Joint $P(A \cap B)$:</label>
+            <input type="text" id="calcPAB" placeholder="e.g. 0.3 or 3/10" class="p-1.5 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 font-mono text-center mb-1">
+            <span id="feedbackPAB" class="text-[11px] font-medium text-slate-400">Joint likelihood</span>
+          </div>
+
+          <!-- Q5: P(B ∪ C) -->
+          <div class="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700 flex flex-col justify-between">
+            <label class="font-semibold text-slate-700 dark:text-slate-300 mb-1">5. Union $P(B \cup C)$:</label>
+            <input type="text" id="calcPUBC" placeholder="e.g. 0.6" class="p-1.5 rounded border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 font-mono text-center mb-1">
+            <span id="feedbackPUBC" class="text-[11px] font-medium text-slate-400">Inclusion-Exclusion</span>
+          </div>
+
+        </div>
+
+        <div class="flex items-center gap-3">
+          <button id="act3CheckBtn" class="px-4 py-2 text-xs font-semibold rounded-lg bg-brand-600 hover:bg-brand-700 text-white transition">
+            Check Set Probability Answers
+          </button>
+          <div id="act3Summary" class="text-xs font-medium text-slate-600 dark:text-slate-400"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- ACTIVITY 4: PROBABILITY RULE MATCHER (DRAG & DROP MATCHING)               -->
+    <!-- ========================================================================= -->
+    <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 dark:border-slate-800 space-y-5">
+      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-4">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-emerald-600 dark:text-emerald-400">Activity 4 • Reference Box 5.2.2</span>
+          <h3 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
+            Probability Axiom &amp; Event Value Matcher
+          </h3>
+        </div>
+        <div class="flex items-center gap-2">
+          <button id="act4ResetBtn" class="px-3 py-1 text-xs font-medium rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+            Reset Matches
+          </button>
+          <span id="act4ScoreBadge" class="px-3 py-1 text-xs font-bold rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+            Score: 0 / 6
+          </span>
+        </div>
+      </div>
+
+      <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+        Drag each probability numerical value from the bank into its mathematically corresponding probability event card.
+      </p>
+
+      <!-- Numerical Value Bank -->
+      <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700/60 flex flex-wrap items-center gap-3">
+        <span class="text-xs font-semibold uppercase text-slate-400 dark:text-slate-500">Value Tokens:</span>
+        <div id="act4ValueBank" class="flex flex-wrap gap-2">
+          <!-- Tokens injected by JS -->
+        </div>
+      </div>
+
+      <!-- Target Cards Grid -->
+      <div id="act4TargetGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- Target slots dynamically generated -->
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- ACTIVITY 5: SENSOR FUSION & ROBOTIC RECOGNITION (FIGURE 5.2)             -->
+    <!-- ========================================================================= -->
+    <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 dark:border-slate-800 space-y-5">
+      <div class="border-b border-slate-100 dark:border-slate-800 pb-4">
+        <span class="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">Activity 5 • Real-World AI Perception &amp; Figure 5.2</span>
+        <h3 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
+          Autonomous Robotic Sensor Fusion &amp; Union Probability
+        </h3>
+        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">
+          Robotic agents like the <strong>Vision 60 Q-UGV ground robot</strong> and <strong>Heathrow UVD disinfecting robots</strong> rely on sensor redundancy to guarantee obstacle detection.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+        <!-- Narrative & Formulation -->
+        <div class="space-y-3 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+          <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-1.5 font-mono text-xs">
+            <div class="flex justify-between">
+              <span>• Optical Camera Obstacle Detection $P(C)$:</span>
+              <strong class="text-brand-600 dark:text-brand-400">0.85</strong>
+            </div>
+            <div class="flex justify-between">
+              <span>• LiDAR Rangefinder Obstacle Detection $P(L)$:</span>
+              <strong class="text-brand-600 dark:text-brand-400">0.90</strong>
+            </div>
+            <div class="flex justify-between">
+              <span>• Simultaneous Co-Detection $P(C \cap L)$:</span>
+              <strong class="text-brand-600 dark:text-brand-400">0.80</strong>
+            </div>
+          </div>
+
+          <p>
+            When an obstacle appears on the simulated desert patrol route, safe navigation requires that <strong>at least one sensor</strong> successfully identifies the hazard.
+          </p>
+          <div class="p-2.5 rounded-lg bg-brand-50 dark:bg-brand-950/40 border border-brand-200 dark:border-brand-900 text-xs text-brand-900 dark:text-brand-200 font-mono">
+            Axiom (5.2): $P(C \cup L) = P(C) + P(L) - P(C \cap L)$
+          </div>
+        </div>
+
+        <!-- Calculation Input & Real-Time Feedback -->
+        <div class="p-5 rounded-xl bg-slate-50 dark:bg-slate-800/40 border border-slate-200 dark:border-slate-700 space-y-4">
+          <label class="block text-xs font-semibold text-slate-700 dark:text-slate-300">
+            What is the combined probability $P(C \cup L)$ that the autonomous robot detects the obstacle using sensor fusion?
+          </label>
+          <div class="flex items-center gap-3">
+            <input 
+              type="number" 
+              step="0.01" 
+              id="sensorFusionInput" 
+              placeholder="e.g. 0.95" 
+              class="w-32 p-2 rounded-lg border border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 font-mono text-sm focus:outline-none focus:ring-2 focus:ring-brand-500"
+            />
+            <button id="sensorFusionBtn" class="px-4 py-2 text-xs font-semibold rounded-lg bg-brand-600 hover:bg-brand-700 text-white transition">
+              Verify Sensor Fusion
+            </button>
+          </div>
+          <div id="sensorFusionFeedback" class="hidden text-xs p-3 rounded-lg font-medium"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- ACTIVITY 6: STEP-BY-STEP INCLUSION-EXCLUSION LOGIC RECONSTRUCTION       -->
+    <!-- ========================================================================= -->
+    <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 dark:border-slate-800 space-y-5">
+      <div class="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 dark:border-slate-800 pb-4">
+        <div>
+          <span class="text-xs font-bold uppercase tracking-wider text-accent-600 dark:text-accent-400">Activity 6 • Mathematical Proof Flow</span>
+          <h3 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
+            Logic Reconstruction: The Inclusion-Exclusion Principle
+          </h3>
+        </div>
+        <span id="act6ScoreBadge" class="px-3 py-1 text-xs font-bold rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+          Order: Unchecked
+        </span>
+      </div>
+
+      <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400">
+        Why must we subtract $P(B \cap C)$ in Equation (5.2): $P(B \cup C) = P(B) + P(C) - P(B \cap C)$? Arrange the 4 logical statements into their correct deductive sequence using the &uarr; and &darr; arrows.
+      </p>
+
+      <div id="act6List" class="space-y-2.5">
+        <!-- Reorderable Items will be rendered here by JS -->
+      </div>
+
+      <div class="flex items-center gap-3 pt-2">
+        <button id="act6VerifyBtn" class="px-4 py-2 text-xs font-semibold rounded-lg bg-accent-600 hover:bg-accent-700 text-white transition">
+          Verify Proof Sequence
+        </button>
+        <button id="act6ShuffleBtn" class="px-3 py-2 text-xs font-medium rounded-lg border border-slate-300 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-800 transition">
+          Shuffle
+        </button>
+        <div id="act6Feedback" class="hidden text-xs font-medium p-2 rounded"></div>
+      </div>
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- ACTIVITY 7: TAKE PHOTOGRAPH OF WRITTEN SOLUTION (MANDATORY PHOTO UPLOAD)  -->
+    <!-- ========================================================================= -->
+    <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 sm:p-8 shadow-sm border-2 border-brand-500/80 dark:border-brand-500/60 space-y-6 relative overflow-hidden">
+      <!-- Glow decoration -->
+      <div class="absolute -right-16 -top-16 w-48 h-48 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="border-b border-slate-100 dark:border-slate-800 pb-4">
+        <div class="flex flex-wrap items-center justify-between gap-2">
+          <div class="flex items-center gap-2">
+            <span class="p-1.5 rounded-lg bg-brand-600 text-white">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            </span>
+            <span class="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">Activity 7 • Handwritten Paper Submission (Core Requirement)</span>
+          </div>
+          <span id="photoUploadBadge" class="px-3 py-1 text-xs font-bold rounded-lg bg-rose-100 text-rose-800 dark:bg-rose-950/70 dark:text-rose-400">
+            Photo Required
+          </span>
+        </div>
+        <h3 class="text-xl sm:text-2xl font-black text-slate-900 dark:text-white mt-2">
+          TAKE PHOTOGRAPH OF WRITTEN SOLUTION
+        </h3>
+        <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-400 mt-1">
+          Complete the mathematical derivation below on a blank sheet of paper, write your <strong>Student ID</strong> at the top, take a photo (JPG or PNG), and drag/drop it into the dropzone.
+        </p>
+      </div>
+
+      <!-- Problem Prompt Card -->
+      <div class="p-4 sm:p-5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 text-xs sm:text-sm space-y-3">
+        <div class="font-bold text-slate-900 dark:text-white flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-brand-600"></span>
+          Handwritten Problem Specifications:
+        </div>
+        <p class="text-slate-700 dark:text-slate-300 leading-relaxed">
+          Consider the Ice Cream Parlor sample space $S$ with 10 flavors from Section 5.2.1. Suppose we define a new friend's preference set:
+          <br>
+          <code class="font-mono font-bold text-brand-600 dark:text-brand-400 bg-white dark:bg-slate-900 px-2 py-0.5 rounded border border-slate-200 dark:border-slate-700 inline-block my-1">
+            F = {Mango, Matcha, Vegan, FroYo}
+          </code>
+        </p>
+        <ol class="list-decimal list-inside space-y-1.5 text-slate-700 dark:text-slate-300 font-medium pl-1">
+          <li>Draw a 3-set hand-drawn Venn Diagram clearly sketching sets $A$, $B$, and $F$ inside bounding sample space box $S$.</li>
+          <li>Find the explicit elements of $A \cap F$ and compute its probability $P(A \cap F)$.</li>
+          <li>Show step-by-step arithmetic applying Inclusion-Exclusion to calculate $P(A \cup F) = P(A) + P(F) - P(A \cap F)$.</li>
+          <li>Determine whether $F$ and $E$ are disjoint or overlapping, and state $P(F \cap E)$.</li>
+          <li>Print your <strong>STUDENT ID</strong> and the date clearly at the top right corner of the paper before snapping the photo.</li>
+        </ol>
+      </div>
+
+      <!-- Drag & Drop Photo Upload Zone -->
+      <div 
+        id="photoDropZone"
+        class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-6 sm:p-8 text-center bg-slate-50/50 dark:bg-slate-850 hover:bg-slate-100/60 dark:hover:bg-slate-800/60 transition-all cursor-pointer flex flex-col items-center justify-center min-h-[220px]"
+      >
+        <input 
+          type="file" 
+          id="photoFileInput" 
+          accept="image/png, image/jpeg, image/jpg" 
+          class="hidden"
+        />
+
+        <!-- Empty State UI -->
+        <div id="dropEmptyState" class="space-y-3 flex flex-col items-center">
+          <div class="w-14 h-14 rounded-full bg-brand-100 dark:bg-brand-950/70 text-brand-600 dark:text-brand-400 flex items-center justify-center">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+            </svg>
+          </div>
+          <div>
+            <p class="text-sm sm:text-base font-bold text-slate-800 dark:text-slate-200">
+              Drag and drop your photo here, or <span class="text-brand-600 dark:text-brand-400 underline">browse files</span>
+            </p>
+            <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">
+              Supports PNG, JPG, or JPEG (Camera photos welcome)
+            </p>
+          </div>
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-semibold bg-brand-50 text-brand-700 dark:bg-brand-900/40 dark:text-brand-300 border border-brand-200 dark:border-brand-800">
+            Will be packaged as SOLUTION-UNIT5-[StudentID].[ext]
+          </span>
+        </div>
+
+        <!-- Preview State UI -->
+        <div id="dropPreviewState" class="hidden w-full max-w-md flex flex-col items-center space-y-3">
+          <div class="relative group rounded-xl overflow-hidden border-2 border-brand-500 shadow-lg">
+            <img id="solutionImgPreview" src="" alt="Written Solution Preview" class="max-h-64 object-contain bg-slate-900 rounded-lg"/>
+            <div class="absolute inset-0 bg-slate-950/60 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-3">
+              <button id="replacePhotoBtn" type="button" class="px-3 py-1.5 rounded-lg bg-white/90 text-slate-900 text-xs font-bold hover:bg-white transition">
+                Replace Photo
+              </button>
+              <button id="removePhotoBtn" type="button" class="px-3 py-1.5 rounded-lg bg-rose-600 text-white text-xs font-bold hover:bg-rose-700 transition">
+                Remove
+              </button>
+            </div>
+          </div>
+          <div class="text-xs text-center">
+            <span id="previewFileName" class="font-mono font-bold text-slate-800 dark:text-slate-200 block"></span>
+            <span id="previewFileSize" class="text-slate-500 dark:text-slate-400 font-mono"></span>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+    <!-- ========================================================================= -->
+    <!-- ACTIVITY 8: CRITICAL AI REASONING & ETHICS SYNTHESIS                     -->
+    <!-- ========================================================================= -->
+    <section class="bg-white dark:bg-slate-900 rounded-2xl p-6 sm:p-8 shadow-sm border border-slate-200 dark:border-slate-800 space-y-4">
+      <div class="border-b border-slate-100 dark:border-slate-800 pb-3">
+        <span class="text-xs font-bold uppercase tracking-wider text-brand-600 dark:text-brand-400">Activity 8 • Data Debate 5.2.2</span>
+        <h3 class="text-lg sm:text-xl font-bold text-slate-900 dark:text-white">
+          AI Autonomous Vehicle Edge Cases &amp; Probabilistic Dilemmas
+        </h3>
+      </div>
+      <p class="text-xs sm:text-sm text-slate-700 dark:text-slate-300 leading-relaxed">
+        Section 5.2 introduces critical edge cases faced by autonomous vehicles: <em>"Will a pedestrian cross the road when the light is green? Will the car ahead brake suddenly? Is the road surface slippery?"</em>
+      </p>
+      <div>
+        <label for="aiEthicsTextarea" class="block text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1.5">
+          Student Reflection (Minimum 100 characters): How does a probabilistic model safeguard human lives better than a deterministic system when unexpected sensor noise or erratic pedestrian behaviors occur?
+        </label>
+        <textarea 
+          id="aiEthicsTextarea" 
+          rows="4" 
+          placeholder="Articulate how continuous probability distributions, confidence intervals, and margin-of-error bounds allow the vehicle's planner to enact defensive deceleration even before an event is 100% certain..."
+          class="w-full p-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-brand-500 transition"
+        ></textarea>
+        <div class="flex justify-between items-center text-[11px] text-slate-500 mt-1">
+          <span id="charCountNotice">Character count: 0 (Min 100 recommended)</span>
+          <span id="charStatus" class="font-medium text-amber-600 dark:text-amber-400">Incomplete</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ASSIGNMENT SUBMISSION BANNER / DUAL DOWNLOAD TRIGGER -->
+    <section class="bg-gradient-to-br from-slate-900 via-brand-950 to-slate-900 text-white rounded-2xl p-6 sm:p-8 shadow-xl border border-brand-500/30 space-y-4">
+      <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="space-y-1.5 text-center md:text-left">
+          <span class="text-xs font-mono uppercase tracking-widest text-brand-400 font-bold">Official Assignment Verification</span>
+          <h3 class="text-xl sm:text-2xl font-black">
+            Ready to Submit Unit 5 Assignment?
+          </h3>
+          <p class="text-xs sm:text-sm text-slate-300 max-w-xl">
+            Clicking below validates all 8 activities, packages your complete interactive work, generates your formatted <code class="text-brand-300 font-mono">ASSIGNMENT-UNIT5-[StudentID].md</code> report, and automatically downloads your handwritten solution photograph as <code class="text-brand-300 font-mono">SOLUTION-UNIT5-[StudentID].[ext]</code>.
+          </p>
+        </div>
+
+        <button 
+          id="submitAssignmentBtn" 
+          class="w-full md:w-auto px-8 py-4 rounded-xl bg-gradient-to-r from-brand-500 to-accent-600 hover:from-brand-600 hover:to-accent-700 text-white font-bold text-base shadow-lg shadow-brand-500/30 transform hover:-translate-y-0.5 active:translate-y-0 transition-all flex items-center justify-center gap-3 flex-shrink-0"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+          </svg>
+          <span>SUBMIT ASSIGNMENT</span>
+        </button>
+      </div>
+
+      <!-- Submission alerts/warnings area -->
+      <div id="submissionAlertArea" class="hidden p-3 rounded-lg text-xs font-semibold"></div>
+    </section>
+
+  </main>
+
+  <!-- SUBMISSION SUCCESS RECEIPT MODAL -->
+  <div id="receiptModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 backdrop-blur-sm p-4 hidden">
+    <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl space-y-6 max-h-[90vh] overflow-y-auto">
+      
+      <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-full bg-emerald-100 dark:bg-emerald-950/70 text-emerald-600 dark:text-emerald-400 flex items-center justify-center">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+          </div>
+          <div>
+            <h3 class="text-lg font-bold text-slate-900 dark:text-white">Assignment Submitted Successfully!</h3>
+            <p class="text-xs text-slate-500 font-mono" id="receiptTimestamp"></p>
+          </div>
+        </div>
+        <button onclick="closeReceiptModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-white p-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+
+      <!-- Receipt Body Info -->
+      <div class="space-y-4 text-xs sm:text-sm text-slate-700 dark:text-slate-300">
+        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700 space-y-2">
+          <div class="flex justify-between">
+            <span class="text-slate-500">Student ID Tag:</span>
+            <span id="receiptStudentId" class="font-mono font-bold text-brand-600 dark:text-brand-400"></span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">Coursebook:</span>
+            <span class="font-semibold text-right">Statistics &amp; Data Foundations for AI (CRC Press, 2026)</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500">Overall Activity Score:</span>
+            <span id="receiptOverallScore" class="font-bold text-emerald-600 dark:text-emerald-400 font-mono text-base"></span>
+          </div>
+        </div>
+
+        <div class="space-y-2">
+          <span class="font-bold text-slate-900 dark:text-white block">Generated Artifacts:</span>
+          <div class="p-3 rounded-lg bg-brand-50 dark:bg-brand-950/40 border border-brand-200 dark:border-brand-900 flex items-center justify-between text-xs">
+            <span class="font-mono font-semibold text-brand-900 dark:text-brand-300" id="receiptMdName">ASSIGNMENT-UNIT5.md</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-bold">Downloaded ✓</span>
+          </div>
+          <div class="p-3 rounded-lg bg-accent-50 dark:bg-accent-950/40 border border-accent-200 dark:border-accent-900 flex items-center justify-between text-xs">
+            <span class="font-mono font-semibold text-accent-900 dark:text-accent-300" id="receiptImgName">SOLUTION-UNIT5.jpg</span>
+            <span class="text-emerald-600 dark:text-emerald-400 font-bold" id="receiptImgStatus">Downloaded ✓</span>
+          </div>
+        </div>
+
+        <!-- Markdown Copy Shortcut -->
+        <div>
+          <button id="copyMarkdownBtn" class="w-full py-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-750 text-xs font-semibold flex items-center justify-center gap-2 transition">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"></path></svg>
+            <span id="copyBtnText">Copy Markdown Report to Clipboard</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="flex justify-end pt-2">
+        <button onclick="closeReceiptModal()" class="px-5 py-2 text-xs font-semibold rounded-lg bg-slate-900 dark:bg-white text-white dark:text-slate-900 hover:opacity-90 transition">
+          Close Window
+        </button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- APPLICATION JAVASCRIPT LOGIC -->
+  <script>
+    /* ========================================================================= */
+    /* STATE MANAGEMENT                                                          */
+    /* ========================================================================= */
+    const appState = {
+      studentId: '',
+      studentPhotoFile: null,
+      studentPhotoDataUrl: '',
+      theme: 'light',
+      fontSize: 16,
+      act1Score: 0,
+      act2Answer: '',
+      act2Correct: false,
+      act3Calculations: { S: false, AB: false, PA: false, PAB: false, PUBC: false },
+      act4Matches: {},
+      act5Answer: '',
+      act5Correct: false,
+      act6Order: [0, 1, 2, 3],
+      act6Correct: false,
+      act8Text: '',
+      generatedMarkdown: ''
+    };
+
+    /* ========================================================================= */
+    /* THEME & FONT SIZE INITIALIZATION                                          */
+    /* ========================================================================= */
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const themeIconSun = document.getElementById('themeIconSun');
+    const themeIconMoon = document.getElementById('themeIconMoon');
+    const fontSizeSlider = document.getElementById('fontSizeSlider');
+    const studentIdInput = document.getElementById('studentIdInput');
+    const studentIdStatus = document.getElementById('studentIdStatus');
+
+    function applyTheme(isDark) {
+      if (isDark) {
+        document.documentElement.classList.add('dark');
+        themeIconSun.classList.remove('hidden');
+        themeIconMoon.classList.add('hidden');
+        appState.theme = 'dark';
+      } else {
+        document.documentElement.classList.remove('dark');
+        themeIconSun.classList.add('hidden');
+        themeIconMoon.classList.remove('hidden');
+        appState.theme = 'light';
+      }
+    }
+
+    themeToggleBtn.addEventListener('click', () => {
+      applyTheme(!document.documentElement.classList.contains('dark'));
+    });
+
+    fontSizeSlider.addEventListener('input', (e) => {
+      const size = e.target.value;
+      appState.fontSize = size;
+      document.documentElement.style.setProperty('--app-font-size', size + 'px');
+    });
+
+    studentIdInput.addEventListener('input', (e) => {
+      const val = e.target.value.trim();
+      appState.studentId = val;
+      if (val.length >= 3) {
+        studentIdStatus.textContent = 'ID Validated';
+        studentIdStatus.className = 'ml-2 text-xs font-semibold px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300';
+      } else {
+        studentIdStatus.textContent = 'ID Needed';
+        studentIdStatus.className = 'ml-2 text-xs font-semibold px-2 py-0.5 rounded bg-rose-100 text-rose-700 dark:bg-rose-950/60 dark:text-rose-400';
+      }
+    });
+
+    /* ========================================================================= */
+    /* ACTIVITY 1: CARD SORTING (DETERMINISTIC VS PROBABILISTIC)                 */
+    /* ========================================================================= */
+    const act1Scenarios = [
+      { id: 'c1', text: 'A bowling ball dropped from 2 meters accelerates to the ground at 9.8 m/s²', type: 'deterministic' },
+      { id: 'c2', text: 'Google Lexus RX 450h predicting if a pedestrian on the curb will cross on green', type: 'probabilistic' },
+      { id: 'c3', text: 'The sun rises in the east tomorrow morning on planet Earth', type: 'deterministic' },
+      { id: 'c4', text: 'Pre-game coin toss ceremony landing heads during an NFL football match', type: 'probabilistic' },
+      { id: 'c5', text: 'Vision 60 Q-UGV ground quadruped computing terrain traction on slick desert rock', type: 'probabilistic' },
+      { id: 'c6', text: 'A biological human surviving for 24 hours in deep water with zero oxygen', type: 'deterministic' }
+    ];
+
+    let act1SelectedCardEl = null;
+
+    function initActivity1() {
+      const pool = document.getElementById('act1SourcePool');
+      pool.innerHTML = '';
+      document.querySelector('#dropZoneDeterministic .card-slot').innerHTML = '';
+      document.querySelector('#dropZoneProbabilistic .card-slot').innerHTML = '';
+      updateDropZoneCounts();
+
+      act1Scenarios.forEach(sc => {
+        const card = document.createElement('div');
+        card.id = sc.id;
+        card.dataset.type = sc.type;
+        card.draggable = true;
+        card.className = 'act1-card p-2.5 rounded-lg border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-800 text-xs font-medium text-slate-800 dark:text-slate-200 shadow-xs hover:shadow-md cursor-grab active:cursor-grabbing transition-all select-none max-w-sm';
+        card.innerHTML = `<span class="inline-block w-1.5 h-1.5 rounded-full bg-brand-500 mr-1.5"></span>${sc.text}`;
+
+        // Drag Events
+        card.addEventListener('dragstart', (e) => {
+          e.dataTransfer.setData('text/plain', sc.id);
+          card.classList.add('opacity-50');
+        });
+        card.addEventListener('dragend', () => {
+          card.classList.remove('opacity-50');
+        });
+
+        // Touch / Click fallback
+        card.addEventListener('click', (e) => {
+          e.stopPropagation();
+          if (act1SelectedCardEl === card) {
+            card.classList.remove('card-touch-selected');
+            act1SelectedCardEl = null;
+          } else {
+            if (act1SelectedCardEl) act1SelectedCardEl.classList.remove('card-touch-selected');
+            act1SelectedCardEl = card;
+            card.classList.add('card-touch-selected');
+          }
+        });
+
+        pool.appendChild(card);
+      });
+
+      checkActivity1Score();
+    }
+
+    // Drop Zones setup
+    ['dropZoneDeterministic', 'dropZoneProbabilistic'].forEach(zoneId => {
+      const zone = document.getElementById(zoneId);
+      const slot = zone.querySelector('.card-slot');
+
+      zone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        zone.classList.add('drop-zone-active');
+      });
+
+      zone.addEventListener('dragleave', () => {
+        zone.classList.remove('drop-zone-active');
+      });
+
+      zone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        zone.classList.remove('drop-zone-active');
+        const cardId = e.dataTransfer.getData('text/plain');
+        const card = document.getElementById(cardId);
+        if (card) {
+          slot.appendChild(card);
+          updateDropZoneCounts();
+          checkActivity1Score();
+        }
+      });
+
+      // Click to place selected card
+      zone.addEventListener('click', () => {
+        if (act1SelectedCardEl) {
+          slot.appendChild(act1SelectedCardEl);
+          act1SelectedCardEl.classList.remove('card-touch-selected');
+          act1SelectedCardEl = null;
+          updateDropZoneCounts();
+          checkActivity1Score();
+        }
+      });
+    });
+
+    function updateDropZoneCounts() {
+      const detCount = document.querySelectorAll('#dropZoneDeterministic .act1-card').length;
+      const probCount = document.querySelectorAll('#dropZoneProbabilistic .act1-card').length;
+      document.getElementById('detCount').textContent = detCount;
+      document.getElementById('probCount').textContent = probCount;
+    }
+
+    function checkActivity1Score() {
+      let score = 0;
+      const detCards = document.querySelectorAll('#dropZoneDeterministic .act1-card');
+      const probCards = document.querySelectorAll('#dropZoneProbabilistic .act1-card');
+
+      detCards.forEach(c => {
+        if (c.dataset.type === 'deterministic') score++;
+      });
+      probCards.forEach(c => {
+        if (c.dataset.type === 'probabilistic') score++;
+      });
+
+      appState.act1Score = score;
+      document.getElementById('act1ScoreBadge').textContent = `Score: ${score} / 6`;
+      
+      const feedback = document.getElementById('act1Feedback');
+      if (detCards.length + probCards.length === 6) {
+        feedback.classList.remove('hidden');
+        if (score === 6) {
+          feedback.className = 'p-3 rounded-lg text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300';
+          feedback.textContent = 'Flawless! You correctly differentiated deterministic physical laws (Uncertainty ≈ 0) from probabilistic events requiring AI perception.';
+        } else {
+          feedback.className = 'p-3 rounded-lg text-xs font-semibold bg-amber-100 text-amber-800 dark:bg-amber-950 dark:text-amber-300';
+          feedback.textContent = `You have ${score} out of 6 correctly placed. Remember: deterministic outcomes are known with near-absolute certainty without stochastic variance.`;
+        }
+      } else {
+        feedback.classList.add('hidden');
+      }
+    }
+
+    document.getElementById('act1ResetBtn').addEventListener('click', initActivity1);
+
+    /* ========================================================================= */
+    /* ACTIVITY 2: TAXI AIRPORT SIMULATOR                                        */
+    /* ========================================================================= */
+    const sliderTraffic = document.getElementById('sliderTraffic');
+    const sliderEarly = document.getElementById('sliderEarly');
+    const sliderWait = document.getElementById('sliderWait');
+
+    function updateTaxiSimulation() {
+      const traffic = parseInt(sliderTraffic.value);
+      const early = parseInt(sliderEarly.value);
+      const waitWeight = parseFloat(sliderWait.value);
+
+      document.getElementById('valTraffic').textContent = `${traffic}%`;
+      document.getElementById('valEarly').textContent = `${early}%`;
+      document.getElementById('valWaitPenalty').textContent = `${waitWeight.toFixed(1)}x`;
+
+      // Dynamic calculation
+      const waitTime90 = Math.max(10, Math.round(30 - (traffic * 0.4)));
+      const riskMiss90 = (traffic * 0.08 + early * 0.1).toFixed(1);
+      const loss90 = (waitTime90 * waitWeight * 0.4 + riskMiss90 * 10).toFixed(1);
+
+      const waitTime180 = Math.max(60, Math.round(125 - (traffic * 0.4)));
+      const riskMiss180 = (0.01 + early * 0.01).toFixed(2);
+      const loss180 = (waitTime180 * waitWeight * 0.9 + riskMiss180 * 10).toFixed(1);
+
+      document.getElementById('wait90').textContent = `~${waitTime90} mins`;
+      document.getElementById('risk90').textContent = `${riskMiss90}%`;
+      document.getElementById('loss90').textContent = loss90;
+
+      document.getElementById('wait180').textContent = `~${waitTime180} mins`;
+      document.getElementById('risk180').textContent = `${riskMiss180}%`;
+      document.getElementById('loss180').textContent = loss180;
+    }
+
+    sliderTraffic.addEventListener('input', updateTaxiSimulation);
+    sliderEarly.addEventListener('input', updateTaxiSimulation);
+    sliderWait.addEventListener('input', updateTaxiSimulation);
+
+    document.getElementById('act2CheckBtn').addEventListener('click', () => {
+      const selected = document.querySelector('input[name="taxiReason"]:checked');
+      const feedback = document.getElementById('act2Feedback');
+      feedback.classList.remove('hidden');
+
+      if (!selected) {
+        feedback.className = 'p-2.5 rounded text-xs font-semibold bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300';
+        feedback.textContent = 'Please select an answer choice before validating.';
+        return;
+      }
+
+      appState.act2Answer = selected.value;
+      if (selected.value === 'B') {
+        appState.act2Correct = true;
+        feedback.className = 'p-2.5 rounded text-xs font-semibold bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300';
+        feedback.textContent = 'Correct! Probabilistic reasoning balances the high certainty of an unproductive 2-hour wait penalty against low-probability traffic delays.';
+      } else {
+        appState.act2Correct = false;
+        feedback.className = 'p-2.5 rounded text-xs font-semibold bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300';
+        feedback.textContent = 'Incorrect. Review Example 5.1.1: Bounded rationality and expected utility penalize excessive guaranteed idle airport time.';
+      }
+    });
+
+    /* ========================================================================= */
+    /* ACTIVITY 3: VENN DIAGRAM & SET CALCULATIONS                               */
+    /* ========================================================================= */
+    function highlightSet(setName) {
+      const insp = document.getElementById('vennInspectorText');
+      const circleA = document.getElementById('vennCircleA');
+      const circleB = document.getElementById('vennCircleB');
+      const circleC = document.getElementById('vennCircleC');
+      const circleD = document.getElementById('vennCircleD');
+      const circleE = document.getElementById('vennCircleE');
+
+      // Reset opacities
+      [circleA, circleB, circleC, circleD, circleE].forEach(c => {
+        c.style.opacity = '1';
+        c.style.strokeWidth = '2';
+      });
+
+      if (setName === 'all') {
+        insp.textContent = 'Showing full Sample Space S (10 mutually distinct flavors).';
+      } else if (setName === 'A') {
+        circleB.style.opacity = '0.35';
+        circleC.style.opacity = '0.35';
+        circleE.style.opacity = '0.35';
+        insp.textContent = 'Set A = {Chocolate, Mango, Matcha, Mint, Strawberry, Vanilla} -> Cardinality |A| = 6.';
+      } else if (setName === 'B') {
+        circleA.style.opacity = '0.35';
+        circleC.style.opacity = '0.35';
+        circleE.style.opacity = '0.35';
+        insp.textContent = 'Set B = {Chocolate, Honey, Rocky road, Strawberry, Vanilla} -> Cardinality |B| = 5.';
+      } else if (setName === 'A_and_B') {
+        circleC.style.opacity = '0.2';
+        circleE.style.opacity = '0.2';
+        circleA.style.strokeWidth = '3';
+        circleB.style.strokeWidth = '3';
+        insp.textContent = 'Intersection A ∩ B = {Chocolate, Strawberry, Vanilla} -> Cardinality |A ∩ B| = 3. P(A ∩ B) = 3/10 = 0.3.';
+      } else if (setName === 'B_and_C') {
+        circleA.style.opacity = '0.2';
+        circleE.style.opacity = '0.2';
+        insp.textContent = 'Intersection B ∩ C = {Honey} -> Cardinality |B ∩ C| = 1. Subtracted in P(B ∪ C) to avoid double counting!';
+      } else if (setName === 'D') {
+        insp.textContent = 'Set D = {Rocky road}. Note that D ⊂ B (D is a proper subset of B). |D| = 1, P(D) = 0.1.';
+      } else if (setName === 'E') {
+        circleA.style.opacity = '0.2';
+        circleB.style.opacity = '0.2';
+        circleC.style.opacity = '0.2';
+        circleD.style.opacity = '0.2';
+        circleE.style.strokeWidth = '4';
+        insp.textContent = 'Set E = {Vegan}. Completely disjoint from A, B, C, D. P(E ∩ A) = 0.';
+      }
+    }
+
+    document.getElementById('act3CheckBtn').addEventListener('click', () => {
+      const valS = document.getElementById('calcS').value.trim();
+      const valAB = document.getElementById('calcAB').value.trim();
+      const valPA = document.getElementById('calcPA').value.trim();
+      const valPAB = document.getElementById('calcPAB').value.trim();
+      const valPUBC = document.getElementById('calcPUBC').value.trim();
+
+      let correctCount = 0;
+
+      // Q1: |S| == 10
+      const fbS = document.getElementById('feedbackS');
+      if (valS === '10') {
+        fbS.textContent = '✓ Correct (10)';
+        fbS.className = 'text-[11px] font-bold text-emerald-600 dark:text-emerald-400';
+        appState.act3Calculations.S = true;
+        correctCount++;
+      } else {
+        fbS.textContent = '✗ Expected 10';
+        fbS.className = 'text-[11px] font-bold text-rose-500';
+        appState.act3Calculations.S = false;
+      }
+
+      // Q2: |A ∩ B| == 3
+      const fbAB = document.getElementById('feedbackAB');
+      if (valAB === '3') {
+        fbAB.textContent = '✓ Correct (3)';
+        fbAB.className = 'text-[11px] font-bold text-emerald-600 dark:text-emerald-400';
+        appState.act3Calculations.AB = true;
+        correctCount++;
+      } else {
+        fbAB.textContent = '✗ Expected 3';
+        fbAB.className = 'text-[11px] font-bold text-rose-500';
+        appState.act3Calculations.AB = false;
+      }
+
+      // Q3: P(A) == 0.6 or 6/10
+      const fbPA = document.getElementById('feedbackPA');
+      if (['0.6', '6/10', '.6', '3/5'].includes(valPA)) {
+        fbPA.textContent = '✓ Correct (0.6)';
+        fbPA.className = 'text-[11px] font-bold text-emerald-600 dark:text-emerald-400';
+        appState.act3Calculations.PA = true;
+        correctCount++;
+      } else {
+        fbPA.textContent = '✗ Expected 0.6';
+        fbPA.className = 'text-[11px] font-bold text-rose-500';
+        appState.act3Calculations.PA = false;
+      }
+
+      // Q4: P(A ∩ B) == 0.3 or 3/10
+      const fbPAB = document.getElementById('feedbackPAB');
+      if (['0.3', '3/10', '.3'].includes(valPAB)) {
+        fbPAB.textContent = '✓ Correct (0.3)';
+        fbPAB.className = 'text-[11px] font-bold text-emerald-600 dark:text-emerald-400';
+        appState.act3Calculations.PAB = true;
+        correctCount++;
+      } else {
+        fbPAB.textContent = '✗ Expected 0.3';
+        fbPAB.className = 'text-[11px] font-bold text-rose-500';
+        appState.act3Calculations.PAB = false;
+      }
+
+      // Q5: P(B ∪ C) == 0.6 or 6/10
+      const fbPUBC = document.getElementById('feedbackPUBC');
+      if (['0.6', '6/10', '.6', '3/5'].includes(valPUBC)) {
+        fbPUBC.textContent = '✓ Correct (0.6)';
+        fbPUBC.className = 'text-[11px] font-bold text-emerald-600 dark:text-emerald-400';
+        appState.act3Calculations.PUBC = true;
+        correctCount++;
+      } else {
+        fbPUBC.textContent = '✗ Expected 0.6 (5/10+2/10-1/10)';
+        fbPUBC.className = 'text-[11px] font-bold text-rose-500';
+        appState.act3Calculations.PUBC = false;
+      }
+
+      document.getElementById('act3ScoreBadge').textContent = `Calculations: ${correctCount} / 5`;
+      const summary = document.getElementById('act3Summary');
+      summary.textContent = correctCount === 5 
+        ? 'Excellent! All 5 probability expressions are mathematically exact.' 
+        : `Answered ${correctCount} of 5 correctly. Check the hints above.`;
+    });
+
+    /* ========================================================================= */
+    /* ACTIVITY 4: PROBABILITY RULE MATCHER                                      */
+    /* ========================================================================= */
+    const act4Rules = [
+      { id: 'r1', target: 'P(∅)', title: 'Probability of Empty Set ∅', correctVal: '0.0', desc: 'Impossible event containing no sample space outcomes.' },
+      { id: 'r2', target: 'P(S)', title: 'Certainty of Entire Sample Space S', correctVal: '1.0', desc: 'Total probability of all exhaustive outcomes.' },
+      { id: 'r3', target: 'P(D)', title: 'Probability of Set D = {Rocky Road}', correctVal: '0.1', desc: 'Single discrete flavor outcome (|D| = 1 / 10).' },
+      { id: 'r4', target: 'P(A ∩ B)', title: 'Probability of Joint Co-Occurrence A AND B', correctVal: '0.3', desc: 'Overlap containing Chocolate, Strawberry, Vanilla (3/10).' },
+      { id: 'r5', target: 'P(B)', title: 'Probability of Set B Flavors', correctVal: '0.5', desc: 'Friend B likes 5 of 10 available flavors (5/10).' },
+      { id: 'r6', target: 'P(B ∪ C)', title: 'Probability of Union: B OR C', correctVal: '0.6', desc: '5/10 + 2/10 - 1/10 (Honey counted once) = 6/10.' }
+    ];
+
+    const act4Tokens = ['0.0', '0.1', '0.3', '0.5', '0.6', '1.0'];
+    let act4SelectedToken = null;
+
+    function initActivity4() {
+      const bank = document.getElementById('act4ValueBank');
+      const grid = document.getElementById('act4TargetGrid');
+      bank.innerHTML = '';
+      grid.innerHTML = '';
+      appState.act4Matches = {};
+
+      // Shuffle tokens
+      const shuffledTokens = [...act4Tokens].sort(() => Math.random() - 0.5);
+      shuffledTokens.forEach((val, idx) => {
+        const token = document.createElement('div');
+        token.id = `token-${idx}`;
+        token.dataset.val = val;
+        token.draggable = true;
+        token.className = 'act4-token px-3 py-1.5 rounded-lg font-mono font-bold text-xs bg-white dark:bg-slate-700 text-slate-900 dark:text-white border border-slate-300 dark:border-slate-600 shadow-xs cursor-grab active:cursor-grabbing hover:border-brand-500 transition select-none';
+        token.textContent = val;
+
+        token.addEventListener('dragstart', (e) => {
+          e.dataTransfer.setData('text/val', val);
+          e.dataTransfer.setData('text/tokenId', token.id);
+        });
+
+        token.addEventListener('click', () => {
+          if (act4SelectedToken === token) {
+            token.classList.remove('card-touch-selected');
+            act4SelectedToken = null;
+          } else {
+            if (act4SelectedToken) act4SelectedToken.classList.remove('card-touch-selected');
+            act4SelectedToken = token;
+            token.classList.add('card-touch-selected');
+          }
+        });
+
+        bank.appendChild(token);
+      });
+
+      // Target Cards
+      act4Rules.forEach(rule => {
+        const card = document.createElement('div');
+        card.id = rule.id;
+        card.dataset.correct = rule.correctVal;
+        card.className = 'p-3.5 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50/60 dark:bg-slate-800/50 flex flex-col justify-between space-y-2';
+        
+        card.innerHTML = `
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="font-mono font-bold text-sm text-brand-600 dark:text-brand-400">${rule.target}</span>
+              <span class="match-status text-[11px] font-mono text-slate-400">Empty</span>
+            </div>
+            <h5 class="text-xs font-semibold text-slate-800 dark:text-slate-200 mt-0.5">${rule.title}</h5>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">${rule.desc}</p>
+          </div>
+          <div class="match-slot p-2 rounded-lg border-2 border-dashed border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-900 min-h-[38px] flex items-center justify-center font-mono font-bold text-xs text-slate-400">
+            Drop Value Here
+          </div>
+        `;
+
+        const slot = card.querySelector('.match-slot');
+
+        card.addEventListener('dragover', (e) => {
+          e.preventDefault();
+          slot.classList.add('border-brand-500', 'bg-brand-50', 'dark:bg-brand-950/30');
+        });
+
+        card.addEventListener('dragleave', () => {
+          slot.classList.remove('border-brand-500', 'bg-brand-50', 'dark:bg-brand-950/30');
+        });
+
+        card.addEventListener('drop', (e) => {
+          e.preventDefault();
+          slot.classList.remove('border-brand-500', 'bg-brand-50', 'dark:bg-brand-950/30');
+          const val = e.dataTransfer.getData('text/val');
+          assignTokenToRule(rule.id, val, slot, card);
+        });
+
+        card.addEventListener('click', () => {
+          if (act4SelectedToken) {
+            const val = act4SelectedToken.dataset.val;
+            assignTokenToRule(rule.id, val, slot, card);
+            act4SelectedToken.classList.remove('card-touch-selected');
+            act4SelectedToken = null;
+          }
+        });
+
+        grid.appendChild(card);
+      });
+
+      checkActivity4Score();
+    }
+
+    function assignTokenToRule(ruleId, val, slotEl, cardEl) {
+      appState.act4Matches[ruleId] = val;
+      slotEl.innerHTML = `<span class="px-3 py-1 rounded bg-brand-100 text-brand-800 dark:bg-brand-900 dark:text-brand-200 font-mono font-bold">${val}</span>`;
+      
+      const status = cardEl.querySelector('.match-status');
+      if (val === cardEl.dataset.correct) {
+        status.textContent = 'Matched ✓';
+        status.className = 'match-status text-[11px] font-mono font-bold text-emerald-600 dark:text-emerald-400';
+      } else {
+        status.textContent = 'Mismatch ✗';
+        status.className = 'match-status text-[11px] font-mono font-bold text-rose-500';
+      }
+      checkActivity4Score();
+    }
+
+    function checkActivity4Score() {
+      let score = 0;
+      act4Rules.forEach(r => {
+        if (appState.act4Matches[r.id] === r.correctVal) score++;
+      });
+      document.getElementById('act4ScoreBadge').textContent = `Score: ${score} / 6`;
+    }
+
+    document.getElementById('act4ResetBtn').addEventListener('click', initActivity4);
+
+    /* ========================================================================= */
+    /* ACTIVITY 5: SENSOR FUSION UNION CALCULATION                              */
+    /* ========================================================================= */
+    document.getElementById('sensorFusionBtn').addEventListener('click', () => {
+      const input = document.getElementById('sensorFusionInput').value.trim();
+      const fb = document.getElementById('sensorFusionFeedback');
+      fb.classList.remove('hidden');
+
+      appState.act5Answer = input;
+      // Exact answer is 0.85 + 0.90 - 0.80 = 0.95
+      if (input === '0.95' || input === '.95') {
+        appState.act5Correct = true;
+        fb.className = 'text-xs p-3 rounded-lg font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300';
+        fb.innerHTML = '<strong>Correct! $P(C \\cup L) = 0.85 + 0.90 - 0.80 = 0.95$ (95% guarantee).</strong> Sensor fusion increases perceptual reliability well beyond individual sensors alone.';
+      } else {
+        appState.act5Correct = false;
+        fb.className = 'text-xs p-3 rounded-lg font-medium bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300';
+        fb.textContent = 'Not quite. Apply Equation (5.2): Add Camera (0.85) and LiDAR (0.90), then subtract the simultaneous intersection overlap (0.80).';
+      }
+    });
+
+    /* ========================================================================= */
+    /* ACTIVITY 6: STEP-BY-STEP LOGIC RECONSTRUCTION                             */
+    /* ========================================================================= */
+    const act6ProofSteps = [
+      { id: 0, text: 'Step 1: Set B contains 5 flavors and Set C contains 2 flavors, giving a raw sum of 5 + 2 = 7 elements.' },
+      { id: 1, text: 'Step 2: Inspecting elements reveals that the flavor "Honey" is shared by both friend B and friend C (|B ∩ C| = 1).' },
+      { id: 2, text: 'Step 3: In mathematical set theory, sample space events must consist of distinct outcomes; duplicate instances are inadmissible in B ∪ C.' },
+      { id: 3, text: 'Step 4: We subtract the joint cardinality |B ∩ C| once from the sum to eliminate double counting, yielding |B ∪ C| = 6 and P(B ∪ C) = 6/10 = 0.6.' }
+    ];
+
+    let currentAct6Order = [1, 3, 0, 2]; // Initial scrambled
+
+    function renderAct6() {
+      const container = document.getElementById('act6List');
+      container.innerHTML = '';
+
+      currentAct6Order.forEach((stepIdx, pos) => {
+        const item = act6ProofSteps[stepIdx];
+        const row = document.createElement('div');
+        row.className = 'p-3 rounded-xl border border-slate-200 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/60 flex items-center justify-between gap-3 text-xs';
+        
+        row.innerHTML = `
+          <div class="flex items-center gap-3">
+            <span class="w-6 h-6 rounded-full bg-accent-100 text-accent-800 dark:bg-accent-950 dark:text-accent-300 font-bold font-mono flex items-center justify-center text-xs flex-shrink-0">
+              ${pos + 1}
+            </span>
+            <span class="text-slate-800 dark:text-slate-200 font-medium">${item.text}</span>
+          </div>
+          <div class="flex items-center gap-1 flex-shrink-0">
+            <button onclick="moveAct6(${pos}, -1)" ${pos === 0 ? 'disabled' : ''} class="p-1 rounded bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 disabled:opacity-30 disabled:cursor-not-allowed">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path></svg>
+            </button>
+            <button onclick="moveAct6(${pos}, 1)" ${pos === 3 ? 'disabled' : ''} class="p-1 rounded bg-slate-200 dark:bg-slate-700 hover:bg-slate-300 dark:hover:bg-slate-600 disabled:opacity-30 disabled:cursor-not-allowed">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </button>
+          </div>
+        `;
+
+        container.appendChild(row);
+      });
+    }
+
+    function moveAct6(pos, dir) {
+      const newPos = pos + dir;
+      if (newPos < 0 || newPos >= currentAct6Order.length) return;
+      const temp = currentAct6Order[pos];
+      currentAct6Order[pos] = currentAct6Order[newPos];
+      currentAct6Order[newPos] = temp;
+      appState.act6Order = [...currentAct6Order];
+      renderAct6();
+      document.getElementById('act6Feedback').classList.add('hidden');
+    }
+
+    document.getElementById('act6ShuffleBtn').addEventListener('click', () => {
+      currentAct6Order.sort(() => Math.random() - 0.5);
+      appState.act6Order = [...currentAct6Order];
+      renderAct6();
+      document.getElementById('act6Feedback').classList.add('hidden');
+    });
+
+    document.getElementById('act6VerifyBtn').addEventListener('click', () => {
+      const isCorrect = currentAct6Order.every((val, idx) => val === idx);
+      const fb = document.getElementById('act6Feedback');
+      const badge = document.getElementById('act6ScoreBadge');
+      fb.classList.remove('hidden');
+
+      appState.act6Correct = isCorrect;
+      if (isCorrect) {
+        badge.textContent = 'Order: Correct ✓';
+        badge.className = 'px-3 py-1 text-xs font-bold rounded-lg bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300';
+        fb.className = 'text-xs font-semibold p-2.5 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300';
+        fb.textContent = 'Logical deduction is perfectly ordered from initial sum to overlap detection and subtraction.';
+      } else {
+        badge.textContent = 'Order: Incorrect ✗';
+        badge.className = 'px-3 py-1 text-xs font-bold rounded-lg bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-400';
+        fb.className = 'text-xs font-semibold p-2.5 rounded bg-rose-100 text-rose-800 dark:bg-rose-950 dark:text-rose-300';
+        fb.textContent = 'The mathematical proof sequence is out of order. Trace from the raw sum of sizes toward identifying and subtracting the shared duplicate.';
+      }
+    });
+
+    /* ========================================================================= */
+    /* ACTIVITY 7: PHOTO DRAG & DROP UPLOAD                                      */
+    /* ========================================================================= */
+    const photoDropZone = document.getElementById('photoDropZone');
+    const photoFileInput = document.getElementById('photoFileInput');
+    const dropEmptyState = document.getElementById('dropEmptyState');
+    const dropPreviewState = document.getElementById('dropPreviewState');
+    const solutionImgPreview = document.getElementById('solutionImgPreview');
+    const previewFileName = document.getElementById('previewFileName');
+    const previewFileSize = document.getElementById('previewFileSize');
+    const photoUploadBadge = document.getElementById('photoUploadBadge');
+
+    photoDropZone.addEventListener('click', (e) => {
+      if (e.target.id !== 'removePhotoBtn' && e.target.id !== 'replacePhotoBtn') {
+        photoFileInput.click();
+      }
+    });
+
+    document.getElementById('replacePhotoBtn')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      photoFileInput.click();
+    });
+
+    document.getElementById('removePhotoBtn')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      clearUploadedPhoto();
+    });
+
+    photoDropZone.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      photoDropZone.classList.add('border-brand-500', 'bg-brand-50/50', 'dark:bg-brand-950/30');
+    });
+
+    photoDropZone.addEventListener('dragleave', () => {
+      photoDropZone.classList.remove('border-brand-500', 'bg-brand-50/50', 'dark:bg-brand-950/30');
+    });
+
+    photoDropZone.addEventListener('drop', (e) => {
+      e.preventDefault();
+      photoDropZone.classList.remove('border-brand-500', 'bg-brand-50/50', 'dark:bg-brand-950/30');
+      if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+        processUploadedImage(e.dataTransfer.files[0]);
+      }
+    });
+
+    photoFileInput.addEventListener('change', (e) => {
+      if (e.target.files && e.target.files[0]) {
+        processUploadedImage(e.target.files[0]);
+      }
+    });
+
+    function processUploadedImage(file) {
+      if (!file.type.match('image.*')) {
+        showCustomAlert('Please select a valid image file (PNG or JPG).');
+        return;
+      }
+      appState.studentPhotoFile = file;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        appState.studentPhotoDataUrl = event.target.result;
+        solutionImgPreview.src = event.target.result;
+        previewFileName.textContent = file.name;
+        previewFileSize.textContent = `${(file.size / 1024).toFixed(1)} KB`;
+
+        dropEmptyState.classList.add('hidden');
+        dropPreviewState.classList.remove('hidden');
+
+        photoUploadBadge.textContent = 'Photo Attached ✓';
+        photoUploadBadge.className = 'px-3 py-1 text-xs font-bold rounded-lg bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function clearUploadedPhoto() {
+      appState.studentPhotoFile = null;
+      appState.studentPhotoDataUrl = '';
+      solutionImgPreview.src = '';
+      photoFileInput.value = '';
+
+      dropPreviewState.classList.add('hidden');
+      dropEmptyState.classList.remove('hidden');
+
+      photoUploadBadge.textContent = 'Photo Required';
+      photoUploadBadge.className = 'px-3 py-1 text-xs font-bold rounded-lg bg-rose-100 text-rose-800 dark:bg-rose-950/70 dark:text-rose-400';
+    }
+
+    /* ========================================================================= */
+    /* ACTIVITY 8: ETHICS TEXTAREA                                               */
+    /* ========================================================================= */
+    const aiEthicsTextarea = document.getElementById('aiEthicsTextarea');
+    const charCountNotice = document.getElementById('charCountNotice');
+    const charStatus = document.getElementById('charStatus');
+
+    aiEthicsTextarea.addEventListener('input', (e) => {
+      const len = e.target.value.length;
+      appState.act8Text = e.target.value;
+      charCountNotice.textContent = `Character count: ${len} (Min 100 recommended)`;
+      if (len >= 100) {
+        charStatus.textContent = 'Complete ✓';
+        charStatus.className = 'font-bold text-emerald-600 dark:text-emerald-400';
+      } else {
+        charStatus.textContent = 'Incomplete';
+        charStatus.className = 'font-medium text-amber-600 dark:text-amber-400';
+      }
+    });
+
+    /* ========================================================================= */
+    /* SUBMISSION ENGINE & DUAL DOWNLOAD                                         */
+    /* ========================================================================= */
+    const submitBtn = document.getElementById('submitAssignmentBtn');
+    const submissionAlertArea = document.getElementById('submissionAlertArea');
+
+    function showCustomAlert(msg, type = 'error') {
+      submissionAlertArea.classList.remove('hidden');
+      if (type === 'error') {
+        submissionAlertArea.className = 'p-3 rounded-lg text-xs font-semibold bg-rose-500/20 text-rose-300 border border-rose-500/40';
+      } else {
+        submissionAlertArea.className = 'p-3 rounded-lg text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/40';
+      }
+      submissionAlertArea.textContent = msg;
+      submissionAlertArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+
+    submitBtn.addEventListener('click', () => {
+      submissionAlertArea.classList.add('hidden');
+
+      // 1. Validate Student ID
+      const studentId = studentIdInput.value.trim();
+      if (!studentId || studentId.length < 2) {
+        showCustomAlert('Please enter your STUDENT ID at the top before submitting the assignment.');
+        studentIdInput.focus();
+        studentIdInput.classList.add('ring-2', 'ring-rose-500');
+        return;
+      }
+      studentIdInput.classList.remove('ring-2', 'ring-rose-500');
+
+      // 2. Validate Written Solution Photo
+      if (!appState.studentPhotoFile) {
+        showCustomAlert('TAKE PHOTOGRAPH OF WRITTEN SOLUTION is required! Please drag & drop or upload your handwritten solution image in Activity 7.');
+        document.getElementById('photoDropZone').scrollIntoView({ behavior: 'smooth' });
+        return;
+      }
+
+      // 3. Compute Totals
+      const scoreAct1 = appState.act1Score; // /6
+      const scoreAct2 = appState.act2Correct ? 1 : 0; // /1
+      const scoreAct3 = Object.values(appState.act3Calculations).filter(Boolean).length; // /5
+      const scoreAct4 = act4Rules.filter(r => appState.act4Matches[r.id] === r.correctVal).length; // /6
+      const scoreAct5 = appState.act5Correct ? 1 : 0; // /1
+      const scoreAct6 = appState.act6Correct ? 1 : 0; // /1
+      const totalPoints = scoreAct1 + scoreAct2 + scoreAct3 + scoreAct4 + scoreAct5 + scoreAct6;
+      const maxPoints = 20;
+      const percentage = Math.round((totalPoints / maxPoints) * 100);
+
+      // Sanitize Student ID for filenames
+      const cleanId = studentId.replace(/[^a-zA-Z0-9_-]/g, '');
+
+      // Derive extension from uploaded file
+      let imgExt = 'jpg';
+      if (appState.studentPhotoFile.name.endsWith('.png')) imgExt = 'png';
+      else if (appState.studentPhotoFile.name.endsWith('.jpeg')) imgExt = 'jpeg';
+      const solutionImageFilename = `SOLUTION-UNIT5-${cleanId}.${imgExt}`;
+      const markdownFilename = `ASSIGNMENT-UNIT5-${cleanId}.md`;
+
+      const now = new Date();
+      const timestampStr = now.toISOString().replace('T', ' ').substring(0, 19);
+
+      // 4. Generate Markdown
+      const mdContent = `# Assignment Submission: Unit 5 - Probability in the Age of AI
+**Student ID:** ${studentId}  
+**Submission Timestamp:** ${timestampStr}  
+**Overall Automatic Review Score:** ${percentage}% (${totalPoints} / ${maxPoints} points)
+
+---
+
+## Coursebook Profile & Verification
+- **Title:** Statistics and data foundations for AI
+- **Authors:** Tamraparni Dasu and Geetha Murthy
+- **Publication:** First edition | Boca Raton FL : CRC Press, 2026
+- **ISBN:** 978-1-003-61092-2 (ebk)
+- **Cover Image Referenced:** COVER-FoundationsforAI.jpg
+
+---
+
+## Activity Summary & Performance Record
+
+### 1. Deterministic vs. Probabilistic Reasoning
+- **Score:** ${scoreAct1} / 6
+- **Key Concepts:** Distinguishing deterministic physical certainties ($P \\approx 1$) from stochastic AI perception in autonomous platforms (Lexus RX 450h, Vision 60 Q-UGV).
+
+### 2. Autonomous Taxi Airport Planning (Example 5.1.1)
+- **Selected Answer Choice:** Option ${appState.act2Answer || 'None'}
+- **Validation Status:** ${appState.act2Correct ? 'PASSED (Correct bounded rationality rationale)' : 'REVIEW NEEDED'}
+
+### 3. Ice Cream Parlor Raffle & Set Theory (Section 5.2.1)
+- **Sample Space Cardinality |S|:** ${appState.act3Calculations.S ? '10 (Correct)' : 'Incorrect'}
+- **Intersection Cardinality |A ∩ B|:** ${appState.act3Calculations.AB ? '3 (Correct: Chocolate, Strawberry, Vanilla)' : 'Incorrect'}
+- **Probability P(A):** ${appState.act3Calculations.PA ? '0.6 (Correct)' : 'Incorrect'}
+- **Probability P(A ∩ B):** ${appState.act3Calculations.PAB ? '0.3 (Correct)' : 'Incorrect'}
+- **Probability P(B ∪ C):** ${appState.act3Calculations.PUBC ? '0.6 (Correct via Inclusion-Exclusion)' : 'Incorrect'}
+
+### 4. Probability Axiom & Value Matcher
+- **Score:** ${scoreAct4} / 6
+- **Axioms Verified:** $P(\\emptyset) = 0$, $P(S) = 1$, $P(D) = 0.1$, $P(A \\cap B) = 0.3$, $P(B) = 0.5$, $P(B \\cup C) = 0.6$.
+
+### 5. Autonomous Robotic Sensor Fusion (Figure 5.2)
+- **Submitted P(C ∪ L):** ${appState.act5Answer || 'None'}
+- **Evaluation:** ${appState.act5Correct ? 'PASSED (0.95 derived from 0.85 + 0.90 - 0.80)' : 'FAILED'}
+
+### 6. Logic Reconstruction: Inclusion-Exclusion Sequence
+- **Step Ordering Status:** ${appState.act6Correct ? 'PERFECT SEQUENCE' : 'OUT OF SEQUENCE'}
+
+### 7. Handwritten Paper Solution Submission
+- **Prompt:** "TAKE PHOTOGRAPH OF WRITTEN SOLUTION"
+- **Original Uploaded File:** \`${appState.studentPhotoFile.name}\`
+- **Official Export Filename:** \`${solutionImageFilename}\`
+- **File Size:** ${(appState.studentPhotoFile.size / 1024).toFixed(1)} KB
+- **Content Description:** Hand-drawn 3-set Venn Diagram with set F = {Mango, Matcha, Vegan, FroYo}, derivation of $P(A \\cup F)$, and computation of $P((A \\cup B) \\cap F)$.
+
+### 8. AI Ethics & Edge Case Reflection
+- **Student Reflection Text:**
+> ${appState.act8Text ? appState.act8Text.replace(/\n/g, '\n> ') : 'No reflection submitted.'}
+
+---
+*Generated by the CRC Press AI Interactive Educational Suite • Unit 5 Assessment Engine*
+`;
+
+      appState.generatedMarkdown = mdContent;
+
+      // 5. Execute Dual Downloads
+      // (a) Download Markdown
+      downloadBlob(new Blob([mdContent], { type: 'text/markdown;charset=utf-8' }), markdownFilename);
+
+      // (b) Download Uploaded Image with the exact named specification
+      setTimeout(() => {
+        downloadBlob(appState.studentPhotoFile, solutionImageFilename);
+      }, 400);
+
+      // 6. Open Receipt Modal
+      document.getElementById('receiptStudentId').textContent = studentId;
+      document.getElementById('receiptTimestamp').textContent = `Submitted on ${timestampStr}`;
+      document.getElementById('receiptOverallScore').textContent = `${percentage}% (${totalPoints}/${maxPoints} pts)`;
+      document.getElementById('receiptMdName').textContent = markdownFilename;
+      document.getElementById('receiptImgName').textContent = solutionImageFilename;
+      document.getElementById('receiptModal').classList.remove('hidden');
+    });
+
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    function closeReceiptModal() {
+      document.getElementById('receiptModal').classList.add('hidden');
+    }
+
+    // Copy Markdown button logic using execCommand fallback
+    document.getElementById('copyMarkdownBtn').addEventListener('click', () => {
+      const copyBtnText = document.getElementById('copyBtnText');
+      const textarea = document.createElement('textarea');
+      textarea.value = appState.generatedMarkdown;
+      textarea.style.position = 'fixed';
+      textarea.style.opacity = '0';
+      document.body.appendChild(textarea);
+      textarea.select();
+      try {
+        document.execCommand('copy');
+        copyBtnText.textContent = 'Copied to Clipboard! ✓';
+        setTimeout(() => {
+          copyBtnText.textContent = 'Copy Markdown Report to Clipboard';
+        }, 2500);
+      } catch (err) {
+        copyBtnText.textContent = 'Failed to copy automatically';
+      }
+      document.body.removeChild(textarea);
+    });
+
+    /* ========================================================================= */
+    /* WINDOW INITIALIZATION                                                     */
+    /* ========================================================================= */
+    window.addEventListener('DOMContentLoaded', () => {
+      initActivity1();
+      updateTaxiSimulation();
+      initActivity4();
+      renderAct6();
+      highlightSet('all');
+    });
+  </script>
+</body>
+</html>
