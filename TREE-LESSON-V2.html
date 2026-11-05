@@ -1,0 +1,1382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Discrete Structures: Graph Theory &amp; Trees Interactive Lesson</title>
+  <style>
+    :root {
+      --bg-primary: #f8fafc;
+      --bg-secondary: #ffffff;
+      --bg-card: #ffffff;
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --accent: #4f46e5;
+      --accent-hover: #4338ca;
+      --accent-light: #e0e7ff;
+      --border: #cbd5e1;
+      --success: #059669;
+      --success-light: #d1fae5;
+      --danger: #dc2626;
+      --danger-light: #fee2e2;
+      --warning: #d97706;
+      --warning-light: #fef3c7;
+      --radius: 12px;
+      --shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.05);
+      --font: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      --math-font: 'Cambria Math', 'Latin Modern Math', 'Times New Roman', Georgia, serif;
+    }
+
+    [data-theme="dark"] {
+      --bg-primary: #090d16;
+      --bg-secondary: #131c2e;
+      --bg-card: #131c2e;
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --accent: #6366f1;
+      --accent-hover: #4f46e5;
+      --accent-light: #1e1b4b;
+      --border: #243247;
+      --success: #10b981;
+      --success-light: #064e3b;
+      --danger: #ef4444;
+      --danger-light: #7f1d1d;
+      --warning: #f59e0b;
+      --warning-light: #78350f;
+      --shadow: 0 6px 12px -2px rgba(0, 0, 0, 0.5);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; transition: background-color 0.2s, color 0.2s, border-color 0.2s; }
+    body { font-family: var(--font); background-color: var(--bg-primary); color: var(--text-primary); line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; }
+
+    /* Math typography styling */
+    .math { font-family: var(--math-font); font-style: italic; font-weight: normal; padding: 0 0.15em; color: var(--text-primary); }
+    .math sub, .math sup { font-style: normal; font-size: 0.78em; }
+    .math-sym { font-style: normal; font-family: var(--math-font); padding: 0 0.15em; }
+
+    /* Header & Navigation Bar */
+    header { background-color: var(--bg-secondary); border-bottom: 1px solid var(--border); padding: 0.75rem 1.25rem; position: sticky; top: 0; z-index: 100; box-shadow: var(--shadow); }
+    .header-inner { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.75rem; }
+    .brand { display: flex; align-items: center; gap: 0.6rem; font-weight: 700; font-size: 1.1rem; color: var(--accent); }
+    
+    .nav-tools { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; }
+    .nav-select { padding: 0.45rem 0.75rem; border-radius: 8px; border: 1px solid var(--border); background: var(--bg-primary); color: var(--text-primary); font-size: 0.88rem; font-weight: 500; cursor: pointer; outline: none; }
+    .tool-btn { background: var(--bg-primary); border: 1px solid var(--border); padding: 0.45rem 0.8rem; border-radius: 8px; cursor: pointer; color: var(--text-primary); display: flex; align-items: center; gap: 0.35rem; font-size: 0.88rem; font-weight: 600; }
+    .tool-btn:hover { background: var(--accent-light); border-color: var(--accent); }
+
+    .progress-bar-container { width: 100%; height: 5px; background-color: var(--border); }
+    .progress-bar-fill { height: 100%; background-color: var(--accent); width: 0%; transition: width 0.3s ease; }
+
+    /* Layout Frame & Mobile Emulation */
+    #layoutWrapper { width: 100%; max-width: 1000px; margin: 1.75rem auto; padding: 0 1rem; transition: max-width 0.35s ease; flex: 1; }
+    
+    /* Device Frame Simulation */
+    body.device-mobile-sim #layoutWrapper {
+      max-width: 412px;
+      margin: 1.5rem auto;
+      border: 10px solid #1e293b;
+      border-radius: 38px;
+      padding: 1.25rem 0.85rem;
+      background: var(--bg-card);
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+      position: relative;
+    }
+    body.device-mobile-sim #layoutWrapper::before {
+      content: "";
+      display: block;
+      width: 120px;
+      height: 18px;
+      background: #1e293b;
+      margin: -0.5rem auto 1rem auto;
+      border-radius: 0 0 12px 12px;
+    }
+
+    .screen-card { background-color: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius); padding: 2rem; box-shadow: var(--shadow); display: none; }
+    .screen-card.active { display: block; animation: fadeIn 0.25s ease-out; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+    h1 { font-size: 1.75rem; margin-bottom: 0.85rem; line-height: 1.25; }
+    h2 { font-size: 1.35rem; margin-top: 0.5rem; margin-bottom: 0.75rem; border-bottom: 2px solid var(--border); padding-bottom: 0.5rem; }
+    h3 { font-size: 1.1rem; margin-bottom: 0.5rem; }
+    p { margin-bottom: 0.9rem; color: var(--text-secondary); font-size: 0.95rem; }
+    strong { color: var(--text-primary); }
+
+    .theorem-box { background: var(--accent-light); border-left: 4px solid var(--accent); padding: 1.25rem; border-radius: 0 var(--radius) var(--radius) 0; margin: 1.25rem 0; }
+    .theorem-box h4 { color: var(--accent); margin-bottom: 0.35rem; font-size: 1.05rem; }
+    .theorem-box p { color: var(--text-primary); margin-bottom: 0; font-size: 0.92rem; }
+
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin: 1.25rem 0; }
+    @media (max-width: 768px) { .grid-2 { grid-template-columns: 1fr; } }
+
+    .interactive-container { background: var(--bg-primary); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.25rem; margin: 1.25rem 0; }
+    .canvas-card { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+    svg { max-width: 100%; height: auto; user-select: none; }
+    svg text { font-family: var(--font); font-size: 12px; font-weight: 600; text-anchor: middle; dominant-baseline: middle; }
+
+    .input-group { margin-bottom: 1.25rem; }
+    .input-group label { display: block; font-weight: 600; margin-bottom: 0.35rem; color: var(--text-primary); font-size: 0.95rem; }
+    .input-group input { width: 100%; padding: 0.75rem 1rem; border: 1px solid var(--border); border-radius: 8px; background: var(--bg-secondary); color: var(--text-primary); font-size: 1rem; }
+    .input-group input:focus { outline: 2px solid var(--accent); }
+
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.65rem 1.25rem; border-radius: 8px; font-size: 0.95rem; font-weight: 600; cursor: pointer; border: none; text-decoration: none; }
+    .btn-primary { background-color: var(--accent); color: #ffffff; }
+    .btn-primary:hover { background-color: var(--accent-hover); }
+    .btn-secondary { background-color: var(--bg-secondary); border: 1px solid var(--border); color: var(--text-primary); }
+    .btn-secondary:hover { background-color: var(--border); }
+    .btn-success { background-color: var(--success); color: #ffffff; }
+    .btn-sm { padding: 0.35rem 0.75rem; font-size: 0.85rem; border-radius: 6px; }
+
+    .nav-buttons { display: flex; justify-content: space-between; align-items: center; margin-top: 2rem; padding-top: 1.25rem; border-top: 1px solid var(--border); flex-wrap: wrap; gap: 0.75rem; }
+
+    /* HUD */
+    .hud-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 0.6rem; width: 100%; margin-top: 1rem; }
+    .hud-badge { background: var(--bg-card); border: 1px solid var(--border); padding: 0.6rem; border-radius: 8px; text-align: center; }
+    .hud-badge .label { font-size: 0.72rem; text-transform: uppercase; color: var(--text-secondary); font-weight: 600; }
+    .hud-badge .value { font-size: 1.15rem; font-weight: 700; color: var(--accent); }
+
+    /* Diagnostic Lab */
+    .diag-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1rem; margin-top: 1.25rem; }
+    .diag-card { background: var(--bg-primary); border: 1px solid var(--border); border-radius: var(--radius); padding: 1rem; display: flex; flex-direction: column; align-items: center; }
+    .diag-card svg { background: var(--bg-secondary); border-radius: 8px; border: 1px solid var(--border); margin-bottom: 0.6rem; }
+    .diag-choices { display: flex; gap: 0.85rem; margin: 0.4rem 0; font-size: 0.9rem; }
+    .diag-feedback { font-size: 0.82rem; margin-top: 0.4rem; padding: 0.5rem; border-radius: 6px; width: 100%; display: none; line-height: 1.4; }
+
+    /* Drag & Drop */
+    .match-container { display: grid; grid-template-columns: 1fr 1fr; gap: 1.25rem; margin-top: 1.25rem; }
+    @media (max-width: 640px) { .match-container { grid-template-columns: 1fr; } }
+    .term-chip { background: var(--bg-secondary); border: 1px solid var(--border); padding: 0.65rem; border-radius: 8px; margin-bottom: 0.6rem; cursor: grab; font-weight: 600; text-align: center; user-select: none; }
+    .drop-slot { background: var(--bg-primary); border: 2px dashed var(--border); padding: 0.75rem; border-radius: 8px; margin-bottom: 0.6rem; min-height: 70px; display: flex; flex-direction: column; justify-content: center; }
+    .drop-slot.hovered { border-color: var(--accent); background: var(--accent-light); }
+
+    /* Upload Zone */
+    .upload-zone { border: 2px dashed var(--accent); border-radius: var(--radius); padding: 2rem 1rem; text-align: center; cursor: pointer; background: var(--bg-primary); }
+    .upload-zone:hover { background: var(--accent-light); }
+    .preview-box { margin-top: 1rem; max-width: 320px; max-height: 220px; border-radius: 8px; overflow: hidden; border: 1px solid var(--border); display: none; }
+    .preview-box img { width: 100%; height: 100%; object-fit: contain; }
+
+    .download-bundle-card { background: var(--bg-primary); border: 1px solid var(--border); border-radius: var(--radius); padding: 1.5rem; margin: 1.5rem 0; text-align: center; }
+    .download-actions { display: flex; justify-content: center; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+
+  <!-- FIXED NAVIGATION HEADER -->
+  <header>
+    <div class="header-inner">
+      <div class="brand">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="3"></circle><circle cx="5" cy="19" r="3"></circle><circle cx="19" cy="19" r="3"></circle><path d="M7 17l3.5-9"></path><path d="M17 17l-3.5-9"></path></svg>
+        <span>Math &amp; Structures: Trees</span>
+      </div>
+      
+      <div class="nav-tools">
+        <!-- Direct Screen Dropdown -->
+        <select id="screenNavSelect" class="nav-select" onchange="goToScreen(parseInt(this.value))" aria-label="Navigate Screens">
+          <option value="0">0. Intake &amp; Identity</option>
+          <option value="1">1. Concept of Trees &amp; Forests</option>
+          <option value="2">2. Theorem 1: Unique Path</option>
+          <option value="3">3. Theorem 2: The Triad</option>
+          <option value="4">4. Rooted Trees &amp; Subtrees</option>
+          <option value="5">5. m-ary Trees &amp; Counting</option>
+          <option value="6">6. Traversals &amp; Algorithms</option>
+          <option value="7">7. Formative Assessment</option>
+          <option value="8">8. Diagnostic Lab (6 Graphs)</option>
+          <option value="9">9. Hand-Drawn Submission</option>
+          <option value="10">10. Export Final Ledger</option>
+        </select>
+
+        <!-- Mobile / Desktop View Toggle -->
+        <button class="tool-btn" onclick="toggleDeviceMode()" id="deviceToggleBtn" title="Toggle Desktop/Mobile Emulation View">
+          <span id="deviceIcon">📱</span> <span id="deviceText">Mobile View</span>
+        </button>
+
+        <!-- Theme Toggle -->
+        <button class="tool-btn" onclick="toggleTheme()" id="themeBtn" title="Toggle Dark/Light Mode" aria-label="Toggle Theme">
+          <span>🌙</span>
+        </button>
+      </div>
+    </div>
+  </header>
+  
+  <div class="progress-bar-container">
+    <div class="progress-bar-fill" id="progressBar"></div>
+  </div>
+
+  <!-- MAIN LESSON CONTAINER -->
+  <div id="layoutWrapper">
+    <main>
+      <!-- SCREEN 0: Intake -->
+      <div class="screen-card active" id="screen-0">
+        <h1>Module 11: Graph Theory &amp; Trees</h1>
+        <p>Welcome to this interactive masterclass based on Kenneth Rosen’s <em>Discrete Mathematics and Its Applications</em> (Chapter 11: Trees)[cite: 68]. Complete each module, manipulate the interactive proofs, and submit your verified digital ledger[cite: 70, 75].</p>
+        
+        <div style="max-width: 460px; margin: 1.75rem 0;">
+          <div class="input-group">
+            <label for="studentNameInput">Student Full Name</label>
+            <input type="text" id="studentNameInput" placeholder="e.g., Katherine Johnson" required>
+          </div>
+          <div class="input-group">
+            <label for="studentIdInput">Student ID / Matriculation No.</label>
+            <input type="text" id="studentIdInput" placeholder="e.g., CS-2026-904" required>
+          </div>
+          <button class="btn btn-primary" onclick="validateStudentIntake()">Enter Lesson Workspace &rarr;</button>
+          <p id="intakeError" style="color: var(--danger); font-size: 0.85rem; margin-top: 0.5rem; display: none;">* Both Full Name and Student ID are required.</p>
+        </div>
+      </div>
+
+      <!-- SCREEN 1: Introduction to Trees -->
+      <div class="screen-card" id="screen-1">
+        <h2>11.1 Introduction to Trees &amp; Forests</h2>
+        <p>In discrete mathematics and graph theory, trees represent connected graphs free of cyclic loops[cite: 68, 69]. Arthur Cayley first studied them systematically in 1857 to count isomers of saturated hydrocarbons of the form <span class="math">C<sub><i>n</i></sub>H<sub>2<i>n</i>+2</sub></span>[cite: 68, 73].</p>
+        
+        <div class="theorem-box">
+          <h4>Definition 1: The Graph-Theoretic Tree</h4>
+          <p>A <strong>tree</strong> is a connected undirected graph with no simple circuits[cite: 69]. Because a tree cannot have a simple circuit, it contains no multiple edges or self-loops[cite: 69]. Therefore, <strong>every tree is a simple graph</strong>[cite: 69].</p>
+        </div>
+        <p>An undirected graph containing no simple circuits that is not necessarily connected is designated a <strong>forest</strong>[cite: 69]. Each connected component of a forest is a tree[cite: 69].</p>
+        
+        <div class="grid-2">
+          <div class="interactive-container canvas-card">
+            <h3 style="font-size: 0.95rem;">Single Connected Tree (<span class="math"><i>n</i> = 7, <i>m</i> = 6</span>)</h3>
+            <svg width="260" height="180" viewBox="0 0 260 180">
+              <line x1="130" y1="25" x2="65" y2="80" stroke="#6366f1" stroke-width="2"/>
+              <line x1="130" y1="25" x2="195" y2="80" stroke="#6366f1" stroke-width="2"/>
+              <line x1="65" y1="80" x2="35" y2="140" stroke="#6366f1" stroke-width="2"/>
+              <line x1="65" y1="80" x2="95" y2="140" stroke="#6366f1" stroke-width="2"/>
+              <line x1="195" y1="80" x2="165" y2="140" stroke="#6366f1" stroke-width="2"/>
+              <line x1="195" y1="80" x2="225" y2="140" stroke="#6366f1" stroke-width="2"/>
+              <circle cx="130" cy="25" r="13" fill="#4f46e5"/><text x="130" y="25" fill="#fff">A</text>
+              <circle cx="65" cy="80" r="13" fill="#4f46e5"/><text x="65" y="80" fill="#fff">B</text>
+              <circle cx="195" cy="80" r="13" fill="#4f46e5"/><text x="195" y="80" fill="#fff">C</text>
+              <circle cx="35" cy="140" r="12" fill="#4f46e5"/><text x="35" y="140" fill="#fff">D</text>
+              <circle cx="95" cy="140" r="12" fill="#4f46e5"/><text x="95" y="140" fill="#fff">E</text>
+              <circle cx="165" cy="140" r="12" fill="#4f46e5"/><text x="165" y="140" fill="#fff">F</text>
+              <circle cx="225" cy="140" r="12" fill="#4f46e5"/><text x="225" y="140" fill="#fff">G</text>
+            </svg>
+          </div>
+          <div class="interactive-container canvas-card">
+            <h3 style="font-size: 0.95rem;">Forest (3 Disjoint Components)</h3>
+            <svg width="260" height="180" viewBox="0 0 260 180">
+              <line x1="45" y1="40" x2="25" y2="125" stroke="#10b981" stroke-width="2"/>
+              <line x1="45" y1="40" x2="65" y2="125" stroke="#10b981" stroke-width="2"/>
+              <circle cx="45" cy="40" r="11" fill="#10b981"/><text x="45" y="40" fill="#fff">T₁</text>
+              <circle cx="25" cy="125" r="9" fill="#10b981"/>
+              <circle cx="65" cy="125" r="9" fill="#10b981"/>
+              
+              <line x1="130" y1="40" x2="130" y2="90" stroke="#10b981" stroke-width="2"/>
+              <line x1="130" y1="90" x2="110" y2="140" stroke="#10b981" stroke-width="2"/>
+              <line x1="130" y1="90" x2="150" y2="140" stroke="#10b981" stroke-width="2"/>
+              <circle cx="130" cy="40" r="11" fill="#10b981"/><text x="130" y="40" fill="#fff">T₂</text>
+              <circle cx="130" cy="90" r="9" fill="#10b981"/>
+              <circle cx="110" cy="140" r="9" fill="#10b981"/>
+              <circle cx="150" cy="140" r="9" fill="#10b981"/>
+              
+              <line x1="215" y1="60" x2="215" y2="125" stroke="#10b981" stroke-width="2"/>
+              <circle cx="215" cy="60" r="11" fill="#10b981"/><text x="215" y="60" fill="#fff">T₃</text>
+              <circle cx="215" cy="125" r="9" fill="#10b981"/>
+            </svg>
+          </div>
+        </div>
+        
+        <div class="nav-buttons">
+          <button class="btn btn-secondary" onclick="prevScreen()">&larr; Back</button>
+          <button class="btn btn-primary" onclick="nextScreen()">Theorem 1 &rarr;</button>
+        </div>
+      </div>
+
+      <!-- SCREEN 2: Theorem 1 Unique Simple Path -->
+      <div class="screen-card" id="screen-2">
+        <h2>Theorem 1: Unique Simple Path</h2>
+        <div class="theorem-box">
+          <h4>Theorem 1 (Section 11.1)</h4>
+          <p>An undirected graph is a tree <strong>if and only if</strong> there is a unique simple path between any two of its vertices[cite: 69].</p>
+        </div>
+        
+        <p><strong>Proof Rationale:</strong></p>
+        <ul style="padding-left: 1.25rem; margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.92rem;">
+          <li>If graph <span class="math"><i>T</i></span> is a tree, it is connected (so a simple path exists between any <span class="math"><i>u, v</i></span>)[cite: 70]. If two distinct simple paths existed, reversing one and concatenating it produces a circuit, contradicting the acyclic property[cite: 70].</li>
+          <li>Conversely, if there is a unique simple path between every pair, the graph is trivially connected[cite: 70]. If it had a simple circuit, any two nodes along the circuit would have two distinct paths, violating path uniqueness[cite: 70].</li>
+        </ul>
+
+        <div class="interactive-container canvas-card">
+          <h3>Interactive Path Tracer</h3>
+          <p>Click any two nodes in the tree below to isolate and trace their mathematically unique path[cite: 69, 70].</p>
+          <svg width="380" height="190" viewBox="0 0 380 190" id="pathSvg">
+            <line id="pe-AB" x1="190" y1="25" x2="100" y2="75" stroke="#cbd5e1" stroke-width="3"/>
+            <line id="pe-AC" x1="190" y1="25" x2="280" y2="75" stroke="#cbd5e1" stroke-width="3"/>
+            <line id="pe-BD" x1="100" y1="75" x2="55" y2="140" stroke="#cbd5e1" stroke-width="3"/>
+            <line id="pe-BE" x1="100" y1="75" x2="145" y2="140" stroke="#cbd5e1" stroke-width="3"/>
+            <line id="pe-CF" x1="280" y1="75" x2="235" y2="140" stroke="#cbd5e1" stroke-width="3"/>
+            <line id="pe-CG" x1="280" y1="75" x2="325" y2="140" stroke="#cbd5e1" stroke-width="3"/>
+
+            <g onclick="selectPathNode('A')" style="cursor:pointer;"><circle id="pnode-A" cx="190" cy="25" r="15" fill="#4f46e5"/><text x="190" y="25" fill="#fff">A</text></g>
+            <g onclick="selectPathNode('B')" style="cursor:pointer;"><circle id="pnode-B" cx="100" cy="75" r="15" fill="#4f46e5"/><text x="100" y="75" fill="#fff">B</text></g>
+            <g onclick="selectPathNode('C')" style="cursor:pointer;"><circle id="pnode-C" cx="280" cy="75" r="15" fill="#4f46e5"/><text x="280" y="75" fill="#fff">C</text></g>
+            <g onclick="selectPathNode('D')" style="cursor:pointer;"><circle id="pnode-D" cx="55" cy="140" r="15" fill="#4f46e5"/><text x="55" y="140" fill="#fff">D</text></g>
+            <g onclick="selectPathNode('E')" style="cursor:pointer;"><circle id="pnode-E" cx="145" cy="140" r="15" fill="#4f46e5"/><text x="145" y="140" fill="#fff">E</text></g>
+            <g onclick="selectPathNode('F')" style="cursor:pointer;"><circle id="pnode-F" cx="235" cy="140" r="15" fill="#4f46e5"/><text x="235" y="140" fill="#fff">F</text></g>
+            <g onclick="selectPathNode('G')" style="cursor:pointer;"><circle id="pnode-G" cx="325" cy="140" r="15" fill="#4f46e5"/><text x="325" y="140" fill="#fff">G</text></g>
+          </svg>
+          <div style="margin-top: 0.6rem; text-align: center;">
+            <p id="pathTraceOutput"><strong>Click two nodes to inspect path.</strong> (Selected: None)</p>
+            <button class="btn btn-secondary btn-sm" onclick="resetPathTracer()">Reset Selection</button>
+          </div>
+        </div>
+
+        <div class="nav-buttons">
+          <button class="btn btn-secondary" onclick="prevScreen()">&larr; Back</button>
+          <button class="btn btn-primary" onclick="nextScreen()">Theorem 2 &amp; Triad &rarr;</button>
+        </div>
+      </div>
+
+      <!-- SCREEN 3: Theorem 2 & The Fundamental Triad -->
+      <div class="screen-card" id="screen-3">
+        <h2>Theorem 2 &amp; The Fundamental Equivalence Triad</h2>
+        <div class="theorem-box">
+          <h4>Theorem 2 (Section 11.1)</h4>
+          <p>A tree with <span class="math"><i>n</i></span> vertices has exactly <span class="math"><i>n</i> &minus; 1</span> edges[cite: 75].</p>
+        </div>
+        
+        <p>For any simple graph <span class="math"><i>G</i> = (<i>V</i>, <i>E</i>)</span> with <span class="math">|<i>V</i>| = <i>n</i></span>, consider the <strong>Fundamental Triad</strong>[cite: 75]:</p>
+        <div class="grid-2">
+          <div style="background:var(--bg-primary); padding:1rem; border-radius:8px; border:1px solid var(--border);">
+            <strong>The Triad Conditions:</strong>
+            <ol style="padding-left:1.2rem; margin-top:0.4rem; color:var(--text-secondary); font-size:0.9rem;">
+              <li><span class="math"><i>G</i></span> is connected[cite: 75].</li>
+              <li><span class="math"><i>G</i></span> has no simple circuits (acyclic)[cite: 75].</li>
+              <li><span class="math"><i>G</i></span> has exactly <span class="math"><i>n</i> &minus; 1</span> edges[cite: 75].</li>
+            </ol>
+          </div>
+          <div style="background:var(--bg-primary); padding:1rem; border-radius:8px; border:1px solid var(--border);">
+            <strong>The "Two-Out-of-Three" Law:</strong>
+            <p style="margin-top:0.4rem; font-size:0.9rem; color:var(--accent); font-weight:600;">
+              Any two conditions mathematically imply the third, and any pair definitively proves that <span class="math"><i>G</i></span> is a tree[cite: 75].
+            </p>
+          </div>
+        </div>
+
+        <div class="interactive-container">
+          <h3>Interactive Triad Sandbox (<span class="math"><i>n</i> = 5</span> Vertices)</h3>
+          <p>Click any dashed or solid line to toggle an edge. The diagnostic engine dynamically updates the Triad evaluation in real-time[cite: 75].</p>
+          <div style="display:flex; justify-content:center;">
+            <svg width="300" height="200" viewBox="0 0 300 200" id="sandboxSvg"></svg>
+          </div>
+          <div class="hud-grid">
+            <div class="hud-badge"><div class="label">Vertices (|V|)</div><div class="value" id="hudV">5</div></div>
+            <div class="hud-badge"><div class="label">Edges (|E|)</div><div class="value" id="hudE">4</div></div>
+            <div class="hud-badge"><div class="label">Connected?</div><div class="value" id="hudConn">Yes</div></div>
+            <div class="hud-badge"><div class="label">Acyclic?</div><div class="value" id="hudAcyclic">Yes</div></div>
+          </div>
+          <div id="hudVerdict" style="text-align:center; margin-top:0.85rem; padding:0.6rem; border-radius:8px; font-weight:700; background:var(--success-light); color:var(--success); font-size:0.9rem;">
+            Valid Tree (Satisfies Fundamental Triad)
+          </div>
+        </div>
+
+        <div class="nav-buttons">
+          <button class="btn btn-secondary" onclick="prevScreen()">&larr; Back</button>
+          <button class="btn btn-primary" onclick="nextScreen()">Rooted Trees &rarr;</button>
+        </div>
+      </div>
+
+      <!-- SCREEN 4: Rooted Trees & Subtrees -->
+      <div class="screen-card" id="screen-4">
+        <h2>Rooted Trees, Hierarchy, &amp; Subtrees</h2>
+        <p>A <strong>rooted tree</strong> is a tree in which one vertex is designated as the root, and every edge is directed away from the root[cite: 70].</p>
+        
+        <div class="interactive-container">
+          <h3>Interactive Node Inspector</h3>
+          <p>Click any vertex below to inspect its ancestry, descendants, level, and subtree[cite: 70, 71].</p>
+          <div class="grid-2" style="align-items:center;">
+            <div class="canvas-card">
+              <svg width="300" height="200" viewBox="0 0 300 200" id="taxoSvg">
+                <polygon id="subtreeHull" points="" fill="rgba(245, 158, 11, 0.2)" stroke="#f59e0b" stroke-dasharray="4" stroke-width="2" style="display:none;"/>
+                <line x1="150" y1="30" x2="75" y2="85" stroke="#94a3b8" stroke-width="2"/>
+                <line x1="150" y1="30" x2="225" y2="85" stroke="#94a3b8" stroke-width="2"/>
+                <line x1="75" y1="85" x2="40" y2="150" stroke="#94a3b8" stroke-width="2"/>
+                <line x1="75" y1="85" x2="110" y2="150" stroke="#94a3b8" stroke-width="2"/>
+                <line x1="225" y1="85" x2="190" y2="150" stroke="#94a3b8" stroke-width="2"/>
+                <line x1="225" y1="85" x2="260" y2="150" stroke="#94a3b8" stroke-width="2"/>
+
+                <g onclick="inspectNode('A')" style="cursor:pointer;"><circle id="tn-A" cx="150" cy="30" r="15" fill="#4f46e5"/><text x="150" y="30" fill="#fff">A</text></g>
+                <g onclick="inspectNode('B')" style="cursor:pointer;"><circle id="tn-B" cx="75" cy="85" r="15" fill="#4f46e5"/><text x="75" y="85" fill="#fff">B</text></g>
+                <g onclick="inspectNode('C')" style="cursor:pointer;"><circle id="tn-C" cx="225" cy="85" r="15" fill="#4f46e5"/><text x="225" y="85" fill="#fff">C</text></g>
+                <g onclick="inspectNode('D')" style="cursor:pointer;"><circle id="tn-D" cx="40" cy="150" r="15" fill="#4f46e5"/><text x="40" y="150" fill="#fff">D</text></g>
+                <g onclick="inspectNode('E')" style="cursor:pointer;"><circle id="tn-E" cx="110" cy="150" r="15" fill="#4f46e5"/><text x="110" y="150" fill="#fff">E</text></g>
+                <g onclick="inspectNode('F')" style="cursor:pointer;"><circle id="tn-F" cx="190" cy="150" r="15" fill="#4f46e5"/><text x="190" y="150" fill="#fff">F</text></g>
+                <g onclick="inspectNode('G')" style="cursor:pointer;"><circle id="tn-G" cx="260" cy="150" r="15" fill="#4f46e5"/><text x="260" y="150" fill="#fff">G</text></g>
+              </svg>
+              <button class="btn btn-secondary btn-sm" onclick="toggleSubtreeHighlight()" style="margin-top:0.5rem;" id="subToggleBtn">Highlight Subtree: OFF</button>
+            </div>
+            
+            <div style="background:var(--bg-secondary); border:1px solid var(--border); border-radius:8px; padding:1rem; font-size:0.88rem;">
+              <h4 style="color:var(--accent); margin-bottom:0.5rem;" id="inspectTitle">Selected Node: A (Root)</h4>
+              <p style="margin-bottom:0.3rem;"><strong>Type:</strong> <span id="insType">Internal Vertex (Root)</span></p>
+              <p style="margin-bottom:0.3rem;"><strong>Level (Depth):</strong> <span id="insLevel">0</span></p>
+              <p style="margin-bottom:0.3rem;"><strong>Parent:</strong> <span id="insParent">None (Root)</span></p>
+              <p style="margin-bottom:0.3rem;"><strong>Children:</strong> <span id="insChildren">B, C</span></p>
+              <p style="margin-bottom:0.3rem;"><strong>Siblings:</strong> <span id="insSiblings">None</span></p>
+              <p style="margin-bottom:0.3rem;"><strong>Ancestors:</strong> <span id="insAncestors">None</span></p>
+              <p style="margin-bottom:0.3rem;"><strong>Descendants:</strong> <span id="insDescendants">B, C, D, E, F, G</span></p>
+            </div>
+          </div>
+        </div>
+
+        <div class="nav-buttons">
+          <button class="btn btn-secondary" onclick="prevScreen()">&larr; Back</button>
+          <button class="btn btn-primary" onclick="nextScreen()">m-ary Trees &rarr;</button>
+        </div>
+      </div>
+
+      <!-- SCREEN 5: m-ary Trees & Counting Theorems -->
+      <div class="screen-card" id="screen-5">
+        <h2>11.1 m-ary Trees, Height Bounds, &amp; Balance</h2>
+        <div class="theorem-box">
+          <h4>Definitions &amp; Counting Theorems (Theorems 3, 4, 5)</h4>
+          <p>A rooted tree is called an <strong><span class="math"><i>m</i></span>-ary tree</strong> if every internal vertex has no more than <span class="math"><i>m</i></span> children[cite: 71]. It is a <strong>full <span class="math"><i>m</i></span>-ary tree</strong> if every internal vertex has exactly <span class="math"><i>m</i></span> children[cite: 71].</p>
+          <p style="margin-top:0.4rem;"><strong>Theorem 3:</strong> A full <span class="math"><i>m</i></span>-ary tree with <span class="math"><i>i</i></span> internal vertices contains exactly <span class="math"><i>n</i> = <i>m</i><i>i</i> + 1</span> vertices[cite: 75].</p>
+        </div>
+
+        <div class="grid-2">
+          <div>
+            <h3>Theorem 4 Counting Formulas</h3>
+            <p>In a full <span class="math"><i>m</i></span>-ary tree with <span class="math"><i>n</i></span> vertices, <span class="math"><i>i</i></span> internal vertices, and <span class="math"><i>l</i></span> leaves (<span class="math"><i>n</i> = <i>i</i> + <i>l</i></span>)[cite: 75, 76]:</p>
+            <ul style="padding-left:1.25rem; font-size:0.9rem; color:var(--text-secondary); line-height:1.7;">
+              <li>Given <span class="math"><i>n</i></span>: <span class="math"><i>i</i> = (<i>n</i> &minus; 1) / <i>m</i></span> and <span class="math"><i>l</i> = [(<i>m</i> &minus; 1)<i>n</i> + 1] / <i>m</i></span>[cite: 76]</li>
+              <li>Given <span class="math"><i>i</i></span>: <span class="math"><i>n</i> = <i>mi</i> + 1</span> and <span class="math"><i>l</i> = (<i>m</i> &minus; 1)<i>i</i> + 1</span>[cite: 76]</li>
+              <li>Given <span class="math"><i>l</i></span>: <span class="math"><i>n</i> = (<i>ml</i> &minus; 1) / (<i>m</i> &minus; 1)</span> and <span class="math"><i>i</i> = (<i>l</i> &minus; 1) / (<i>m</i> &minus; 1)</span>[cite: 76]</li>
+            </ul>
+            <h3 style="margin-top:1rem;">Height &amp; Balance (Theorem 5)</h3>
+            <p style="font-size:0.9rem;">There are at most <span class="math"><i>m<sup>h</sup></i></span> leaves in an <span class="math"><i>m</i></span>-ary tree of height <span class="math"><i>h</i></span>[cite: 77]. Thus, <span class="math"><i>h</i> &ge; &lceil;log<sub><i>m</i></sub> <i>l</i>&rceil;</span>; when full and balanced, <span class="math"><i>h</i> = &lceil;log<sub><i>m</i></sub> <i>l</i>&rceil;</span>[cite: 77].</p>
+          </div>
+          
+          <div class="interactive-container canvas-card">
+            <h4 style="font-size:0.88rem; margin-bottom:0.4rem;">Balanced vs. Unbalanced Binary Tree</h4>
+            <svg width="280" height="160" viewBox="0 0 280 160">
+              <text x="70" y="16" fill="var(--accent)" font-size="11">Balanced (Lvl 2 leaves)</text>
+              <line x1="70" y1="30" x2="40" y2="70" stroke="#94a3b8" stroke-width="2"/>
+              <line x1="70" y1="30" x2="100" y2="70" stroke="#94a3b8" stroke-width="2"/>
+              <line x1="40" y1="70" x2="25" y2="115" stroke="#94a3b8" stroke-width="2"/>
+              <line x1="40" y1="70" x2="55" y2="115" stroke="#94a3b8" stroke-width="2"/>
+              <line x1="100" y1="70" x2="85" y2="115" stroke="#94a3b8" stroke-width="2"/>
+              <line x1="100" y1="70" x2="115" y2="115" stroke="#94a3b8" stroke-width="2"/>
+              <circle cx="70" cy="30" r="7" fill="#10b981"/>
+              <circle cx="40" cy="70" r="6" fill="#10b981"/><circle cx="100" cy="70" r="6" fill="#10b981"/>
+              <circle cx="25" cy="115" r="5" fill="#10b981"/><circle cx="55" cy="115" r="5" fill="#10b981"/>
+              <circle cx="85" cy="115" r="5" fill="#10b981"/><circle cx="115" cy="115" r="5" fill="#10b981"/>
+
+              <text x="210" y="16" fill="var(--danger)" font-size="11">Unbalanced (Lvl 1,2,3)</text>
+              <line x1="210" y1="30" x2="185" y2="65" stroke="#94a3b8" stroke-width="2"/>
+              <line x1="210" y1="30" x2="235" y2="65" stroke="#94a3b8" stroke-width="2"/>
+              <line x1="235" y1="65" x2="220" y2="100" stroke="#94a3b8" stroke-width="2"/>
+              <line x1="235" y1="65" x2="250" y2="100" stroke="#94a3b8" stroke-width="2"/>
+              <line x1="250" y1="100" x2="250" y2="135" stroke="#94a3b8" stroke-width="2"/>
+              <circle cx="210" cy="30" r="7" fill="#ef4444"/>
+              <circle cx="185" cy="65" r="5" fill="#ef4444"/><circle cx="235" cy="65" r="6" fill="#ef4444"/>
+              <circle cx="220" cy="100" r="5" fill="#ef4444"/><circle cx="250" cy="100" r="6" fill="#ef4444"/>
+              <circle cx="250" cy="135" r="5" fill="#ef4444"/>
+            </svg>
+          </div>
+        </div>
+
+        <div class="nav-buttons">
+          <button class="btn btn-secondary" onclick="prevScreen()">&larr; Back</button>
+          <button class="btn btn-primary" onclick="nextScreen()">Algorithms &amp; Traversal &rarr;</button>
+        </div>
+      </div>
+
+      <!-- SCREEN 6: Traversal & Applications -->
+      <div class="screen-card" id="screen-6">
+        <h2>11.2 &ndash; 11.5 Traversal, Search Trees, &amp; Algorithms</h2>
+        <div class="grid-2">
+          <div style="background:var(--bg-primary); padding:1rem; border-radius:8px; border:1px solid var(--border);">
+            <h4 style="color:var(--accent);">Tree Traversals (11.3)</h4>
+            <p style="font-size:0.88rem; margin-top:0.35rem;">Systematic recursive vertex orders[cite: 96]:</p>
+            <ul style="font-size:0.85rem; padding-left:1.2rem; color:var(--text-secondary);">
+              <li><strong>Preorder:</strong> Visit Root &rarr; Left Subtree &rarr; Right Subtree (Prefix notation)[cite: 96, 103]</li>
+              <li><strong>Inorder:</strong> Left Subtree &rarr; Visit Root &rarr; Right Subtree (Infix notation)[cite: 98, 103]</li>
+              <li><strong>Postorder:</strong> Left Subtree &rarr; Right Subtree &rarr; Visit Root (Postfix / Reverse Polish notation)[cite: 99, 104]</li>
+            </ul>
+          </div>
+          <div style="background:var(--bg-primary); padding:1rem; border-radius:8px; border:1px solid var(--border);">
+            <h4 style="color:var(--accent);">Spanning Trees &amp; MSTs (11.4 &amp; 11.5)</h4>
+            <ul style="font-size:0.85rem; padding-left:1.2rem; color:var(--text-secondary); margin-top:0.35rem;">
+              <li><strong>Depth-First Search (DFS):</strong> Backtracking path exploration[cite: 108, 110, 111].</li>
+              <li><strong>Breadth-First Search (BFS):</strong> Level-by-level queue traversal[cite: 112, 113, 114].</li>
+              <li><strong>Prim's Algorithm:</strong> Grows MST by adding minimal incident edges from visited vertices[cite: 121, 122].</li>
+              <li><strong>Kruskal's Algorithm:</strong> Merges forest components by greedily choosing overall minimal weight edges without cycles[cite: 122, 123, 124].</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="interactive-container canvas-card">
+          <h3>Visual Traversal Comparison</h3>
+          <svg width="360" height="135" viewBox="0 0 360 135">
+            <line x1="180" y1="20" x2="90" y2="65" stroke="#94a3b8" stroke-width="2"/>
+            <line x1="180" y1="20" x2="270" y2="65" stroke="#94a3b8" stroke-width="2"/>
+            <line x1="90" y1="65" x2="45" y2="110" stroke="#94a3b8" stroke-width="2"/>
+            <line x1="90" y1="65" x2="135" y2="110" stroke="#94a3b8" stroke-width="2"/>
+            <line x1="270" y1="65" x2="225" y2="110" stroke="#94a3b8" stroke-width="2"/>
+            <line x1="270" y1="65" x2="315" y2="110" stroke="#94a3b8" stroke-width="2"/>
+            <circle cx="180" cy="20" r="13" fill="#4f46e5"/><text x="180" y="20" fill="#fff">1</text>
+            <circle cx="90" cy="65" r="13" fill="#4f46e5"/><text x="90" y="65" fill="#fff">2</text>
+            <circle cx="270" cy="65" r="13" fill="#4f46e5"/><text x="270" y="65" fill="#fff">3</text>
+            <circle cx="45" cy="110" r="12" fill="#4f46e5"/><text x="45" y="110" fill="#fff">4</text>
+            <circle cx="135" cy="110" r="12" fill="#4f46e5"/><text x="135" y="110" fill="#fff">5</text>
+            <circle cx="225" cy="110" r="12" fill="#4f46e5"/><text x="225" y="110" fill="#fff">6</text>
+            <circle cx="315" cy="110" r="12" fill="#4f46e5"/><text x="315" y="110" fill="#fff">7</text>
+          </svg>
+          <p style="font-size:0.85rem; margin-top:0.4rem; text-align:center;">
+            <strong>Preorder:</strong> 1, 2, 4, 5, 3, 6, 7 &bull; <strong>Inorder:</strong> 4, 2, 5, 1, 6, 3, 7 &bull; <strong>Postorder:</strong> 4, 5, 2, 6, 7, 3, 1
+          </p>
+        </div>
+
+        <div class="nav-buttons">
+          <button class="btn btn-secondary" onclick="prevScreen()">&larr; Back</button>
+          <button class="btn btn-primary" onclick="nextScreen()">Mastery Quiz &rarr;</button>
+        </div>
+      </div>
+
+      <!-- SCREEN 7: Formative Quiz -->
+      <div class="screen-card" id="screen-7">
+        <h2>Formative Mastery Assessment</h2>
+        <p>Test your conceptual understanding before completing the lab[cite: 75, 76, 126, 127].</p>
+        
+        <!-- Q1 -->
+        <div style="margin-bottom:1.25rem; background:var(--bg-primary); padding:1rem; border-radius:8px; border:1px solid var(--border);">
+          <p><strong>1. In an unrooted tree with <span class="math"><i>n</i></span> vertices (<span class="math"><i>n</i> &ge; 3</span>), what are the minimum and maximum possible number of leaves?</strong></p>
+          <label style="display:block; margin:0.3rem 0;"><input type="radio" name="mcq1" value="A"> A) Min: 1, Max: <span class="math"><i>n</i> &minus; 1</span></label>
+          <label style="display:block; margin:0.3rem 0;"><input type="radio" name="mcq1" value="B"> B) Min: 2, Max: <span class="math"><i>n</i> &minus; 1</span></label>
+          <label style="display:block; margin:0.3rem 0;"><input type="radio" name="mcq1" value="C"> C) Min: 2, Max: <span class="math"><i>n</i></span></label>
+          <label style="display:block; margin:0.3rem 0;"><input type="radio" name="mcq1" value="D"> D) Min: 0, Max: <span class="math"><i>n</i> &minus; 2</span></label>
+          <div id="exp-mcq1" style="font-size:0.85rem; margin-top:0.4rem; display:none;"></div>
+        </div>
+
+        <!-- Q2 -->
+        <div style="margin-bottom:1.25rem; background:var(--bg-primary); padding:1rem; border-radius:8px; border:1px solid var(--border);">
+          <p><strong>2. Applying Theorem 4, how many leaves are in a full 3-ary tree with exactly <span class="math"><i>i</i> = 10</span> internal vertices?</strong></p>
+          <label style="display:block; margin:0.3rem 0;"><input type="radio" name="mcq2" value="A"> A) 20</label>
+          <label style="display:block; margin:0.3rem 0;"><input type="radio" name="mcq2" value="B"> B) 21</label>
+          <label style="display:block; margin:0.3rem 0;"><input type="radio" name="mcq2" value="C"> C) 31</label>
+          <label style="display:block; margin:0.3rem 0;"><input type="radio" name="mcq2" value="D"> D) 19</label>
+          <div id="exp-mcq2" style="font-size:0.85rem; margin-top:0.4rem; display:none;"></div>
+        </div>
+
+        <!-- Q3 -->
+        <div style="margin-bottom:1.25rem; background:var(--bg-primary); padding:1rem; border-radius:8px; border:1px solid var(--border);">
+          <p><strong>3. By the Fundamental Equivalence Triad, which pair guarantees that simple graph <span class="math"><i>G</i></span> with <span class="math"><i>n</i></span> vertices is a tree?</strong></p>
+          <label style="display:block; margin:0.3rem 0;"><input type="radio" name="mcq3" value="A"> A) <span class="math"><i>G</i></span> is connected and has <span class="math">|<i>E</i>| = <i>n</i> &minus; 1</span></label>
+          <label style="display:block; margin:0.3rem 0;"><input type="radio" name="mcq3" value="B"> B) <span class="math"><i>G</i></span> has <span class="math">|<i>E</i>| = <i>n</i> &minus; 1</span> and has a circuit</label>
+          <label style="display:block; margin:0.3rem 0;"><input type="radio" name="mcq3" value="C"> C) <span class="math"><i>G</i></span> is acyclic and has <span class="math">|<i>E</i>| = <i>n</i></span></label>
+          <label style="display:block; margin:0.3rem 0;"><input type="radio" name="mcq3" value="D"> D) <span class="math"><i>G</i></span> is complete bipartite</label>
+          <div id="exp-mcq3" style="font-size:0.85rem; margin-top:0.4rem; display:none;"></div>
+        </div>
+
+        <!-- Matching / Drag Drop -->
+        <div style="margin-bottom:1.25rem; background:var(--bg-primary); padding:1rem; border-radius:8px; border:1px solid var(--border);">
+          <p><strong>4. Match Terminology with Definitions (Drag or Click to Match):</strong></p>
+          <div class="match-container">
+            <div>
+              <div class="term-chip" draggable="true" ondragstart="drag(event)" onclick="mobilePickTerm('term-leaf')" id="term-leaf">Leaf</div>
+              <div class="term-chip" draggable="true" ondragstart="drag(event)" onclick="mobilePickTerm('term-internal')" id="term-internal">Internal Vertex</div>
+              <div class="term-chip" draggable="true" ondragstart="drag(event)" onclick="mobilePickTerm('term-spanning')" id="term-spanning">Spanning Tree</div>
+            </div>
+            <div>
+              <div class="drop-slot" ondragover="allowDrop(event)" ondrop="drop(event, 'slot-leaf')" onclick="mobileDropTarget('slot-leaf')" id="slot-leaf">
+                <span style="font-size:0.85rem; color:var(--text-secondary);">Target: A vertex in a rooted tree with no children[cite: 71].</span>
+              </div>
+              <div class="drop-slot" ondragover="allowDrop(event)" ondrop="drop(event, 'slot-internal')" onclick="mobileDropTarget('slot-internal')" id="slot-internal">
+                <span style="font-size:0.85rem; color:var(--text-secondary);">Target: A vertex in a rooted tree with one or more children[cite: 71].</span>
+              </div>
+              <div class="drop-slot" ondragover="allowDrop(event)" ondrop="drop(event, 'slot-spanning')" onclick="mobileDropTarget('slot-spanning')" id="slot-spanning">
+                <span style="font-size:0.85rem; color:var(--text-secondary);">Target: A subgraph of G that is a tree containing every vertex of G[cite: 108].</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button class="btn btn-primary" onclick="evaluateQuiz()">Grade Mastery Quiz</button>
+        <div id="quizScoreNotice" style="margin-top:0.75rem; font-weight:700;"></div>
+
+        <div class="nav-buttons">
+          <button class="btn btn-secondary" onclick="prevScreen()">&larr; Back</button>
+          <button class="btn btn-primary" onclick="nextScreen()">Diagnostic Lab &rarr;</button>
+        </div>
+      </div>
+
+      <!-- SCREEN 8: Diagnostic Lab (6 Diagrams) -->
+      <div class="screen-card" id="screen-8">
+        <h2>Diagnostic Lab: "Tree or Not a Tree?"</h2>
+        <p>Evaluate each diagram (6 to 7 vertices/edges). Decide whether it satisfies the rigorous definition of a tree and verify your choice[cite: 69, 75].</p>
+
+        <div class="diag-grid">
+          <!-- Diagram 1 -->
+          <div class="diag-card">
+            <h4>Diagram 1 (7 Vertices)</h4>
+            <svg width="200" height="130" viewBox="0 0 200 130">
+              <line x1="25" y1="65" x2="65" y2="65" stroke="#6366f1" stroke-width="2"/>
+              <line x1="65" y1="65" x2="105" y2="65" stroke="#6366f1" stroke-width="2"/>
+              <line x1="105" y1="65" x2="145" y2="65" stroke="#6366f1" stroke-width="2"/>
+              <line x1="145" y1="65" x2="185" y2="65" stroke="#6366f1" stroke-width="2"/>
+              <line x1="65" y1="65" x2="65" y2="20" stroke="#6366f1" stroke-width="2"/>
+              <line x1="145" y1="65" x2="145" y2="110" stroke="#6366f1" stroke-width="2"/>
+              <circle cx="25" cy="65" r="7" fill="#4f46e5"/><circle cx="65" cy="65" r="7" fill="#4f46e5"/>
+              <circle cx="105" cy="65" r="7" fill="#4f46e5"/><circle cx="145" cy="65" r="7" fill="#4f46e5"/>
+              <circle cx="185" cy="65" r="7" fill="#4f46e5"/><circle cx="65" cy="20" r="7" fill="#4f46e5"/>
+              <circle cx="145" cy="110" r="7" fill="#4f46e5"/>
+            </svg>
+            <div class="diag-choices">
+              <label><input type="radio" name="diag1" value="tree"> Tree</label>
+              <label><input type="radio" name="diag1" value="not"> Not Tree</label>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="checkDiag(1, 'tree', 'Caterpillar tree with n=7 and m=6 edges. Connected and acyclic (Theorem 2).')">Verify</button>
+            <div class="diag-feedback" id="df-1"></div>
+          </div>
+
+          <!-- Diagram 2 -->
+          <div class="diag-card">
+            <h4>Diagram 2 (6 Vertices)</h4>
+            <svg width="200" height="130" viewBox="0 0 200 130">
+              <polygon points="90,20 140,50 120,105 60,105 40,50" fill="none" stroke="#6366f1" stroke-width="2"/>
+              <line x1="140" y1="50" x2="180" y2="50" stroke="#6366f1" stroke-width="2"/>
+              <circle cx="90" cy="20" r="7" fill="#4f46e5"/><circle cx="140" cy="50" r="7" fill="#4f46e5"/>
+              <circle cx="120" cy="105" r="7" fill="#4f46e5"/><circle cx="60" cy="105" r="7" fill="#4f46e5"/>
+              <circle cx="40" cy="50" r="7" fill="#4f46e5"/><circle cx="180" cy="50" r="7" fill="#4f46e5"/>
+            </svg>
+            <div class="diag-choices">
+              <label><input type="radio" name="diag2" value="tree"> Tree</label>
+              <label><input type="radio" name="diag2" value="not"> Not Tree</label>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="checkDiag(2, 'not', 'Contains a simple 5-cycle. |E| = 6 != 6-1. Violates acyclic property.')">Verify</button>
+            <div class="diag-feedback" id="df-2"></div>
+          </div>
+
+          <!-- Diagram 3 -->
+          <div class="diag-card">
+            <h4>Diagram 3 (7 Vertices)</h4>
+            <svg width="200" height="130" viewBox="0 0 200 130">
+              <line x1="25" y1="45" x2="65" y2="45" stroke="#6366f1" stroke-width="2"/>
+              <line x1="65" y1="45" x2="45" y2="95" stroke="#6366f1" stroke-width="2"/>
+              <circle cx="25" cy="45" r="7" fill="#4f46e5"/><circle cx="65" cy="45" r="7" fill="#4f46e5"/><circle cx="45" cy="95" r="7" fill="#4f46e5"/>
+              <line x1="120" y1="70" x2="150" y2="35" stroke="#6366f1" stroke-width="2"/>
+              <line x1="150" y1="35" x2="180" y2="70" stroke="#6366f1" stroke-width="2"/>
+              <line x1="150" y1="35" x2="150" y2="105" stroke="#6366f1" stroke-width="2"/>
+              <circle cx="120" cy="70" r="7" fill="#4f46e5"/><circle cx="150" cy="35" r="7" fill="#4f46e5"/>
+              <circle cx="180" cy="70" r="7" fill="#4f46e5"/><circle cx="150" cy="105" r="7" fill="#4f46e5"/>
+            </svg>
+            <div class="diag-choices">
+              <label><input type="radio" name="diag3" value="tree"> Tree</label>
+              <label><input type="radio" name="diag3" value="not"> Not Tree</label>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="checkDiag(3, 'not', 'Disconnected graph with 2 components. It is a forest, not a tree.')">Verify</button>
+            <div class="diag-feedback" id="df-3"></div>
+          </div>
+
+          <!-- Diagram 4 -->
+          <div class="diag-card">
+            <h4>Diagram 4 (7 Vertices)</h4>
+            <svg width="200" height="130" viewBox="0 0 200 130">
+              <line x1="100" y1="65" x2="35" y2="65" stroke="#6366f1" stroke-width="2"/>
+              <line x1="100" y1="65" x2="165" y2="65" stroke="#6366f1" stroke-width="2"/>
+              <line x1="100" y1="65" x2="55" y2="30" stroke="#6366f1" stroke-width="2"/>
+              <line x1="100" y1="65" x2="145" y2="30" stroke="#6366f1" stroke-width="2"/>
+              <line x1="100" y1="65" x2="55" y2="100" stroke="#6366f1" stroke-width="2"/>
+              <line x1="100" y1="65" x2="145" y2="100" stroke="#6366f1" stroke-width="2"/>
+              <circle cx="100" cy="65" r="8" fill="#4f46e5"/>
+              <circle cx="35" cy="65" r="6" fill="#4f46e5"/><circle cx="165" cy="65" r="6" fill="#4f46e5"/>
+              <circle cx="55" cy="30" r="6" fill="#4f46e5"/><circle cx="145" cy="30" r="6" fill="#4f46e5"/>
+              <circle cx="55" cy="100" r="6" fill="#4f46e5"/><circle cx="145" cy="100" r="6" fill="#4f46e5"/>
+            </svg>
+            <div class="diag-choices">
+              <label><input type="radio" name="diag4" value="tree"> Tree</label>
+              <label><input type="radio" name="diag4" value="not"> Not Tree</label>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="checkDiag(4, 'tree', 'Star graph K_{1,6}. Connected with 7 vertices, 6 edges, zero cycles.')">Verify</button>
+            <div class="diag-feedback" id="df-4"></div>
+          </div>
+
+          <!-- Diagram 5 -->
+          <div class="diag-card">
+            <h4>Diagram 5 (7 Vertices)</h4>
+            <svg width="200" height="130" viewBox="0 0 200 130">
+              <polygon points="50,30 110,15 155,45 150,105 90,115 40,85" fill="none" stroke="#6366f1" stroke-width="2"/>
+              <line x1="50" y1="30" x2="150" y2="105" stroke="#6366f1" stroke-width="2"/>
+              <line x1="155" y1="45" x2="190" y2="45" stroke="#6366f1" stroke-width="2"/>
+              <circle cx="50" cy="30" r="6" fill="#4f46e5"/><circle cx="110" cy="15" r="6" fill="#4f46e5"/>
+              <circle cx="155" cy="45" r="6" fill="#4f46e5"/><circle cx="150" cy="105" r="6" fill="#4f46e5"/>
+              <circle cx="90" cy="115" r="6" fill="#4f46e5"/><circle cx="40" cy="85" r="6" fill="#4f46e5"/>
+              <circle cx="190" cy="45" r="6" fill="#4f46e5"/>
+            </svg>
+            <div class="diag-choices">
+              <label><input type="radio" name="diag5" value="tree"> Tree</label>
+              <label><input type="radio" name="diag5" value="not"> Not Tree</label>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="checkDiag(5, 'not', 'Contains cycles via cross-chord. |E| = 8 > 6. Not a tree.')">Verify</button>
+            <div class="diag-feedback" id="df-5"></div>
+          </div>
+
+          <!-- Diagram 6 -->
+          <div class="diag-card">
+            <h4>Diagram 6 (7 Vertices)</h4>
+            <svg width="200" height="130" viewBox="0 0 200 130">
+              <line x1="100" y1="20" x2="55" y2="60" stroke="#6366f1" stroke-width="2"/>
+              <line x1="100" y1="20" x2="145" y2="60" stroke="#6366f1" stroke-width="2"/>
+              <line x1="55" y1="60" x2="35" y2="105" stroke="#6366f1" stroke-width="2"/>
+              <line x1="55" y1="60" x2="75" y2="105" stroke="#6366f1" stroke-width="2"/>
+              <line x1="145" y1="60" x2="125" y2="105" stroke="#6366f1" stroke-width="2"/>
+              <line x1="145" y1="60" x2="165" y2="105" stroke="#6366f1" stroke-width="2"/>
+              <circle cx="100" cy="20" r="7" fill="#4f46e5"/><circle cx="55" cy="60" r="6" fill="#4f46e5"/>
+              <circle cx="145" cy="60" r="6" fill="#4f46e5"/><circle cx="35" cy="105" r="6" fill="#4f46e5"/>
+              <circle cx="75" cy="105" r="6" fill="#4f46e5"/><circle cx="125" cy="105" r="6" fill="#4f46e5"/>
+              <circle cx="165" cy="105" r="6" fill="#4f46e5"/>
+            </svg>
+            <div class="diag-choices">
+              <label><input type="radio" name="diag6" value="tree"> Tree</label>
+              <label><input type="radio" name="diag6" value="not"> Not Tree</label>
+            </div>
+            <button class="btn btn-secondary btn-sm" onclick="checkDiag(6, 'tree', 'Full balanced binary tree with 7 vertices, 6 edges, and no cycles.')">Verify</button>
+            <div class="diag-feedback" id="df-6"></div>
+          </div>
+        </div>
+
+        <div class="nav-buttons">
+          <button class="btn btn-secondary" onclick="prevScreen()">&larr; Back</button>
+          <button class="btn btn-primary" onclick="nextScreen()">Hand-Drawn Assignment &rarr;</button>
+        </div>
+      </div>
+
+      <!-- SCREEN 9: Hand-Drawn Exercise Upload -->
+      <div class="screen-card" id="screen-9">
+        <h2>Hand-Drawn Problem Solving: Rosen Section 11.1</h2>
+        <p>Solve and illustrate the following 3 assigned textbook problems from Kenneth Rosen's <em>Discrete Mathematics and Its Applications</em> on a <strong>single sheet of physical paper</strong>[cite: 78, 79, 133]. Capture a photo and upload the digital document below[cite: 133].</p>
+
+        <div style="background:var(--bg-primary); border:1px solid var(--border); border-radius:8px; padding:1.25rem; margin-bottom:1.25rem;">
+          <h4 style="color:var(--accent); margin-bottom:0.5rem;">Assigned Problems for Paper Submission</h4>
+          <ol style="padding-left:1.2rem; font-size:0.92rem; color:var(--text-secondary); line-height:1.7;">
+            <li style="margin-bottom:0.75rem;">
+              <strong>Exercise 9(b) &amp; 9(c) (p. 755) &mdash; Subtree Extraction:</strong> In the 16-vertex rooted tree <span class="math"><i>T</i></span> where root <span class="math"><i>a</i></span> has children <span class="math"><i>b</i>, <i>c</i>, <i>d</i></span> (<span class="math"><i>b</i></span> has children <span class="math"><i>e</i>, <i>f</i></span>; <span class="math"><i>c</i></span> has child <span class="math"><i>g</i></span>; <span class="math"><i>d</i></span> has children <span class="math"><i>h</i>, <i>i</i>, <i>j</i></span>; <span class="math"><i>e</i></span> has children <span class="math"><i>k</i>, <i>l</i></span>), draw the isolated subtrees rooted at vertex <span class="math"><i>c</i></span> and vertex <span class="math"><i>e</i></span>.
+            </li>
+            <li style="margin-bottom:0.75rem;">
+              <strong>Exercise 12(a) (p. 755) &mdash; Nonisomorphic Trees:</strong> Draw all nonisomorphic unrooted trees containing exactly 4 vertices[cite: 78, 133]. Label all vertex degrees to prove nonisomorphism (the path <span class="math"><i>P</i><sub>4</sub></span> vs. the star <span class="math"><i>K</i><sub>1,3</sub></span>)[cite: 78, 133].
+            </li>
+            <li>
+              <strong>Exercise 27 (p. 756) &mdash; Complete <span class="math"><i>m</i></span>-ary Tree Synthesis:</strong> Draw a complete binary tree of height 3 (compute total vertices <span class="math"><i>n</i></span> and leaves <span class="math"><i>l</i></span>) and a complete 3-ary tree of height 2[cite: 79, 133].
+            </li>
+          </ol>
+        </div>
+
+        <div class="upload-zone" onclick="document.getElementById('fileInput').click()" ondragover="event.preventDefault()" ondrop="handleFileDrop(event)">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:0.5rem; color:var(--accent);"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
+          <p style="font-weight:600; margin-bottom:0.2rem;">Drag &amp; drop your hand-drawn photo here, or click to browse</p>
+          <p style="font-size:0.8rem; color:var(--text-secondary);">Accepts JPEG, PNG, or PDF files</p>
+          <input type="file" id="fileInput" accept="image/*,application/pdf" style="display:none;" onchange="handleFileSelect(event)">
+        </div>
+
+        <div style="display:flex; justify-content:center;">
+          <div class="preview-box" id="previewContainer">
+            <img id="imagePreview" alt="Upload Preview">
+          </div>
+        </div>
+        <p id="fileDetails" style="text-align:center; margin-top:0.6rem; font-size:0.88rem; font-weight:600;"></p>
+
+        <div class="nav-buttons">
+          <button class="btn btn-secondary" onclick="prevScreen()">&larr; Back</button>
+          <button class="btn btn-primary" onclick="nextScreen()">Final Review &amp; Submit &rarr;</button>
+        </div>
+      </div>
+
+      <!-- SCREEN 10: Final Review & Download -->
+      <div class="screen-card" id="screen-10">
+        <h2>Assignment Submission &amp; Dual Ledger Export</h2>
+        <p>Review your verified performance below. Submitting will save your assessment report markdown file and your uploaded hand-drawn diagram with matching naming conventions.</p>
+
+        <div style="background:var(--bg-primary); border:1px solid var(--border); border-radius:8px; padding:1.25rem; margin:1.25rem 0; font-size:0.95rem;">
+          <h3 style="font-size:1.1rem; margin-bottom:0.75rem;">Candidate Session Summary</h3>
+          <p><strong>Candidate Name:</strong> <span id="revName">—</span></p>
+          <p><strong>Matriculation ID:</strong> <span id="revId">—</span></p>
+          <p><strong>Mastery Quiz Score:</strong> <span id="revQuiz">0 / 4</span></p>
+          <p><strong>Diagnostic Lab Score:</strong> <span id="revDiag">0 / 6</span></p>
+          <p><strong>Hand-Drawn Problem Artifact:</strong> <span id="revUpload" style="color:var(--warning);">No file uploaded</span></p>
+        </div>
+
+        <div class="download-bundle-card">
+          <h3 style="color:var(--accent); font-size:1.15rem; margin-bottom:0.5rem;">Export Submission Package</h3>
+          <p style="font-size:0.88rem; color:var(--text-secondary); max-width:550px; margin:0 auto 1rem auto;">
+            Click below to automatically save both your compiled Markdown performance report and your uploaded hand-drawn work.
+          </p>
+          
+          <button class="btn btn-success" onclick="submitAndDownloadAll()" style="padding:0.85rem 1.75rem; font-size:1.05rem;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+            SUBMIT &amp; DOWNLOAD BOTH (.MD + IMAGE)
+          </button>
+
+          <div class="download-actions">
+            <button class="btn btn-secondary btn-sm" onclick="downloadMarkdownReport()">
+              📄 Download Report Only (.md)
+            </button>
+            <button class="btn btn-secondary btn-sm" onclick="downloadUploadedImageOnly()" id="imgOnlyBtn" disabled>
+              🖼️ Download Saved Image Only
+            </button>
+          </div>
+          <p id="downloadFeedback" style="font-size:0.85rem; margin-top:0.75rem; font-weight:600;"></p>
+        </div>
+
+        <div class="nav-buttons">
+          <button class="btn btn-secondary" onclick="prevScreen()">&larr; Back</button>
+          <button class="btn btn-secondary" onclick="goToScreen(0)">Start Over (Screen 0)</button>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- APPLICATION SCRIPTS -->
+  <script>
+    /* Global Application State */
+    const AppState = {
+      theme: 'light',
+      isMobileEmulation: false,
+      currentScreen: 0,
+      totalScreens: 11,
+      studentName: '',
+      studentId: '',
+      quizScore: 0,
+      matchedPairs: {},
+      selectedTermMobile: null,
+      diagAnswers: {},
+      diagScore: 0,
+      uploadedBlob: null,
+      uploadedFileName: '',
+      uploadedFileType: '',
+      selectedTaxoNode: 'A',
+      isSubtreeHighlighted: false,
+      selectedPathNodes: [],
+      sandboxNodes: [
+        { id: 0, x: 150, y: 30, label: '0' },
+        { id: 1, x: 245, y: 90, label: '1' },
+        { id: 2, x: 210, y: 175, label: '2' },
+        { id: 3, x: 90, y: 175, label: '3' },
+        { id: 4, x: 55, y: 90, label: '4' }
+      ],
+      sandboxEdges: [[0, 1], [0, 4], [1, 2], [1, 3]]
+    };
+
+    /* Navigation Controller */
+    function updateProgress() {
+      const pct = (AppState.currentScreen / (AppState.totalScreens - 1)) * 100;
+      document.getElementById('progressBar').style.width = pct + '%';
+      document.getElementById('screenNavSelect').value = AppState.currentScreen;
+    }
+
+    function goToScreen(index) {
+      if (index < 0 || index >= AppState.totalScreens) return;
+      document.querySelectorAll('.screen-card').forEach(el => el.classList.remove('active'));
+      const target = document.getElementById(`screen-${index}`);
+      if (target) {
+        target.classList.add('active');
+        AppState.currentScreen = index;
+        updateProgress();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        if (index === 10) refreshSummaryScreen();
+      }
+    }
+
+    function nextScreen() { goToScreen(AppState.currentScreen + 1); }
+    function prevScreen() { goToScreen(AppState.currentScreen - 1); }
+
+    /* Theme & Device Mode Toggles */
+    function toggleTheme() {
+      const nextTheme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', nextTheme);
+      AppState.theme = nextTheme;
+      document.getElementById('themeBtn').innerHTML = nextTheme === 'dark' ? '<span>☀️</span>' : '<span>🌙</span>';
+      localStorage.setItem('theme', nextTheme);
+    }
+
+    function toggleDeviceMode() {
+      AppState.isMobileEmulation = !AppState.isMobileEmulation;
+      document.body.classList.toggle('device-mobile-sim', AppState.isMobileEmulation);
+      const btn = document.getElementById('deviceToggleBtn');
+      if (AppState.isMobileEmulation) {
+        btn.innerHTML = '<span>💻</span> <span>Desktop View</span>';
+      } else {
+        btn.innerHTML = '<span>📱</span> <span>Mobile View</span>';
+      }
+    }
+
+    /* Student Intake */
+    function validateStudentIntake() {
+      const name = document.getElementById('studentNameInput').value.trim();
+      const id = document.getElementById('studentIdInput').value.trim();
+      const err = document.getElementById('intakeError');
+      if (!name || !id) {
+        err.style.display = 'block';
+        return;
+      }
+      err.style.display = 'none';
+      AppState.studentName = name;
+      AppState.studentId = id;
+      nextScreen();
+    }
+
+    /* Path Tracer Logic */
+    const treeAdjacency = {
+      'A': ['B', 'C'], 'B': ['A', 'D', 'E'], 'C': ['A', 'F', 'G'],
+      'D': ['B'], 'E': ['B'], 'F': ['C'], 'G': ['C']
+    };
+
+    function findTreePath(start, target) {
+      let queue = [[start]];
+      let visited = new Set([start]);
+      while (queue.length > 0) {
+        let path = queue.shift();
+        let curr = path[path.length - 1];
+        if (curr === target) return path;
+        for (let nxt of (treeAdjacency[curr] || [])) {
+          if (!visited.has(nxt)) {
+            visited.add(nxt);
+            queue.push([...path, nxt]);
+          }
+        }
+      }
+      return null;
+    }
+
+    function selectPathNode(id) {
+      if (AppState.selectedPathNodes.includes(id)) {
+        AppState.selectedPathNodes = AppState.selectedPathNodes.filter(n => n !== id);
+      } else {
+        if (AppState.selectedPathNodes.length >= 2) AppState.selectedPathNodes = [id];
+        else AppState.selectedPathNodes.push(id);
+      }
+      renderPathTracer();
+    }
+
+    function resetPathTracer() {
+      AppState.selectedPathNodes = [];
+      renderPathTracer();
+    }
+
+    function renderPathTracer() {
+      const nodes = ['A','B','C','D','E','F','G'];
+      const edges = ['AB','AC','BD','BE','CF','CG'];
+      nodes.forEach(n => {
+        document.getElementById(`pnode-${n}`).setAttribute('fill', AppState.selectedPathNodes.includes(n) ? '#f59e0b' : '#4f46e5');
+      });
+      edges.forEach(e => {
+        document.getElementById(`pe-${e}`).setAttribute('stroke', '#cbd5e1');
+        document.getElementById(`pe-${e}`).setAttribute('stroke-width', '3');
+      });
+
+      const out = document.getElementById('pathTraceOutput');
+      if (AppState.selectedPathNodes.length === 2) {
+        const p = findTreePath(AppState.selectedPathNodes[0], AppState.selectedPathNodes[1]);
+        if (p) {
+          for (let i = 0; i < p.length - 1; i++) {
+            let k1 = p[i] + p[i+1];
+            let k2 = p[i+1] + p[i];
+            let el = document.getElementById(`pe-${k1}`) || document.getElementById(`pe-${k2}`);
+            if (el) {
+              el.setAttribute('stroke', '#10b981');
+              el.setAttribute('stroke-width', '5');
+            }
+          }
+          p.forEach(n => document.getElementById(`pnode-${n}`).setAttribute('fill', '#10b981'));
+          out.innerHTML = `<strong>Unique Path:</strong> ${p.join(' &rarr; ')} (Unique by Theorem 1)`;
+        }
+      } else if (AppState.selectedPathNodes.length === 1) {
+        out.innerHTML = `Selected: <strong>${AppState.selectedPathNodes[0]}</strong>. Click a second node.`;
+      } else {
+        out.innerHTML = `<strong>Click two nodes to inspect path.</strong> (Selected: None)`;
+      }
+    }
+
+    /* Sandbox DFS & Cycle Engine */
+    function renderSandbox() {
+      const svg = document.getElementById('sandboxSvg');
+      svg.innerHTML = '';
+      const allPairs = [];
+      for (let i = 0; i < 5; i++) {
+        for (let j = i + 1; j < 5; j++) allPairs.push([i, j]);
+      }
+
+      allPairs.forEach(([u, v]) => {
+        const isActive = AppState.sandboxEdges.some(([a, b]) => (a === u && b === v) || (a === v && b === u));
+        const n1 = AppState.sandboxNodes[u];
+        const n2 = AppState.sandboxNodes[v];
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', n1.x); line.setAttribute('y1', n1.y);
+        line.setAttribute('x2', n2.x); line.setAttribute('y2', n2.y);
+        line.setAttribute('stroke', isActive ? '#4f46e5' : '#94a3b8');
+        line.setAttribute('stroke-width', isActive ? '4' : '2');
+        line.setAttribute('stroke-dasharray', isActive ? 'none' : '4');
+        line.setAttribute('style', 'cursor:pointer');
+        line.onclick = () => toggleSandboxEdge(u, v);
+        svg.appendChild(line);
+      });
+
+      AppState.sandboxNodes.forEach(n => {
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        const c = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        c.setAttribute('cx', n.x); c.setAttribute('cy', n.y); c.setAttribute('r', '14');
+        c.setAttribute('fill', '#0f172a');
+        const t = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        t.setAttribute('x', n.x); t.setAttribute('y', n.y); t.setAttribute('fill', '#ffffff');
+        t.textContent = n.label;
+        g.appendChild(c); g.appendChild(t);
+        svg.appendChild(g);
+      });
+
+      evaluateSandboxGraph();
+    }
+
+    function toggleSandboxEdge(u, v) {
+      const idx = AppState.sandboxEdges.findIndex(([a, b]) => (a === u && b === v) || (a === v && b === u));
+      if (idx >= 0) AppState.sandboxEdges.splice(idx, 1);
+      else AppState.sandboxEdges.push([u, v]);
+      renderSandbox();
+    }
+
+    function evaluateSandboxGraph() {
+      const n = 5;
+      const m = AppState.sandboxEdges.length;
+      document.getElementById('hudV').innerText = n;
+      document.getElementById('hudE').innerText = m;
+
+      const adj = Array.from({ length: n }, () => []);
+      AppState.sandboxEdges.forEach(([u, v]) => { adj[u].push(v); adj[v].push(u); });
+      let visited = new Set();
+      let q = [0];
+      visited.add(0);
+      while (q.length > 0) {
+        let curr = q.shift();
+        adj[curr].forEach(nxt => {
+          if (!visited.has(nxt)) {
+            visited.add(nxt);
+            q.push(nxt);
+          }
+        });
+      }
+      const isConnected = visited.size === n;
+      document.getElementById('hudConn').innerText = isConnected ? 'Yes' : 'No';
+
+      let isAcyclic = true;
+      let seen = new Array(n).fill(false);
+      function hasCycle(v, parent) {
+        seen[v] = true;
+        for (let neighbor of adj[v]) {
+          if (!seen[neighbor]) {
+            if (hasCycle(neighbor, v)) return true;
+          } else if (neighbor !== parent) {
+            return true;
+          }
+        }
+        return false;
+      }
+      for (let i = 0; i < n; i++) {
+        if (!seen[i]) {
+          if (hasCycle(i, -1)) { isAcyclic = false; break; }
+        }
+      }
+      document.getElementById('hudAcyclic').innerText = isAcyclic ? 'Yes' : 'No';
+
+      const verdictEl = document.getElementById('hudVerdict');
+      if (isConnected && isAcyclic && m === n - 1) {
+        verdictEl.style.background = 'var(--success-light)';
+        verdictEl.style.color = 'var(--success)';
+        verdictEl.innerText = 'Valid Tree (Fundamental Triad Satisfied)';
+      } else if (!isConnected && isAcyclic) {
+        verdictEl.style.background = 'var(--warning-light)';
+        verdictEl.style.color = 'var(--warning)';
+        verdictEl.innerText = 'Disconnected Forest (Acyclic with multiple components)';
+      } else {
+        verdictEl.style.background = 'var(--danger-light)';
+        verdictEl.style.color = 'var(--danger)';
+        verdictEl.innerText = 'Contains Simple Circuit (Not a tree)';
+      }
+    }
+
+    /* Taxonomy Inspector */
+    const taxonomyData = {
+      'A': { type: 'Root (Internal)', level: 0, parent: 'None', children: 'B, C', siblings: 'None', ancestors: 'None', descendants: 'B, C, D, E, F, G', hull: '25,20 275,20 285,170 15,170' },
+      'B': { type: 'Internal Vertex', level: 1, parent: 'A', children: 'D, E', siblings: 'C', ancestors: 'A', descendants: 'D, E', hull: '15,75 130,75 130,170 15,170' },
+      'C': { type: 'Internal Vertex', level: 1, parent: 'A', children: 'F, G', siblings: 'B', ancestors: 'A', descendants: 'F, G', hull: '170,75 285,75 285,170 170,170' },
+      'D': { type: 'Leaf', level: 2, parent: 'B', children: 'None', siblings: 'E', ancestors: 'B, A', descendants: 'None', hull: '20,135 60,135 60,165 20,165' },
+      'E': { type: 'Leaf', level: 2, parent: 'B', children: 'None', siblings: 'D', ancestors: 'B, A', descendants: 'None', hull: '90,135 130,135 130,165 90,165' },
+      'F': { type: 'Leaf', level: 2, parent: 'C', children: 'None', siblings: 'G', ancestors: 'C, A', descendants: 'None', hull: '170,135 210,135 210,165 170,165' },
+      'G': { type: 'Leaf', level: 2, parent: 'C', children: 'None', siblings: 'F', ancestors: 'C, A', descendants: 'None', hull: '240,135 280,135 280,165 240,165' }
+    };
+
+    function inspectNode(id) {
+      AppState.selectedTaxoNode = id;
+      ['A','B','C','D','E','F','G'].forEach(k => {
+        document.getElementById(`tn-${k}`).setAttribute('fill', k === id ? '#f59e0b' : '#4f46e5');
+      });
+      const data = taxonomyData[id];
+      document.getElementById('inspectTitle').innerText = `Selected Node: ${id}`;
+      document.getElementById('insType').innerText = data.type;
+      document.getElementById('insLevel').innerText = data.level;
+      document.getElementById('insParent').innerText = data.parent;
+      document.getElementById('insChildren').innerText = data.children;
+      document.getElementById('insSiblings').innerText = data.siblings;
+      document.getElementById('insAncestors').innerText = data.ancestors;
+      document.getElementById('insDescendants').innerText = data.descendants;
+      if (AppState.isSubtreeHighlighted) applySubtreeHull();
+    }
+
+    function toggleSubtreeHighlight() {
+      AppState.isSubtreeHighlighted = !AppState.isSubtreeHighlighted;
+      document.getElementById('subToggleBtn').innerText = `Highlight Subtree: ${AppState.isSubtreeHighlighted ? 'ON' : 'OFF'}`;
+      if (AppState.isSubtreeHighlighted) applySubtreeHull();
+      else document.getElementById('subtreeHull').style.display = 'none';
+    }
+
+    function applySubtreeHull() {
+      const hull = document.getElementById('subtreeHull');
+      hull.setAttribute('points', taxonomyData[AppState.selectedTaxoNode].hull);
+      hull.style.display = 'block';
+    }
+
+    /* Quiz & Drag-and-Drop (Mobile Touch Friendly) */
+    function allowDrop(ev) { ev.preventDefault(); ev.currentTarget.classList.add('hovered'); }
+    function drag(ev) { ev.dataTransfer.setData('text', ev.target.id); }
+    function drop(ev, slotId) {
+      ev.preventDefault();
+      ev.currentTarget.classList.remove('hovered');
+      const data = ev.dataTransfer.getData('text');
+      assignMatch(slotId, data);
+    }
+
+    function mobilePickTerm(termId) {
+      AppState.selectedTermMobile = termId;
+      document.querySelectorAll('.term-chip').forEach(el => el.style.borderColor = 'var(--border)');
+      document.getElementById(termId).style.borderColor = 'var(--accent)';
+    }
+
+    function mobileDropTarget(slotId) {
+      if (AppState.selectedTermMobile) {
+        assignMatch(slotId, AppState.selectedTermMobile);
+        AppState.selectedTermMobile = null;
+        document.querySelectorAll('.term-chip').forEach(el => el.style.borderColor = 'var(--border)');
+      }
+    }
+
+    function assignMatch(slotId, termId) {
+      const draggedEl = document.getElementById(termId);
+      const targetSlot = document.getElementById(slotId);
+      if (draggedEl && targetSlot) {
+        targetSlot.appendChild(draggedEl);
+        AppState.matchedPairs[slotId] = termId;
+      }
+    }
+
+    function evaluateQuiz() {
+      let score = 0;
+      const q1 = document.querySelector('input[name="mcq1"]:checked');
+      const eq1 = document.getElementById('exp-mcq1');
+      eq1.style.display = 'block';
+      if (q1 && q1.value === 'B') {
+        score++;
+        eq1.innerHTML = '<span style="color:var(--success)">Correct!</span> A path tree has 2 leaves (min), and a star graph has n-1 leaves (max).';
+      } else {
+        eq1.innerHTML = '<span style="color:var(--danger)">Incorrect.</span> Minimum leaves = 2 (path graph P_n); maximum = n - 1 (star graph K_{1, n-1}).';
+      }
+
+      const q2 = document.querySelector('input[name="mcq2"]:checked');
+      const eq2 = document.getElementById('exp-mcq2');
+      eq2.style.display = 'block';
+      if (q2 && q2.value === 'B') {
+        score++;
+        eq2.innerHTML = '<span style="color:var(--success)">Correct!</span> By Theorem 4, l = (m - 1)i + 1 = (3 - 1)(10) + 1 = 21.';
+      } else {
+        eq2.innerHTML = '<span style="color:var(--danger)">Incorrect.</span> By Theorem 4, l = (m - 1)i + 1 = 2(10) + 1 = 21.';
+      }
+
+      const q3 = document.querySelector('input[name="mcq3"]:checked');
+      const eq3 = document.getElementById('exp-mcq3');
+      eq3.style.display = 'block';
+      if (q3 && q3.value === 'A') {
+        score++;
+        eq3.innerHTML = '<span style="color:var(--success)">Correct!</span> Connected and |E| = n - 1 implies acyclic by the Triad Law.';
+      } else {
+        eq3.innerHTML = '<span style="color:var(--danger)">Incorrect.</span> Fundamental Triad: Connected + |E| = n - 1 guarantees no cycles.';
+      }
+
+      let matchCorrect = 0;
+      if (AppState.matchedPairs['slot-leaf'] === 'term-leaf') matchCorrect++;
+      if (AppState.matchedPairs['slot-internal'] === 'term-internal') matchCorrect++;
+      if (AppState.matchedPairs['slot-spanning'] === 'term-spanning') matchCorrect++;
+      if (matchCorrect === 3) score++;
+
+      AppState.quizScore = score;
+      const notice = document.getElementById('quizScoreNotice');
+      notice.innerHTML = `Quiz Score: ${score} / 4 points (${Math.round((score/4)*100)}%)`;
+      notice.style.color = score >= 3 ? 'var(--success)' : 'var(--danger)';
+    }
+
+    /* Diagnostic Lab */
+    function checkDiag(num, correctVal, rationale) {
+      const selected = document.querySelector(`input[name="diag${num}"]:checked`);
+      const fb = document.getElementById(`df-${num}`);
+      fb.style.display = 'block';
+      if (!selected) {
+        fb.innerHTML = '<span style="color:var(--danger)">Please make a selection.</span>';
+        return;
+      }
+      const isCorrect = selected.value === correctVal;
+      AppState.diagAnswers[num] = isCorrect;
+      fb.style.background = isCorrect ? 'var(--success-light)' : 'var(--danger-light)';
+      fb.style.color = isCorrect ? 'var(--success)' : 'var(--danger)';
+      fb.innerHTML = `<strong>${isCorrect ? 'Correct!' : 'Incorrect.'}</strong> ${rationale}`;
+      AppState.diagScore = Object.values(AppState.diagAnswers).filter(Boolean).length;
+    }
+
+    /* Upload & File Handling */
+    function handleFileDrop(ev) {
+      ev.preventDefault();
+      if (ev.dataTransfer.files && ev.dataTransfer.files[0]) {
+        processFile(ev.dataTransfer.files[0]);
+      }
+    }
+
+    function handleFileSelect(ev) {
+      if (ev.target.files && ev.target.files[0]) {
+        processFile(ev.target.files[0]);
+      }
+    }
+
+    function processFile(file) {
+      AppState.uploadedBlob = file;
+      AppState.uploadedFileName = file.name;
+      AppState.uploadedFileType = file.type;
+
+      document.getElementById('fileDetails').innerText = `Attached: ${file.name} (${(file.size / 1024).toFixed(1)} KB)`;
+      document.getElementById('imgOnlyBtn').disabled = false;
+
+      if (file.type.startsWith('image/')) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          document.getElementById('imagePreview').src = e.target.result;
+          document.getElementById('previewContainer').style.display = 'block';
+        };
+        reader.readAsDataURL(file);
+      } else {
+        document.getElementById('previewContainer').style.display = 'none';
+      }
+    }
+
+    /* Summary & Dual Download Engine */
+    function refreshSummaryScreen() {
+      document.getElementById('revName').innerText = AppState.studentName || 'Not Provided';
+      document.getElementById('revId').innerText = AppState.studentId || 'Not Provided';
+      document.getElementById('revQuiz').innerText = `${AppState.quizScore} / 4`;
+      document.getElementById('revDiag').innerText = `${AppState.diagScore} / 6`;
+      const up = document.getElementById('revUpload');
+      if (AppState.uploadedBlob) {
+        up.innerText = `Verified: ${AppState.uploadedFileName}`;
+        up.style.color = 'var(--success)';
+      } else {
+        up.innerText = 'No file uploaded';
+        up.style.color = 'var(--warning)';
+      }
+    }
+
+    function getBaseFileName() {
+      const name = (AppState.studentName.trim() || 'Student').replace(/\s+/g, '_');
+      const id = (AppState.studentId.trim() || 'NoID').replace(/\s+/g, '_');
+      const dateStr = new Date().toISOString().slice(0, 10);
+      return `${name}_${id}_${dateStr}`;
+    }
+
+    function downloadMarkdownReport() {
+      const base = getBaseFileName();
+      const dateStr = new Date().toISOString().slice(0, 10);
+      const timeStr = new Date().toLocaleTimeString();
+
+      const mdContent = `# ASSESSMENT LEDGER: GRAPH THEORY & TREES
+**Curriculum Guide:** Kenneth Rosen, *Discrete Mathematics and Its Applications* (Chapter 11)  
+**Submission Timestamp:** ${dateStr} ${timeStr}  
+
+---
+
+## Candidate Credentials
+- **Student Full Name:** ${AppState.studentName || 'Anonymous'}
+- **Matriculation / Student ID:** ${AppState.studentId || 'None'}
+
+---
+
+## 1. Diagnostic Lab Performance ("Tree or Not a Tree?")
+- **Laboratory Score:** ${AppState.diagScore} / 6 Verified Topologies
+- **Diagram 1 (Caterpillar Tree, n=7, m=6):** Connected, acyclic tree.
+- **Diagram 2 (5-Cycle + Pendant, n=6, m=6):** Non-tree (Contains cycle).
+- **Diagram 3 (Forest of 2 Components, n=7, m=5):** Non-tree (Disconnected).
+- **Diagram 4 (Star K_{1,6}, n=7, m=6):** Connected, acyclic tree.
+- **Diagram 5 (Chorded Cycle, n=7, m=8):** Non-tree (Cycles present).
+- **Diagram 6 (Full Binary Rooted Tree, n=7, m=6):** Connected, acyclic tree.
+
+---
+
+## 2. Mastery Assessment Score
+- **Formative Quiz Score:** ${AppState.quizScore} / 4 Points
+- **Theorems Evaluated:** Theorem 1 (Unique Path), Theorem 2 & Equivalence Triad, Theorem 4 (m-ary Formulas).
+
+---
+
+## 3. Physical Hand-Drawn Exercise Submission
+- **Status:** ${AppState.uploadedBlob ? 'DOCUMENT SUBMITTED & VERIFIED' : 'NO DOCUMENT ATTACHED'}
+- **File Name:** ${AppState.uploadedFileName || 'N/A'}
+- **File Size:** ${AppState.uploadedBlob ? (AppState.uploadedBlob.size / 1024).toFixed(1) + ' KB' : 'N/A'}
+- **Assigned Problems Covered:**
+  1. Rosen 11.1 Ex. 9(b),(c) &mdash; Subtree Extraction for roots c and e
+  2. Rosen 11.1 Ex. 12(a) &mdash; Nonisomorphic Unrooted Trees with 4 Vertices (P_4 and K_{1,3})
+  3. Rosen 11.1 Ex. 27 &mdash; Complete Binary (h=3) and Complete 3-ary (h=2) Construction
+
+---
+*Report certified by Discrete Structures Learning Engine.*
+`;
+
+      const blob = new Blob([mdContent], { type: 'text/markdown;charset=utf-8;' });
+      triggerBrowserDownload(blob, `${base}_Trees_Assessment.md`);
+    }
+
+    function downloadUploadedImageOnly() {
+      if (!AppState.uploadedBlob) {
+        alert('Please attach a hand-drawn photo first on Screen 9.');
+        return;
+      }
+      const base = getBaseFileName();
+      const ext = AppState.uploadedFileName.split('.').pop() || 'png';
+      triggerBrowserDownload(AppState.uploadedBlob, `${base}_HandDrawn.${ext}`);
+    }
+
+    function submitAndDownloadAll() {
+      downloadMarkdownReport();
+      if (AppState.uploadedBlob) {
+        setTimeout(() => {
+          downloadUploadedImageOnly();
+        }, 300);
+      }
+      const fb = document.getElementById('downloadFeedback');
+      fb.style.color = 'var(--success)';
+      fb.innerText = 'Submission ledger saved successfully!';
+    }
+
+    function triggerBrowserDownload(blobOrFile, filename) {
+      const url = URL.createObjectURL(blobOrFile);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      setTimeout(() => URL.revokeObjectURL(url), 1000);
+    }
+
+    /* Initialize on DOM Ready */
+    window.addEventListener('DOMContentLoaded', () => {
+      const savedTheme = localStorage.getItem('theme') || 'light';
+      document.documentElement.setAttribute('data-theme', savedTheme);
+      document.getElementById('themeBtn').innerHTML = savedTheme === 'dark' ? '<span>☀️</span>' : '<span>🌙</span>';
+      renderSandbox();
+      updateProgress();
+    });
+  </script>
+</body>
+</html>
