@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Probability Distributions Explorer — Interactive Diagram</title>
+
+  <!-- Typography & KaTeX for crisp LaTeX mathematical formula rendering -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css" integrity="sha384-n8MVd4RsNIU0tAv4ct0nTaAbDJwPJzDEaqSD1odI+WdtXRGWt2kTvGFasHpSy3SV" crossorigin="anonymous">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js" integrity="sha384-XjKyOOlGwcjNTAIQHIpgOno0Hl1YQqzUOEleOLALmuqehneUG+vnGctmUb0ZY0l8" crossorigin="anonymous"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js" integrity="sha384-+VBxd3r6XgURycqtZ117nYw44OOcIax56Z4dCRWbxyPt0Koah1uHoK0o4+/RRE05" crossorigin="anonymous"></script>
+
+  <style>
+    :root {
+      --bg-cream: #f6f1e3;
+      --bg-canvas: #ece5d3;
+      --card-bg: #ffffff;
+      --text-main: #1e293b;
+      --text-muted: #64748b;
+      --accent-blue: #2563eb;
+      --accent-glow: rgba(37, 99, 235, 0.45);
+      --accent-amber: #d97706;
+      --accent-emerald: #059669;
+      --border-color: #cbd5e1;
+      --shadow-modal: 0 25px 60px -15px rgba(15, 23, 42, 0.35), 0 0 0 1px rgba(255, 255, 255, 0.8);
+      --transition-smooth: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background-color: var(--bg-cream);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--text-main);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow-x: hidden;
+      background-image: 
+        radial-gradient(circle at 10% 20%, rgba(217, 119, 6, 0.05) 0%, transparent 25%),
+        radial-gradient(circle at 90% 80%, rgba(37, 99, 235, 0.05) 0%, transparent 30%);
+    }
+
+    header.app-header {
+      background: rgba(246, 241, 227, 0.88);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(203, 213, 225, 0.6);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      padding: 10px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .brand-title { display: flex; align-items: center; gap: 10px; }
+    .brand-title h1 { font-family: 'Cinzel', serif; font-size: 1.18rem; color: #0f172a; font-weight: 700; }
+    .brand-badge {
+      font-size: 0.72rem; font-weight: 600; padding: 2px 8px; border-radius: 999px;
+      background: #e2e8f0; color: #475569; text-transform: uppercase; letter-spacing: 0.5px;
+    }
+
+    .header-controls { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    
+    .search-box { position: relative; }
+    .search-box input {
+      padding: 7px 14px 7px 34px; border-radius: 999px; border: 1px solid var(--border-color);
+      background: #fff; font-size: 0.85rem; color: var(--text-main); width: 230px;
+      outline: none; transition: var(--transition-smooth);
+    }
+    .search-box input:focus { border-color: var(--accent-blue); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); width: 270px; }
+    .search-icon { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); font-size: 0.85rem; color: var(--text-muted); }
+
+    .filter-btn-group { display: flex; background: rgba(226, 232, 240, 0.6); padding: 2px; border-radius: 8px; gap: 2px; }
+    .filter-btn {
+      border: none; background: transparent; padding: 5px 12px; font-size: 0.78rem;
+      font-weight: 600; color: #475569; border-radius: 6px; cursor: pointer; transition: var(--transition-smooth);
+    }
+    .filter-btn.active, .filter-btn:hover { background: #ffffff; color: var(--text-main); box-shadow: 0 1px 3px rgba(0,0,0,0.08); }
+
+    .toggle-outline-btn {
+      display: flex; align-items: center; gap: 6px; background: #ffffff; border: 1px solid var(--border-color);
+      padding: 6px 12px; border-radius: 8px; font-size: 0.8rem; font-weight: 500; cursor: pointer;
+      color: #334155; transition: var(--transition-smooth);
+    }
+    .toggle-outline-btn:hover { background: #f8fafc; border-color: #94a3b8; }
+    .toggle-outline-btn.active { background: #eff6ff; border-color: var(--accent-blue); color: var(--accent-blue); }
+
+    /* DIAGRAM VIEWPORT & ASPECT RATIO LOCK */
+    main.diagram-viewport { flex: 1; display: flex; justify-content: center; align-items: flex-start; padding: 24px; position: relative; }
+    .diagram-wrapper {
+      position: relative; 
+      max-width: 1400px; 
+      width: 100%; 
+      aspect-ratio: 1 / 1; /* Locks exact coordinate geometry */
+      box-shadow: 0 20px 45px -10px rgba(71, 85, 105, 0.25);
+      border-radius: 18px; 
+      overflow: hidden; 
+      background-color: #f7f3e8; 
+      user-select: none;
+    }
+    .diagram-image { 
+      position: absolute;
+      inset: 0;
+      width: 100%; 
+      height: 100%; 
+      object-fit: contain; 
+      display: block; 
+    }
+    .image-fallback-banner { display: none; padding: 40px; text-align: center; background: #fff; z-index: 5; position: relative; }
+    .image-fallback-banner.show { display: block; }
+
+    .hotspots-container { position: absolute; inset: 0; pointer-events: none; }
+    .hotspot {
+      position: absolute; pointer-events: auto; cursor: pointer; border-radius: 12px; opacity: 0;
+      background: transparent; border: 2px solid transparent; transition: all 0.25s ease; z-index: 10;
+    }
+    .hotspot:hover {
+      opacity: 1 !important; background: radial-gradient(circle, rgba(56, 189, 248, 0.22) 0%, rgba(37, 99, 235, 0.08) 80%, transparent 100%);
+      border: 2px solid rgba(37, 99, 235, 0.85); box-shadow: 0 0 25px rgba(37, 99, 235, 0.55), inset 0 0 18px rgba(37, 99, 235, 0.25);
+      animation: hotspot-pulse 1.8s infinite alternate ease-in-out;
+    }
+    body.show-hotspots .hotspot { opacity: 1; border: 1.5px dashed rgba(37, 99, 235, 0.45); background-color: rgba(37, 99, 235, 0.04); }
+    body.show-hotspots .hotspot[data-category="discrete"] { border-color: rgba(14, 165, 233, 0.45); background-color: rgba(14, 165, 233, 0.04); }
+    body.show-hotspots .hotspot[data-category="continuous"] { border-color: rgba(16, 185, 129, 0.45); background-color: rgba(16, 185, 129, 0.04); }
+
+    @keyframes hotspot-pulse {
+      0% { box-shadow: 0 0 15px rgba(37, 99, 235, 0.4), inset 0 0 10px rgba(37, 99, 235, 0.2); }
+      100% { box-shadow: 0 0 28px rgba(37, 99, 235, 0.75), inset 0 0 22px rgba(37, 99, 235, 0.35); }
+    }
+
+    .hotspot-tooltip {
+      position: absolute; bottom: calc(100% + 8px); left: 50%; transform: translateX(-50%) translateY(4px);
+      background: #0f172a; color: #f8fafc; padding: 5px 12px; border-radius: 6px; font-size: 0.76rem;
+      font-weight: 600; white-space: nowrap; pointer-events: none; opacity: 0; transition: var(--transition-smooth);
+      box-shadow: 0 8px 18px rgba(0,0,0,0.25); z-index: 20;
+    }
+    .hotspot-tooltip::after {
+      content: ''; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+      border-width: 5px; border-style: solid; border-color: #0f172a transparent transparent transparent;
+    }
+    .hotspot:hover .hotspot-tooltip { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+    /* MODAL UI */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.65); backdrop-filter: blur(8px);
+      display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px;
+      opacity: 0; visibility: hidden; transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .modal-overlay.active { opacity: 1; visibility: visible; }
+    .modal-container { perspective: 1600px; width: 100%; max-width: 620px; position: relative; }
+    .modal-close-btn {
+      position: absolute; top: -14px; right: -14px; width: 32px; height: 32px; border-radius: 50%;
+      background: #0f172a; color: #f8fafc; border: 2px solid #ffffff; display: flex; align-items: center;
+      justify-content: center; font-size: 13px; cursor: pointer; z-index: 1050;
+      box-shadow: 0 6px 16px rgba(0,0,0,0.3); transition: var(--transition-smooth);
+    }
+    .modal-close-btn:hover { background: #ef4444; transform: scale(1.12) rotate(90deg); }
+
+    .flip-card {
+      width: 100%; height: 560px; position: relative; transform-style: preserve-3d;
+      transition: transform 0.65s cubic-bezier(0.34, 1.35, 0.64, 1); cursor: pointer;
+    }
+    .flip-card.is-flipped { transform: rotateY(180deg); }
+    .card-face {
+      position: absolute; inset: 0; backface-visibility: hidden; border-radius: 20px; background: var(--card-bg);
+      box-shadow: var(--shadow-modal); display: flex; flex-direction: column; overflow: hidden; border: 1px solid rgba(226, 232, 240, 0.9);
+    }
+    .card-face.card-back { transform: rotateY(180deg); }
+    .card-header { padding: 20px 24px 16px 24px; border-bottom: 1px solid #f1f5f9; background: linear-gradient(to bottom, #ffffff, #fafafa); }
+    .card-header-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .category-tag { font-size: 0.72rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; padding: 3px 10px; border-radius: 999px; }
+    .category-tag.discrete { background: #e0f2fe; color: #0369a1; }
+    .category-tag.continuous { background: #ecfdf5; color: #047857; }
+    .lang-flip-badge {
+      display: flex; align-items: center; gap: 6px; background: #f8fafc; border: 1px solid #e2e8f0;
+      padding: 4px 10px; border-radius: 8px; font-size: 0.74rem; font-weight: 600; color: #475569; transition: var(--transition-smooth);
+    }
+    .flip-card:hover .lang-flip-badge { border-color: var(--accent-blue); color: var(--accent-blue); background: #eff6ff; }
+    .card-title { font-size: 1.35rem; font-weight: 700; color: #0f172a; line-height: 1.3; }
+
+    .card-body { flex: 1; padding: 20px 24px; overflow-y: auto; font-size: 0.92rem; line-height: 1.62; color: #334155; }
+    .profile-section { margin-bottom: 18px; }
+    .section-label { font-size: 0.74rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: #64748b; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+    .section-label svg { width: 14px; height: 14px; opacity: 0.7; }
+    .formula-callout {
+      background: #f8fafc; border: 1px solid #e2e8f0; border-left: 4px solid var(--accent-blue);
+      padding: 12px 16px; border-radius: 8px; font-family: 'JetBrains Mono', monospace;
+      font-size: 0.98rem; color: #0f172a; overflow-x: auto; display: flex; align-items: center; justify-content: center; margin: 8px 0; min-height: 52px;
+    }
+    .formula-callout.continuous { border-left-color: var(--accent-emerald); }
+    .connections-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+    .connection-pill { font-size: 0.76rem; font-weight: 500; background: #f1f5f9; color: #334155; padding: 3px 9px; border-radius: 6px; border: 1px solid #e2e8f0; }
+    
+    .card-footer { padding: 12px 24px; background: #f8fafc; border-top: 1px solid #f1f5f9; display: flex; align-items: center; justify-content: space-between; font-size: 0.76rem; color: #94a3b8; }
+    .flip-hint { display: flex; align-items: center; gap: 6px; color: var(--accent-blue); font-weight: 600; }
+    .card-body::-webkit-scrollbar { width: 6px; }
+    .card-body::-webkit-scrollbar-track { background: transparent; }
+    .card-body::-webkit-scrollbar-thumb { background-color: #cbd5e1; border-radius: 20px; }
+
+    footer.app-dock {
+      background: rgba(246, 241, 227, 0.9); backdrop-filter: blur(8px); border-top: 1px solid rgba(203, 213, 225, 0.6);
+      padding: 10px 24px; display: flex; align-items: center; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted); flex-wrap: wrap; gap: 12px;
+    }
+    .quick-selector-btn { background: #ffffff; border: 1px solid var(--border-color); padding: 5px 12px; border-radius: 6px; cursor: pointer; font-size: 0.78rem; font-weight: 600; color: #334155; transition: var(--transition-smooth); }
+    .quick-selector-btn:hover { background: #f1f5f9; border-color: #94a3b8; }
+
+    @media (max-width: 768px) {
+      header.app-header { padding: 10px 14px; }
+      .search-box input { width: 180px; }
+      .flip-card { height: 520px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="brand-title">
+      <h1>Probability Distributions</h1>
+      <span class="brand-badge">Interactive Map</span>
+    </div>
+    <div class="header-controls">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="distributionSearch" placeholder="Search distribution..." />
+      </div>
+      <div class="filter-btn-group">
+        <button class="filter-btn active" data-filter="all">All (20)</button>
+        <button class="filter-btn" data-filter="discrete">Discrete (8)</button>
+        <button class="filter-btn" data-filter="continuous">Continuous (12)</button>
+      </div>
+      <button class="toggle-outline-btn" id="toggleOutlinesBtn">
+        <span id="outlineIcon">👁️</span> Show Hotspots
+      </button>
+    </div>
+  </header>
+
+  <main class="diagram-viewport">
+    <div class="diagram-wrapper" id="diagramWrapper">
+      <img src="PROBABILITY-DISTRIBUTIONS-S4.png" alt="Probability Distributions Map" class="diagram-image" id="diagramImage" onerror="handleImageError()" />
+      <div class="image-fallback-banner" id="imageFallback">
+        <h3 style="margin-bottom:8px; color:#b91c1c;">⚠️ Image Not Detected</h3>
+        <p style="color:#64748b; font-size:0.9rem;">Please ensure <strong>PROBABILITY-DISTRIBUTIONS-S4.png</strong> is in the same directory as this HTML file.</p>
+      </div>
+      <div class="hotspots-container" id="hotspotsContainer"></div>
+    </div>
+  </main>
+
+  <footer class="app-dock">
+    <div>💡 <em>Hover over any distribution • Click to reveal profile • Click card to flip 🇺🇸 EN ⇄ 🇻🇳 VI</em></div>
+    <div>
+      <select id="quickSelectDropdown" class="quick-selector-btn" style="padding: 4px 8px;">
+        <option value="">⚡ Jump to any distribution...</option>
+      </select>
+    </div>
+  </footer>
+
+  <div class="modal-overlay" id="modalOverlay">
+    <div class="modal-container">
+      <button class="modal-close-btn" id="modalCloseBtn" title="Close (Esc)">✕</button>
+      <div class="flip-card" id="flipCard">
+        
+        <!-- ENGLISH FACE -->
+        <div class="card-face card-front">
+          <div class="card-header">
+            <div class="card-header-top">
+              <span class="category-tag" id="enCategoryTag"></span>
+              <div class="lang-flip-badge"><span>🇺🇸 English</span><span style="color:var(--accent-blue)">⇄</span><span>🇻🇳 VI</span></div>
+            </div>
+            <h2 class="card-title" id="enTitle"></h2>
+          </div>
+          <div class="card-body">
+            <div class="profile-section">
+              <div class="section-label">Definition</div>
+              <p id="enDefinition"></p>
+            </div>
+            <div class="profile-section">
+              <div class="section-label"><span id="enFormulaLabel"></span></div>
+              <div class="formula-callout" id="enFormula"></div>
+            </div>
+            <div class="profile-section">
+              <div class="section-label">Description & Characteristics</div>
+              <p id="enDescription"></p>
+            </div>
+            <div class="profile-section" id="enRelSection">
+              <div class="section-label">Key Connections</div>
+              <div class="connections-list" id="enConnections"></div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <span class="flip-hint">⟳ Click card to flip to Vietnamese</span>
+            <span>Esc to close</span>
+          </div>
+        </div>
+
+        <!-- VIETNAMESE FACE -->
+        <div class="card-face card-back">
+          <div class="card-header">
+            <div class="card-header-top">
+              <span class="category-tag" id="viCategoryTag"></span>
+              <div class="lang-flip-badge"><span>🇻🇳 Tiếng Việt</span><span style="color:var(--accent-blue)">⇄</span><span>🇺🇸 EN</span></div>
+            </div>
+            <h2 class="card-title" id="viTitle"></h2>
+          </div>
+          <div class="card-body">
+            <div class="profile-section">
+              <div class="section-label">Định nghĩa</div>
+              <p id="viDefinition"></p>
+            </div>
+            <div class="profile-section">
+              <div class="section-label"><span id="viFormulaLabel"></span></div>
+              <div class="formula-callout" id="viFormula"></div>
+            </div>
+            <div class="profile-section">
+              <div class="section-label">Mô tả & Đặc tính</div>
+              <p id="viDescription"></p>
+            </div>
+            <div class="profile-section" id="viRelSection">
+              <div class="section-label">Mối liên hệ chính</div>
+              <div class="connections-list" id="viConnections"></div>
+            </div>
+          </div>
+          <div class="card-footer">
+            <span class="flip-hint">⟳ Nhấn vào thẻ để đổi lại Tiếng Anh</span>
+            <span>Esc để đóng</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    function handleImageError() {
+      document.getElementById('diagramImage').style.display = 'none';
+      document.getElementById('imageFallback').classList.add('show');
+    }
+
+    /* Correctly scaled using the original 1600px grid base */
+    const DISTRIBUTIONS_DATA = [
+      {
+        id: "bernoulli", num: 1, family: "discrete",
+        en: { name: "Bernoulli Distribution (p)", def: "A discrete probability distribution of a random variable taking value $1$ (success) with probability $p$ and value $0$ (failure) with probability $1 - p$.", formulaLabel: "PMF", formula: "P(X = 1) = p \\quad\\text{and}\\quad P(X = 0) = 1 - p", desc: "Represents a single trial with binary outcomes (e.g., a single coin flip). It serves as the foundational unit of discrete distributions and is the special case of the Binomial distribution when $n = 1$.", connections: ["Special case of Binomial (n = 1)"] },
+        vi: { name: "Phân phối Bernoulli (p)", def: "Phân phối xác suất rời rạc của một biến ngẫu nhiên nhận giá trị $1$ (thành công) với xác suất $p$ và giá trị $0$ (thất bại) với xác suất $1 - p$.", formulaLabel: "PMF", formula: "P(X = 1) = p \\quad\\text{và}\\quad P(X = 0) = 1 - p", desc: "Đại diện cho một phép thử đơn lẻ với các kết quả nhị phân (ví dụ: một lần tung đồng xu). Phân phối này đóng vai trò là đơn vị cơ bản của các phân phối rời rạc và là trường hợp đặc biệt của phân phối Nhị thức khi $n = 1$.", connections: ["Trường hợp đặc biệt của Nhị thức (n = 1)"] },
+        bounds: { left: 85.31, top: 42.19, width: 11.5, height: 10.38 }
+      },
+      {
+        id: "binomial", num: 2, family: "discrete",
+        en: { name: "Binomial Distribution (n, p)", def: "Models the number of successes $k$ observed across $n$ independent and identically distributed Bernoulli trials, each having a constant probability of success $p$.", formulaLabel: "PMF", formula: "P(X = k) = \\binom{n}{k} p^k (1 - p)^{n - k}", desc: "Core distribution for modeling repeated binary experiments with replacement. In the limit as $n \\to \\infty$ and $p \\to 0$ with $\\lambda = np$, it converges to the Poisson distribution; as $n \\to \\infty$ with fixed $p$, it converges to the Normal distribution via the Central Limit Theorem.", connections: ["Converges to Poisson", "Converges to Normal"] },
+        vi: { name: "Phân phối Nhị thức (n, p)", def: "Mô hình hóa số lần thành công $k$ quan sát được trong $n$ phép thử Bernoulli độc lập và có cùng phân phối, mỗi phép thử có xác suất thành công không đổi là $p$.", formulaLabel: "PMF", formula: "P(X = k) = \\binom{n}{k} p^k (1 - p)^{n - k}", desc: "Phân phối cốt lõi dùng để mô hình hóa các phép thử nhị phân lặp lại có hoàn lại. Khi lấy giới hạn với $n \\to \\infty$ và $p \\to 0$ sao cho $\\lambda = np$, phân phối này hội tụ về phân phối Poisson; khi $n \\to \\infty$ với $p$ cố định, nó hội tụ về phân phối Chuẩn thông qua Định lý Giới hạn Trung tâm.", connections: ["Hội tụ về Poisson", "Hội tụ về Chuẩn"] },
+        bounds: { left: 55.56, top: 30.94, width: 16.69, height: 11.19 }
+      },
+      {
+        id: "hypergeometric", num: 3, family: "discrete",
+        en: { name: "Hypergeometric Distribution (M, N, K)", def: "Describes the probability of obtaining $k$ successes in $n$ draws taken <em>without replacement</em> from a finite population of size $N$ containing exactly $K$ successes.", formulaLabel: "PMF", formula: "P(X = k) = \\frac{\\binom{K}{k}\\binom{N - K}{n - k}}{\\binom{N}{n}}", desc: "Applied in quality assurance, card games, and ecological capture-recapture surveys where sampling depletes the subpopulation. As population size $N \\to \\infty$ with $p = K/N$, it converges to the Binomial distribution.", connections: ["Converges to Binomial"] },
+        vi: { name: "Phân phối Siêu bội (M, N, K)", def: "Mô tả xác suất đạt được $k$ lần thành công trong $n$ lần rút <em>không hoàn lại</em> từ một quần thể hữu hạn có kích thước $N$ chứa chính xác $K$ thành công.", formulaLabel: "PMF", formula: "P(X = k) = \\frac{\\binom{K}{k}\\binom{N - K}{n - k}}{\\binom{N}{n}}", desc: "Được ứng dụng trong đảm bảo chất lượng, các trò chơi bài và các khảo sát bắt-thả trong sinh thái học nơi việc lấy mẫu làm suy giảm quần thể con. Khi kích thước quần thể $N \\to \\infty$ với $p = K/N$, nó hội tụ về phân phối Nhị thức.", connections: ["Hội tụ về Nhị thức"] },
+        bounds: { left: 77.94, top: 29.25, width: 16.75, height: 12.50 }
+      },
+      {
+        id: "discrete-uniform", num: 4, family: "discrete",
+        en: { name: "Discrete Uniform Distribution", def: "A distribution where a finite set of $n$ integer outcomes $\\{1, 2, \\dots, n\\}$ are equally likely.", formulaLabel: "PMF", formula: "P(X = k) = \\frac{1}{n}", desc: "Represents unbiased discrete selection, such as the roll of a balanced fair die. It emerges as a special case of the Beta-binomial distribution when shape parameters $\\alpha = \\beta = 1$.", connections: ["Special case of Beta-binomial"] },
+        vi: { name: "Phân phối Đều rời rạc", def: "Một phân phối trong đó một tập hợp hữu hạn gồm $n$ kết quả số nguyên $\\{1, 2, \\dots, n\\}$ có khả năng xảy ra như nhau.", formulaLabel: "PMF", formula: "P(X = k) = \\frac{1}{n}", desc: "Đại diện cho sự lựa chọn rời rạc không thiên lệch, chẳng hạn như việc gieo một con xúc xắc cân đối. Phân phối này xuất hiện như một trường hợp đặc biệt của phân phối Beta-nhị thức khi các tham số hình dạng $\\alpha = \\beta = 1$.", connections: ["Trường hợp đặc biệt của Beta-nhị thức"] },
+        bounds: null
+      },
+      {
+        id: "geometric", num: 5, family: "discrete",
+        en: { name: "Geometric Distribution (p)", def: "Models the number of trials $k$ required to achieve the first success in a sequence of independent Bernoulli trials with success probability $p$.", formulaLabel: "PMF", formula: "P(X = k) = (1 - p)^{k - 1}p", desc: "The sole discrete distribution with the memoryless property, meaning future success probabilities do not depend on past failures. It is a special case of the Negative Binomial distribution where the target success count is $n = 1$.", connections: ["Special case of Negative Binomial"] },
+        vi: { name: "Phân phối Hình học (p)", def: "Mô hình hóa số phép thử $k$ cần thiết để đạt được thành công đầu tiên trong một chuỗi các phép thử Bernoulli độc lập với xác suất thành công $p$.", formulaLabel: "PMF", formula: "P(X = k) = (1 - p)^{k - 1}p", desc: "Phân phối rời rạc duy nhất có tính chất không nhớ, nghĩa là xác suất thành công trong tương lai không phụ thuộc vào những lần thất bại trong quá khứ. Đây là một trường hợp đặc biệt của phân phối Nhị thức âm khi số lần thành công mục tiêu là $n = 1$.", connections: ["Trường hợp đặc biệt của Nhị thức âm"] },
+        bounds: { left: 9.88, top: 27.13, width: 15.00, height: 13.56 }
+      },
+      {
+        id: "negative-binomial", num: 6, family: "discrete",
+        en: { name: "Negative Binomial Distribution (n, p)", def: "Models the number of failures $k$ observed before a predetermined number $n$ of successes is achieved in repeated Bernoulli trials.", formulaLabel: "PMF", formula: "P(X = k) = \\binom{k + n - 1}{k} (1 - p)^k p^n", desc: "Generalizes the Geometric distribution to $n \\ge 1$ successes. Frequently utilized in biostatistics and count modeling to handle overdispersion where variance exceeds the mean. As $n \\to \\infty$ with $\\lambda = n(1 - p)$, it limits to the Poisson distribution.", connections: ["Generalizes Geometric", "Limits to Poisson"] },
+        vi: { name: "Phân phối Nhị thức âm (n, p)", def: "Mô hình hóa số lần thất bại $k$ quan sát được trước khi đạt được một số lượng định trước gồm $n$ lần thành công trong các phép thử Bernoulli lặp lại.", formulaLabel: "PMF", formula: "P(X = k) = \\binom{k + n - 1}{k} (1 - p)^k p^n", desc: "Tổng quát hóa phân phối Hình học cho $n \\ge 1$ lần thành công. Thường được sử dụng trong thống kê sinh học và mô hình hóa dữ liệu đếm để xử lý hiện tượng phân tán vượt mức (overdispersion). Khi $n \\to \\infty$ với $\\lambda = n(1 - p)$, nó tiến tới phân phối Poisson.", connections: ["Tổng quát hóa Hình học", "Tiến tới Poisson"] },
+        bounds: { left: 33.63, top: 14.06, width: 18.25, height: 12.56 }
+      },
+      {
+        id: "beta-binomial", num: 7, family: "discrete",
+        en: { name: "Beta-Binomial Distribution (n, α, β)", def: "A compound distribution where the success probability $p$ of a Binomial distribution is not fixed, but is itself a random variable governed by a Beta distribution with shape parameters $\\alpha$ and $\\beta$.", formulaLabel: "PMF", formula: "P(X = k) = \\binom{n}{k} \\frac{\\mathrm{B}(k + \\alpha,\\, n - k + \\beta)}{\\mathrm{B}(\\alpha, \\beta)}", desc: "Used in Bayesian statistics and clinical trials to model binomial data with cluster-to-cluster or subject-to-subject variation. As $\\alpha + \\beta \\to \\infty$, it converges back to the standard Binomial distribution.", connections: ["Converges to Binomial"] },
+        vi: { name: "Phân phối Beta-Nhị thức (n, α, β)", def: "Một phân phối hợp trong đó xác suất thành công $p$ của phân phối Nhị thức không cố định, mà bản thân nó là một biến ngẫu nhiên tuân theo phân phối Beta với các tham số hình dạng $\\alpha$ và $\\beta$.", formulaLabel: "PMF", formula: "P(X = k) = \\binom{n}{k} \\frac{\\mathrm{B}(k + \\alpha,\\, n - k + \\beta)}{\\mathrm{B}(\\alpha, \\beta)}", desc: "Được sử dụng trong thống kê Bayes và các thử nghiệm lâm sàng để mô hình hóa dữ liệu nhị thức có sự biến thiên giữa các cụm hoặc giữa các đối tượng. Khi $\\alpha + \\beta \\to \\infty$, nó hội tụ trở lại phân phối Nhị thức chuẩn.", connections: ["Hội tụ về Nhị thức"] },
+        bounds: { left: 53.50, top: 14.44, width: 19.00, height: 12.00 }
+      },
+      {
+        id: "poisson", num: 8, family: "discrete",
+        en: { name: "Poisson Distribution (λ)", def: "Expresses the probability of observing $k$ events occurring within a fixed interval of time or space, given a constant mean arrival rate $\\lambda$ and independent occurrence times.", formulaLabel: "PMF", formula: "P(X = k) = \\frac{e^{-\\lambda} \\lambda^k}{k!}", desc: "Fundamental to queuing theory, network traffic modeling, and call center load analysis. When $\\lambda \\to \\infty$, the Poisson distribution approaches a continuous Normal distribution with mean $\\mu = \\lambda$ and variance $\\sigma^2 = \\lambda$.", connections: ["Approaches Normal"] },
+        vi: { name: "Phân phối Poisson (λ)", def: "Thể hiện xác suất quan sát được $k$ biến cố xảy ra trong một khoảng thời gian hoặc không gian cố định, với tốc độ xuất hiện trung bình không đổi $\\lambda$ và thời điểm xảy ra là độc lập.", formulaLabel: "PMF", formula: "P(X = k) = \\frac{e^{-\\lambda} \\lambda^k}{k!}", desc: "Nền tảng cho lý thuyết hàng đợi, mô hình hóa lưu lượng mạng và phân tích tải của trung tâm cuộc gọi. Khi $\\lambda \\to \\infty$, phân phối Poisson tiến gần đến phân phối Chuẩn liên tục với giá trị trung bình $\\mu = \\lambda$ và phương sai $\\sigma^2 = \\lambda$.", connections: ["Tiến gần đến Chuẩn"] },
+        bounds: { left: 29.50, top: 30.94, width: 14.00, height: 12.31 }
+      },
+      {
+        id: "continuous-uniform", num: 9, family: "continuous",
+        en: { name: "Continuous Uniform Distribution (0, 1)", def: "A continuous distribution defined over the open interval $(0, 1)$ where every subinterval of equal length is equally likely.", formulaLabel: "PDF", formula: "f(x) = 1 \\quad\\text{for } 0 < x < 1", desc: "Serves as the computational foundation for pseudo-random number generators and inverse transform sampling. It represents a special case of the Beta distribution with $\\alpha = \\beta = 1$.", connections: ["Special case of Beta"] },
+        vi: { name: "Phân phối Đều liên tục (0, 1)", def: "Một phân phối liên tục được xác định trên khoảng mở $(0, 1)$, nơi mọi khoảng con có độ dài bằng nhau đều có xác suất xảy ra như nhau.", formulaLabel: "PDF", formula: "f(x) = 1 \\quad\\text{với } 0 < x < 1", desc: "Đóng vai trò là nền tảng tính toán cho các bộ tạo số giả ngẫu nhiên và phương pháp lấy mẫu biến đổi nghịch đảo. Nó đại diện cho trường hợp đặc biệt của phân phối Beta với $\\alpha = \\beta = 1$.", connections: ["Trường hợp đặc biệt của Beta"] },
+        bounds: { left: 85.75, top: 53.25, width: 11.06, height: 11.88 }
+      },
+      {
+        id: "beta", num: 10, family: "continuous",
+        en: { name: "Beta Distribution (α, β)", def: "A family of continuous probability distributions defined on the bounded interval $(0, 1)$, parameterized by two positive shape parameters $\\alpha$ and $\\beta$.", formulaLabel: "PDF", formula: "f(x) = \\frac{1}{\\mathrm{B}(\\alpha, \\beta)} x^{\\alpha - 1} (1 - x)^{\\beta - 1}", desc: "Widely applied in Bayesian modeling as the conjugate prior for Bernoulli, Binomial, and Geometric distributions, capturing prior beliefs about probabilities, proportions, and percentages.", connections: ["Conjugate prior"] },
+        vi: { name: "Phân phối Beta (α, β)", def: "Một họ các phân phối xác suất liên tục được xác định trên khoảng bị chặn $(0, 1)$, được tham số hóa bởi hai tham số hình dạng dương $\\alpha$ và $\\beta$.", formulaLabel: "PDF", formula: "f(x) = \\frac{1}{\\mathrm{B}(\\alpha, \\beta)} x^{\\alpha - 1} (1 - x)^{\\beta - 1}", desc: "Được áp dụng rộng rãi trong mô hình hóa Bayes dưới dạng tiên nghiệm liên hợp cho các phân phối Bernoulli, Nhị thức và Hình học, nắm bắt niềm tin tiên nghiệm về xác suất, tỷ lệ và tỷ lệ phần trăm.", connections: ["Tiên nghiệm liên hợp"] },
+        bounds: { left: 63.69, top: 52.56, width: 15.50, height: 12.63 }
+      },
+      {
+        id: "normal", num: 11, family: "continuous",
+        en: { name: "Normal Distribution (μ, σ²)", def: "A continuous, symmetric, bell-shaped distribution defined on $(-\\infty, \\infty)$ determined by its mean (location) $\\mu$ and variance (scale) $\\sigma^2$.", formulaLabel: "PDF", formula: "f(x) = \\frac{1}{\\sqrt{2\\pi}\\sigma} \\exp\\left(-\\frac{(x - \\mu)^2}{2\\sigma^2}\\right)", desc: "Central to classical inferential statistics. Due to the Central Limit Theorem, sums or averages of independent random variables converge toward this distribution regardless of the underlying parent distribution.", connections: ["Converges via CLT"] },
+        vi: { name: "Phân phối Chuẩn (μ, σ²)", def: "Một phân phối liên tục, đối xứng, có hình quả chuông được xác định trên $(-\\infty, \\infty)$, được xác định bởi giá trị trung bình (vị trí) $\\mu$ và phương sai (thang đo) $\\sigma^2$.", formulaLabel: "PDF", formula: "f(x) = \\frac{1}{\\sqrt{2\\pi}\\sigma} \\exp\\left(-\\frac{(x - \\mu)^2}{2\\sigma^2}\\right)", desc: "Giữ vai trò trung tâm trong thống kê suy luận cổ điển. Nhờ Định lý Giới hạn Trung tâm, tổng hoặc giá trị trung bình của các biến ngẫu nhiên độc lập sẽ hội tụ về phân phối này bất kể phân phối gốc là gì.", connections: ["Hội tụ thông qua CLT"] },
+        bounds: { left: 38.81, top: 47.31, width: 22.44, height: 15.75 }
+      },
+      {
+        id: "standard-normal", num: 12, family: "continuous",
+        en: { name: "Standard Normal Distribution", def: "The standardized form of the normal distribution with mean $\\mu = 0$ and standard deviation $\\sigma = 1$.", formulaLabel: "PDF", formula: "\\phi(z) = \\frac{1}{\\sqrt{2\\pi}} e^{-z^2/2}", desc: "Formed by the $Z$-transformation. It serves as the standard reference for calculating statistical significance, confidence intervals, and hypothesis test $p$-values.", connections: ["Formed by Z-transformation"] },
+        vi: { name: "Phân phối Chuẩn tắc", def: "Dạng chuẩn hóa của phân phối chuẩn với giá trị trung bình $\\mu = 0$ và độ lệch chuẩn $\\sigma = 1$.", formulaLabel: "PDF", formula: "\\phi(z) = \\frac{1}{\\sqrt{2\\pi}} e^{-z^2/2}", desc: "Được hình thành từ phép biến đổi chuẩn hóa $Z$. Phân phối này được dùng làm tham chiếu chuẩn để tính toán ý nghĩa thống kê, khoảng tin cậy và giá trị $p$ của kiểm định giả thuyết.", connections: ["Hình thành từ phép biến đổi Z"] },
+        bounds: { left: 9.75, top: 64.44, width: 18.31, height: 13.25 }
+      },
+      {
+        id: "lognormal", num: 13, family: "continuous",
+        en: { name: "Lognormal Distribution", def: "A continuous distribution of a positive random variable whose natural logarithm is normally distributed.", formulaLabel: "PDF", formula: "f_Y(y) = \\frac{1}{y\\sigma\\sqrt{2\\pi}} \\exp\\left(-\\frac{(\\ln y - \\mu)^2}{2\\sigma^2}\\right)", desc: "Right-skewed distribution utilized for positive real-world quantities resulting from compounding or multiplicative effects, such as asset prices, human incomes, organism sizes, and data transmission latency.", connections: ["Natural logarithm is normally distributed"] },
+        vi: { name: "Phân phối Lognormal", def: "Phân phối liên tục của một biến ngẫu nhiên dương có logarit tự nhiên tuân theo phân phối chuẩn.", formulaLabel: "PDF", formula: "f_Y(y) = \\frac{1}{y\\sigma\\sqrt{2\\pi}} \\exp\\left(-\\frac{(\\ln y - \\mu)^2}{2\\sigma^2}\\right)", desc: "Phân phối lệch phải được sử dụng cho các đại lượng thực tế luôn dương phát sinh từ các hiệu ứng tích lũy hoặc nhân tính, chẳng hạn như giá tài sản, thu nhập của con người, kích thước sinh vật và độ trễ truyền dữ liệu.", connections: ["Logarit tự nhiên tuân theo phân phối chuẩn"] },
+        bounds: { left: 3.69, top: 47.25, width: 17.56, height: 14.63 }
+      },
+      {
+        id: "chi-squared", num: 14, family: "continuous",
+        en: { name: "Chi-Squared Distribution (ν)", def: "The distribution of the sum of the squares of $\\nu$ independent, standard normally distributed random variables.", formulaLabel: "PDF", formula: "f(x) = \\frac{1}{2^{\\nu/2}\\Gamma(\\nu/2)} x^{\\nu/2 - 1} e^{-x/2}", desc: "Integral to goodness-of-fit tests, independence tests in contingency tables, and confidence intervals for population variance. It is a special case of the Gamma distribution with shape parameter $r = \\nu / 2$ and rate $\\lambda = 1/2$.", connections: ["Special case of Gamma"] },
+        vi: { name: "Phân phối Chi-bình phương (ν)", def: "Phân phối của tổng bình phương của $\\nu$ biến ngẫu nhiên độc lập tuân theo phân phối chuẩn tắc.", formulaLabel: "PDF", formula: "f(x) = \\frac{1}{2^{\\nu/2}\\Gamma(\\nu/2)} x^{\\nu/2 - 1} e^{-x/2}", desc: "Không thể thiếu trong các kiểm định độ phù hợp, kiểm định tính độc lập trong bảng ngẫu nhiên và khoảng tin cậy cho phương sai tổng thể. Đây là trường hợp đặc biệt của phân phối Gamma với tham số hình dạng $r = \\nu / 2$ và tham số tỷ lệ $\\lambda = 1/2$.", connections: ["Trường hợp đặc biệt của Gamma"] },
+        bounds: { left: 39.69, top: 66.38, width: 15.88, height: 11.81 }
+      },
+      {
+        id: "gamma", num: 15, family: "continuous",
+        en: { name: "Gamma Distribution (r, λ)", def: "A two-parameter continuous distribution on $(0, \\infty)$ defined by a shape parameter $r$ and an inverse scale/rate parameter $\\lambda$.", formulaLabel: "PDF", formula: "f(x) = \\frac{\\lambda^r}{\\Gamma(r)} x^{r - 1} e^{-\\lambda x}", desc: "Models waiting times until the $r$-th event in a Poisson process. It acts as a flexible framework encompassing the Exponential distribution and the Chi-squared distribution.", connections: ["Encompasses Exponential", "Encompasses Chi-squared"] },
+        vi: { name: "Phân phối Gamma (r, λ)", def: "Một phân phối liên tục hai tham số trên $(0, \\infty)$ được xác định bởi tham số hình dạng $r$ và tham số nghịch đảo thang đo/tốc độ $\\lambda$.", formulaLabel: "PDF", formula: "f(x) = \\frac{\\lambda^r}{\\Gamma(r)} x^{r - 1} e^{-\\lambda x}", desc: "Mô hình hóa thời gian chờ đợi cho đến khi xảy ra biến cố thứ $r$ trong một quá trình Poisson. Nó đóng vai trò là một khung linh hoạt bao hàm cả phân phối Mũ và phân phối Chi-bình phương.", connections: ["Bao hàm phân phối Mũ", "Bao hàm Chi-bình phương"] },
+        bounds: { left: 63.06, top: 66.88, width: 13.75, height: 12.38 }
+      },
+      {
+        id: "exponential", num: 16, family: "continuous",
+        en: { name: "Exponential Distribution (λ)", def: "Continuous distribution measuring the time interval between consecutive events in a Poisson point process with constant rate parameter $\\lambda$.", formulaLabel: "PDF", formula: "f(x) = \\lambda e^{-\\lambda x}", desc: "The continuous analog of the Geometric distribution, possessing the continuous memoryless property. Widely applied in reliability engineering, component lifespan estimation, and survival analysis.", connections: ["Continuous analog of Geometric"] },
+        vi: { name: "Phân phối Mũ (λ)", def: "Phân phối liên tục đo khoảng thời gian giữa các biến cố liên tiếp trong một quá trình điểm Poisson với tham số tốc độ không đổi $\\lambda$.", formulaLabel: "PDF", formula: "f(x) = \\lambda e^{-\\lambda x}", desc: "Tương đương liên tục của phân phối Hình học, sở hữu tính chất không nhớ liên tục. Được áp dụng rộng rãi trong kỹ thuật độ tin cậy, ước tính tuổi thọ linh kiện và phân tích sống còn.", connections: ["Tương đương liên tục của Hình học"] },
+        bounds: { left: 81.81, top: 66.63, width: 11.69, height: 12.25 }
+      },
+      {
+        id: "cauchy", num: 17, family: "continuous",
+        en: { name: "Cauchy Distribution (x₀, γ)", def: "A symmetric, heavy-tailed continuous distribution with location parameter $x_0$ and scale parameter $\\gamma$.", formulaLabel: "PDF", formula: "f(x) = \\frac{1}{\\pi\\gamma \\left[1 + \\left(\\frac{x - x_0}{\\gamma}\\right)^2\\right]}", desc: "Formed as the ratio of two independent standard normal random variables. Known in mathematical statistics for having an undefined expected value and infinite variance, rendering standard sample means unstable.", connections: ["Ratio of two standard normals"] },
+        vi: { name: "Phân phối Cauchy (x₀, γ)", def: "Một phân phối liên tục đối xứng, có phần đuôi nặng với tham số vị trí $x_0$ và tham số thang đo $\\gamma$.", formulaLabel: "PDF", formula: "f(x) = \\frac{1}{\\pi\\gamma \\left[1 + \\left(\\frac{x - x_0}{\\gamma}\\right)^2\\right]}", desc: "Được tạo thành từ tỷ số của hai biến ngẫu nhiên độc lập tuân theo phân phối chuẩn tắc. Nổi tiếng trong thống kê toán học vì không có giá trị kỳ vọng xác định và phương sai vô hạn.", connections: ["Tỷ số của hai biến chuẩn tắc"] },
+        bounds: { left: 8.56, top: 83.44, width: 19.44, height: 11.94 }
+      },
+      {
+        id: "f-distribution", num: 18, family: "continuous",
+        en: { name: "F-Distribution (ν₁, ν₂)", def: "Continuous distribution formed by the ratio of two independent, scaled Chi-squared random variables, each with degrees of freedom $\\nu_1$ and $\\nu_2$.", formulaLabel: "PDF", formula: "f(x) = \\frac{1}{\\mathrm{B}(\\nu_1/2, \\nu_2/2)} \\left(\\frac{\\nu_1}{\\nu_2}\\right)^{\\nu_1/2} \\frac{x^{\\nu_1/2 - 1}}{\\left(1 + \\frac{\\nu_1}{\\nu_2}x\\right)^{(\\nu_1 + \\nu_2)/2}}", desc: "Fundamental to inferential testing, serving as the basis for Analysis of Variance (ANOVA), overall regression significance tests, and ratio comparisons of two sample variances.", connections: ["Ratio of scaled Chi-squared variables"] },
+        vi: { name: "Phân phối F (ν₁, ν₂)", def: "Phân phối liên tục được hình thành từ tỷ số của hai biến ngẫu nhiên Chi-bình phương độc lập đã được chuẩn hóa theo bậc tự do.", formulaLabel: "PDF", formula: "f(x) = \\frac{1}{\\mathrm{B}(\\nu_1/2, \\nu_2/2)} \\left(\\frac{\\nu_1}{\\nu_2}\\right)^{\\nu_1/2} \\frac{x^{\\nu_1/2 - 1}}{\\left(1 + \\frac{\\nu_1}{\\nu_2}x\\right)^{(\\nu_1 + \\nu_2)/2}}", desc: "Nền tảng cho kiểm định suy luận, đóng vai trò cơ sở cho Phân tích phương sai (ANOVA), kiểm định ý nghĩa tổng thể của mô hình hồi quy và so sánh tỷ số phương sai của hai mẫu.", connections: ["Tỷ số biến Chi-bình phương chuẩn hóa"] },
+        bounds: { left: 30.06, top: 83.13, width: 23.94, height: 13.38 }
+      },
+      {
+        id: "weibull", num: 19, family: "continuous",
+        en: { name: "Weibull Distribution (k, λ)", def: "A continuous distribution defined on $(0, \\infty)$ governed by a shape parameter $k$ and scale parameter $\\lambda$.", formulaLabel: "PDF", formula: "f(x) = \\frac{k}{\\lambda}\\left(\\frac{x}{\\lambda}\\right)^{k - 1} e^{-(x/\\lambda)^k}", desc: "Standard model for material strength, fracture analysis, and mechanical component failure rates. Its shape parameter enables it to represent decreasing hazard rates, constant hazard rates (reducing to the Exponential distribution), or aging/wear-out failure rates.", connections: ["Reduces to Exponential (k = 1)"] },
+        vi: { name: "Phân phối Weibull (k, λ)", def: "Một phân phối liên tục được xác định trên $(0, \\infty)$ bị chi phối bởi tham số hình dạng $k$ và tham số thang đo $\\lambda$.", formulaLabel: "PDF", formula: "f(x) = \\frac{k}{\\lambda}\\left(\\frac{x}{\\lambda}\\right)^{k - 1} e^{-(x/\\lambda)^k}", desc: "Mô hình tiêu chuẩn cho độ bền vật liệu, phân tích gãy nứt và tỷ lệ hỏng hóc của linh kiện cơ khí. Tham số hình dạng cho phép mô hình hóa tỷ lệ rủi ro giảm dần, tỷ lệ rủi ro không đổi (quy về phân phối Mũ) hoặc tỷ lệ hỏng hóc do lão hóa/hao mòn.", connections: ["Quy về phân phối Mũ (k = 1)"] },
+        bounds: { left: 55.94, top: 83.88, width: 18.00, height: 11.81 }
+      },
+      {
+        id: "laplace", num: 20, family: "continuous",
+        en: { name: "Double Exponential / Laplace", def: "A continuous distribution formed by joining two exponential distributions back-to-back around location parameter $\\mu$ with scale parameter $b$.", formulaLabel: "PDF", formula: "f(x) = \\frac{1}{2b} \\exp\\left(-\\frac{\\vert{}x - \\mu\\vert{}}{b}\\right)", desc: "Characterized by a sharp peak at $\\mu$ and fatter tails than the normal distribution. It directly models the difference between two independent and identically distributed exponential random variables and corresponds to L1 (LASSO) regularization in statistical regression.", connections: ["Joining two exponential distributions"] },
+        vi: { name: "Phân phối Mũ kép / Laplace", def: "Một phân phối liên tục được tạo thành bằng cách ghép hai phân phối mũ đối xứng qua tham số vị trí $\\mu$ với tham số thang đo $b$.", formulaLabel: "PDF", formula: "f(x) = \\frac{1}{2b} \\exp\\left(-\\frac{\\vert{}x - \\mu\\vert{}}{b}\\right)", desc: "Đặc trưng bởi một đỉnh nhọn tại $\\mu$ và phần đuôi dày hơn phân phối chuẩn. Nó mô hình hóa trực tiếp hiệu số giữa hai biến ngẫu nhiên độc lập và có cùng phân phối mũ, đồng thời tương ứng với phương pháp điều chuẩn L1 trong hồi quy.", connections: ["Ghép hai phân phối mũ"] },
+        bounds: { left: 75.56, top: 83.50, width: 19.75, height: 12.44 }
+      }
+    ];
+
+    const hotspotsContainer = document.getElementById('hotspotsContainer');
+    const quickSelectDropdown = document.getElementById('quickSelectDropdown');
+
+    DISTRIBUTIONS_DATA.forEach(dist => {
+      // Add Dropdown Option
+      const opt = document.createElement('option');
+      opt.value = dist.id;
+      opt.textContent = `${dist.num}. ${dist.en.name}`;
+      quickSelectDropdown.appendChild(opt);
+
+      // Create Hotspots on Image
+      if (dist.bounds) {
+        const spot = document.createElement('button');
+        spot.className = 'hotspot';
+        spot.dataset.id = dist.id;
+        spot.dataset.category = dist.family;
+        spot.style.left = `${dist.bounds.left}%`;
+        spot.style.top = `${dist.bounds.top}%`;
+        spot.style.width = `${dist.bounds.width}%`;
+        spot.style.height = `${dist.bounds.height}%`;
+        spot.setAttribute('aria-label', `Explore ${dist.en.name}`);
+        
+        const tooltip = document.createElement('div');
+        tooltip.className = 'hotspot-tooltip';
+        tooltip.textContent = dist.en.name;
+        spot.appendChild(tooltip);
+        
+        spot.addEventListener('click', () => openModal(dist));
+        hotspotsContainer.appendChild(spot);
+      }
+    });
+
+    function openModal(dist) {
+      // Set English
+      document.getElementById('enCategoryTag').textContent = dist.family === 'discrete' ? 'DISCRETE FAMILY' : 'CONTINUOUS FAMILY';
+      document.getElementById('enCategoryTag').className = `category-tag ${dist.family}`;
+      document.getElementById('enTitle').innerHTML = dist.en.name;
+      document.getElementById('enDefinition').innerHTML = dist.en.def;
+      document.getElementById('enFormulaLabel').textContent = dist.en.formulaLabel;
+      document.getElementById('enFormula').textContent = `$$${dist.en.formula}$$`;
+      document.getElementById('enDescription').innerHTML = dist.en.desc;
+      
+      const enConList = document.getElementById('enConnections');
+      enConList.innerHTML = '';
+      dist.en.connections.forEach(c => {
+        const p = document.createElement('span'); p.className = 'connection-pill'; p.textContent = c; enConList.appendChild(p);
+      });
+
+      // Set Vietnamese
+      document.getElementById('viCategoryTag').textContent = dist.family === 'discrete' ? 'HỌ RỜI RẠC' : 'HỌ LIÊN TỤC';
+      document.getElementById('viCategoryTag').className = `category-tag ${dist.family}`;
+      document.getElementById('viTitle').innerHTML = dist.vi.name;
+      document.getElementById('viDefinition').innerHTML = dist.vi.def;
+      document.getElementById('viFormulaLabel').textContent = dist.vi.formulaLabel;
+      document.getElementById('viFormula').textContent = `$$${dist.vi.formula}$$`;
+      document.getElementById('viDescription').innerHTML = dist.vi.desc;
+
+      const viConList = document.getElementById('viConnections');
+      viConList.innerHTML = '';
+      dist.vi.connections.forEach(c => {
+        const p = document.createElement('span'); p.className = 'connection-pill'; p.textContent = c; viConList.appendChild(p);
+      });
+
+      // Math Rendering via KaTeX
+      renderMathInElement(document.getElementById('flipCard'), {
+        delimiters: [
+            {left: '$$', right: '$$', display: true},
+            {left: '$', right: '$', display: false}
+        ],
+        throwOnError: false
+      });
+
+      // Reset style and show
+      document.getElementById('flipCard').classList.remove('is-flipped');
+      document.getElementById('modalOverlay').classList.add('active');
+    }
+
+    // Handlers
+    document.getElementById('modalCloseBtn').addEventListener('click', () => {
+      document.getElementById('modalOverlay').classList.remove('active');
+    });
+
+    document.getElementById('flipCard').addEventListener('click', () => {
+      if (!window.getSelection().toString()) {
+        document.getElementById('flipCard').classList.toggle('is-flipped');
+      }
+    });
+
+    quickSelectDropdown.addEventListener('change', (e) => {
+      if (e.target.value) {
+        const dist = DISTRIBUTIONS_DATA.find(d => d.id === e.target.value);
+        if (dist) openModal(dist);
+        e.target.value = ''; 
+      }
+    });
+
+    document.getElementById('toggleOutlinesBtn').addEventListener('click', (e) => {
+       document.body.classList.toggle('show-hotspots');
+       e.currentTarget.classList.toggle('active');
+    });
+
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+         document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+         btn.classList.add('active');
+         const filter = btn.dataset.filter;
+         document.querySelectorAll('.hotspot').forEach(spot => {
+            spot.style.display = (filter === 'all' || spot.dataset.category === filter) ? 'block' : 'none';
+         });
+      });
+    });
+
+    document.getElementById('distributionSearch').addEventListener('input', (e) => {
+      const q = e.target.value.toLowerCase();
+      document.querySelectorAll('.hotspot').forEach(spot => {
+        const dist = DISTRIBUTIONS_DATA.find(d => d.id === spot.dataset.id);
+        const match = dist && (dist.en.name.toLowerCase().includes(q) || dist.vi.name.toLowerCase().includes(q));
+        spot.style.display = match ? 'block' : 'none';
+      });
+    });
+
+  </script>
+</body>
+</html>
