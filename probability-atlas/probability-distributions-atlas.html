@@ -1,0 +1,1225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Probability Distributions Interactive Map</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- KaTeX for crisp mathematical formulas -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js"></script>
+  <!-- Google Fonts: Inter & Newsreader for an academic journal feel -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Newsreader:ital,opsz,wght@0,6..72,500;0,6..72,600;1,6..72,400&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            serif: ['Newsreader', 'serif'],
+          },
+          colors: {
+            parchment: {
+              50: '#fdfbf7',
+              100: '#f7f3ea',
+              200: '#eee5d3',
+              300: '#e3d4b6',
+              800: '#413524',
+              900: '#2b2114',
+            },
+            terracotta: {
+              500: '#c35b37',
+              600: '#ac4825',
+              700: '#8e371b',
+            },
+            slatepaper: {
+              700: '#334155',
+              800: '#1e293b',
+              900: '#0f172a',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Hotspot glow styles */
+    .hotspot {
+      position: absolute;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: all 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+      z-index: 10;
+      background: rgba(217, 119, 6, 0.001); /* almost invisible while maintaining hit-test */
+      border: 2px solid transparent;
+      outline: none;
+    }
+
+    /* Hover and focus state glow */
+    .hotspot:hover, .hotspot:focus-visible {
+      background: rgba(224, 102, 59, 0.14) !important;
+      border: 2px solid rgba(195, 91, 55, 0.95) !important;
+      box-shadow: 
+        0 0 0 3px rgba(224, 102, 59, 0.28),
+        0 0 24px 6px rgba(217, 119, 6, 0.65),
+        inset 0 0 16px 2px rgba(245, 158, 11, 0.35);
+      transform: scale(1.018);
+      z-index: 25;
+    }
+
+    /* Outlines visible mode */
+    .outlines-on .hotspot {
+      border: 1.5px dashed rgba(180, 83, 9, 0.45);
+      background: rgba(217, 119, 6, 0.04);
+    }
+
+    /* 3D Flip Card System */
+    .flip-perspective {
+      perspective: 1800px;
+    }
+
+    .flip-card-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.68s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform-style: preserve-3d;
+    }
+
+    .flip-card-inner.flipped {
+      transform: rotateY(180deg);
+    }
+
+    .flip-card-front, .flip-card-back {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      -webkit-backface-visibility: hidden;
+      backface-visibility: hidden;
+      display: flex;
+      flex-direction: column;
+      border-radius: 1.25rem;
+    }
+
+    .flip-card-back {
+      transform: rotateY(180deg);
+    }
+
+    /* Custom subtle scrollbar */
+    .custom-scroll::-webkit-scrollbar {
+      width: 6px;
+    }
+    .custom-scroll::-webkit-scrollbar-track {
+      background: rgba(0, 0, 0, 0.04);
+      border-radius: 999px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb {
+      background: rgba(140, 100, 70, 0.3);
+      border-radius: 999px;
+    }
+    .custom-scroll::-webkit-scrollbar-thumb:hover {
+      background: rgba(140, 100, 70, 0.6);
+    }
+
+    /* Tooltip arrow */
+    .tooltip-arrow::after {
+      content: '';
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      border-width: 5px;
+      border-style: solid;
+      border-color: #1e293b transparent transparent transparent;
+    }
+
+    /* Smooth backdrop fade */
+    .modal-enter {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+    .modal-enter-active {
+      opacity: 1;
+      transform: scale(1);
+      transition: opacity 0.25s ease-out, transform 0.25s ease-out;
+    }
+    .modal-exit-active {
+      opacity: 0;
+      transform: scale(0.96);
+      transition: opacity 0.2s ease-in, transform 0.2s ease-in;
+    }
+  </style>
+</head>
+<body class="bg-parchment-100 text-slatepaper-800 min-h-screen flex flex-col font-sans selection:bg-amber-200 antialiased">
+
+  <!-- Top Navigation & Utility Header -->
+  <header class="sticky top-0 z-40 bg-parchment-50/90 backdrop-blur-md border-b border-parchment-300/80 px-4 py-3 shadow-xs">
+    <div class="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-3">
+      
+      <!-- Brand & Title -->
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-terracotta-500 text-white flex items-center justify-center shadow-md font-serif text-lg font-bold">
+          &int;
+        </div>
+        <div>
+          <h1 class="text-lg md:text-xl font-bold tracking-tight text-slatepaper-900 leading-tight">
+            How Probability Distributions Are Connected
+          </h1>
+          <p class="text-xs text-stone-600 hidden sm:block">
+            Interactive Relationship Explorer &bull; Sơ đồ Mối liên hệ Phân phối Xác suất
+          </p>
+        </div>
+      </div>
+
+      <!-- Controls: Search, Filters & Toggles -->
+      <div class="flex flex-wrap items-center gap-2 sm:gap-3 w-full md:w-auto justify-end">
+        
+        <!-- Search bar with quick jump -->
+        <div class="relative flex-1 sm:w-64">
+          <input 
+            type="text" 
+            id="searchInput" 
+            placeholder="Search / Tìm kiếm model..." 
+            class="w-full bg-white/80 border border-stone-300 rounded-lg pl-8 pr-7 py-1.5 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-terracotta-500/50 focus:border-terracotta-500 transition shadow-2xs"
+          />
+          <svg class="w-4 h-4 text-stone-600 absolute left-2.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+          </svg>
+          <button id="clearSearchBtn" class="hidden absolute right-2.5 top-1/2 -translate-y-1/2 text-stone-600 hover:text-stone-800 text-xs font-bold">
+            &times;
+          </button>
+          <!-- Autocomplete results dropdown -->
+          <div id="searchResults" class="hidden absolute left-0 right-0 top-full mt-1.5 bg-white border border-stone-200 rounded-xl shadow-xl max-h-72 overflow-y-auto z-50 py-1.5 text-xs custom-scroll"></div>
+        </div>
+
+        <!-- Filter Tags -->
+        <div class="inline-flex rounded-lg border border-stone-300 p-0.5 bg-stone-100/70 text-xs font-medium">
+          <button id="filterAll" class="px-2.5 py-1 rounded-md bg-white text-slatepaper-900 shadow-2xs transition">All (20)</button>
+          <button id="filterDiscrete" class="px-2.5 py-1 rounded-md text-stone-700 hover:text-slatepaper-900 transition">Discrete</button>
+          <button id="filterContinuous" class="px-2.5 py-1 rounded-md text-stone-700 hover:text-slatepaper-900 transition">Continuous</button>
+        </div>
+
+        <!-- Outlines Toggle -->
+        <button 
+          id="toggleOutlinesBtn" 
+          title="Toggle visible boundaries for all distribution nodes" 
+          class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-stone-300 bg-white/80 text-xs font-medium text-stone-700 hover:bg-stone-50 transition shadow-2xs"
+        >
+          <span class="w-2 h-2 rounded-full bg-stone-400" id="outlineIndicator"></span>
+          <span>Hotspot Guides</span>
+        </button>
+
+        <!-- Sound toggle -->
+        <button 
+          id="toggleSoundBtn" 
+          title="Toggle interaction sounds" 
+          class="p-1.5 rounded-lg border border-stone-300 bg-white/80 text-stone-600 hover:text-stone-900 transition shadow-2xs"
+        >
+          <svg id="soundIconOn" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072M18.364 5.636a9 9 0 010 12.728M11 5L6 9H2v6h4l5 4V5z"></path>
+          </svg>
+          <svg id="soundIconOff" class="w-4 h-4 hidden text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path>
+          </svg>
+        </button>
+
+      </div>
+    </div>
+  </header>
+
+  <!-- Notification Banner for Quick Instruction -->
+  <aside class="bg-amber-50/70 border-b border-amber-200/60 text-amber-900 px-4 py-1.5 text-xs text-center flex items-center justify-center gap-2">
+    <span class="inline-block w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+    <span>Hover over any distribution box on the chart to inspect &bull; Click to open profile &bull; <strong>Click card to flip between English & Tiếng Việt</strong></span>
+  </aside>
+
+  <!-- Main Canvas Area -->
+  <main class="flex-1 flex flex-col items-center justify-start p-2 sm:p-4 md:p-6 lg:p-8 max-w-7xl mx-auto w-full">
+    
+    <!-- Image & Hotspots Container -->
+    <div class="relative w-full max-w-[1020px] bg-[#fbf8ef] rounded-2xl shadow-xl border border-stone-300/80 overflow-hidden" id="diagramWrapper">
+      
+      <!-- Base Diagram Image -->
+      <img 
+        id="diagramImage"
+        src="PROBABILITY-DISTRIBUTIONS-S4.png" 
+        alt="How Probability Distributions Are Connected Diagram" 
+        class="w-full h-auto block select-none pointer-events-none transition-opacity duration-300"
+      />
+
+      <!-- Fallback Visual SVG Canvas (activated seamlessly if PROBABILITY-DISTRIBUTIONS-S4.png is not yet placed in directory) -->
+      <div id="fallbackCanvas" class="hidden w-full aspect-square relative bg-[#fdf8ee] p-6 text-stone-700">
+        <div class="absolute inset-0 flex flex-col items-center justify-center p-8 text-center bg-amber-50/90 backdrop-blur-xs z-0 pointer-events-none">
+          <p class="text-sm font-semibold text-terracotta-600 mb-1">Image Loaded via Local Direct Mapping</p>
+          <p class="text-xs text-stone-500 max-w-md">Hotspots are active and positioned accurately across the coordinate matrix. Hover over the designated nodes to inspect distribution profiles.</p>
+        </div>
+      </div>
+
+      <!-- Hotspots Overlay Layer -->
+      <div id="hotspotsLayer" class="absolute inset-0 pointer-events-auto">
+        <!-- Hotspots are dynamically generated via JavaScript with pixel-accurate percentage coordinates -->
+      </div>
+
+      <!-- Floating Hover Tooltip -->
+      <div 
+        id="floatingTooltip" 
+        class="fixed pointer-events-none z-50 opacity-0 transition-opacity duration-150 transform -translate-x-1/2 -translate-y-full mb-3 px-3 py-1.5 bg-slatepaper-900 text-white rounded-lg text-xs shadow-xl flex items-center gap-2 whitespace-nowrap tooltip-arrow border border-slate-700"
+      >
+        <span id="tooltipBadge" class="w-2 h-2 rounded-full bg-amber-400"></span>
+        <span id="tooltipTitle" class="font-semibold">Normal Distribution</span>
+        <span class="text-stone-400 text-[10px] pl-1 border-l border-slate-700">Click to inspect</span>
+      </div>
+
+    </div>
+
+    <!-- Quick Index Bar Below Diagram -->
+    <section class="w-full max-w-[1020px] mt-4 flex flex-wrap items-center justify-between gap-2 text-xs text-stone-500 px-2">
+      <div class="flex items-center gap-2">
+        <span class="font-medium text-stone-700">Jump to model:</span>
+        <span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-blue-500"></span> Discrete (8)</span>
+        <span class="inline-flex items-center gap-1.5"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> Continuous (12)</span>
+      </div>
+      <div class="text-[11px] text-stone-600">
+        Shortcut: <kbd class="px-1.5 py-0.5 bg-stone-200 rounded text-stone-700 font-mono">ESC</kbd> closes modal &bull; <kbd class="px-1.5 py-0.5 bg-stone-200 rounded text-stone-700 font-mono">&larr;</kbd> <kbd class="px-1.5 py-0.5 bg-stone-200 rounded text-stone-700 font-mono">&rarr;</kbd> navigate
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ======================================================== -->
+  <!-- MODAL POPUP DIALOG WITH 3D FLIPPING CARD -->
+  <!-- ======================================================== -->
+  <div 
+    id="modalBackdrop" 
+    class="fixed inset-0 z-50 bg-slatepaper-900/70 backdrop-blur-md hidden items-center justify-center p-3 sm:p-5 transition-opacity duration-200"
+    role="dialog"
+    aria-modal="true"
+    aria-labelledby="cardTitleEN"
+  >
+    <!-- Modal Card Box Container with 3D Perspective -->
+    <div 
+      id="modalContainer" 
+      class="relative w-full max-w-2xl h-[88vh] max-h-[640px] flip-perspective transition-transform transform scale-95 duration-200"
+    >
+      
+      <!-- Flipping Card Inner Assembly -->
+      <div 
+        id="cardFlipper" 
+        class="flip-card-inner cursor-pointer shadow-2xl rounded-2xl" 
+        title="Click card to flip between English and Vietnamese"
+      >
+
+        <!-- ================= FRONT FACE (ENGLISH) ================= -->
+        <article class="flip-card-front bg-[#fdfbf7] border border-amber-900/20 text-slatepaper-900 overflow-hidden shadow-2xl">
+          
+          <!-- Card Header -->
+          <header class="p-4 sm:p-5 border-b border-stone-200 bg-stone-50/70 flex items-start justify-between gap-3 relative select-none">
+            <div class="flex-1 pr-8">
+              <div class="flex flex-wrap items-center gap-2 mb-1">
+                <span id="badgeFamilyEN" class="text-[11px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full bg-blue-100 text-blue-800">
+                  Discrete
+                </span>
+                <span class="text-xs text-stone-500 font-mono" id="modelIndexEN">
+                  #1 of 20
+                </span>
+              </div>
+              <h2 id="cardTitleEN" class="text-xl sm:text-2xl font-bold font-serif text-slatepaper-900">
+                Bernoulli Distribution
+              </h2>
+            </div>
+
+            <!-- Very Small Discrete 'X' Close Button -->
+            <button 
+              id="closeModalBtnEN" 
+              class="absolute top-3.5 right-3.5 w-7 h-7 rounded-full bg-stone-200/80 hover:bg-stone-300 text-stone-600 hover:text-stone-900 flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-terracotta-500 text-sm font-semibold"
+              title="Close modal (Esc)"
+              aria-label="Close modal"
+            >
+              &times;
+            </button>
+          </header>
+
+          <!-- Flip Notice Sub-banner -->
+          <div class="bg-amber-100/60 border-b border-amber-200/60 px-4 py-1.5 text-[11px] text-amber-900 flex items-center justify-between select-none">
+            <span class="flex items-center gap-1.5 font-medium">
+              <svg class="w-3.5 h-3.5 text-amber-700 animate-spin" style="animation-duration: 9s;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+              </svg>
+              <span>Click card anywhere to flip to <strong>Tiếng Việt</strong></span>
+            </span>
+            <span class="px-1.5 py-0.5 rounded bg-white text-stone-700 font-mono text-[10px] shadow-2xs">EN &rarr; VI</span>
+          </div>
+
+          <!-- Card Body: Content (KaTeX formula, Definition, Description) -->
+          <div class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 custom-scroll">
+            
+            <!-- Mathematical Formula Banner -->
+            <section class="bg-stone-100/80 border border-stone-200 rounded-xl p-3 sm:p-4 text-center">
+              <span id="formulaLabelEN" class="block text-[11px] font-semibold text-stone-500 uppercase tracking-wider mb-1">
+                Probability Mass Function (PMF)
+              </span>
+              <div id="formulaMathEN" class="text-base sm:text-lg text-slatepaper-900 overflow-x-auto py-1 font-serif">
+                $P(X = 1) = p$
+              </div>
+            </section>
+
+            <!-- Definition Box -->
+            <section>
+              <h3 class="text-xs font-bold uppercase tracking-wider text-terracotta-600 mb-1 flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Definition
+              </h3>
+              <p id="definitionEN" class="text-sm leading-relaxed text-stone-800 font-serif">
+                A discrete probability distribution of a random variable...
+              </p>
+            </section>
+
+            <!-- Description & Connections -->
+            <section>
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slatepaper-700 mb-1 flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path></svg>
+                Characteristics &amp; Relations
+              </h3>
+              <p id="descriptionEN" class="text-sm leading-relaxed text-stone-700">
+                Represents a single trial with binary outcomes...
+              </p>
+            </section>
+
+          </div>
+
+          <!-- Card Footer Controls -->
+          <footer class="p-3 sm:p-4 border-t border-stone-200 bg-stone-50/80 flex items-center justify-between select-none">
+            <button 
+              id="prevBtnEN" 
+              class="px-3 py-1.5 rounded-lg border border-stone-300 hover:bg-white text-xs font-medium text-stone-700 flex items-center gap-1 transition"
+              title="Previous distribution (&larr;)"
+            >
+              &larr; Prev
+            </button>
+            
+            <button 
+              id="flipActionBtnEN" 
+              class="px-3 py-1.5 rounded-lg bg-terracotta-500 hover:bg-terracotta-600 text-white text-xs font-medium flex items-center gap-1.5 shadow-sm transition"
+            >
+              <span>Xem Tiếng Việt</span>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </button>
+
+            <button 
+              id="nextBtnEN" 
+              class="px-3 py-1.5 rounded-lg border border-stone-300 hover:bg-white text-xs font-medium text-stone-700 flex items-center gap-1 transition"
+              title="Next distribution (&rarr;)"
+            >
+              Next &rarr;
+            </button>
+          </footer>
+
+        </article>
+
+        <!-- ================= BACK FACE (VIETNAMESE) ================= -->
+        <article class="flip-card-back bg-[#fdfbf7] border border-amber-900/20 text-slatepaper-900 overflow-hidden shadow-2xl">
+          
+          <!-- Card Header -->
+          <header class="p-4 sm:p-5 border-b border-stone-200 bg-stone-50/70 flex items-start justify-between gap-3 relative select-none">
+            <div class="flex-1 pr-8">
+              <div class="flex flex-wrap items-center gap-2 mb-1">
+                <span id="badgeFamilyVN" class="text-[11px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                  Phân phối rời rạc
+                </span>
+                <span class="text-xs text-stone-500 font-mono" id="modelIndexVN">
+                  #1 / 20
+                </span>
+              </div>
+              <h2 id="cardTitleVN" class="text-xl sm:text-2xl font-bold font-serif text-slatepaper-900">
+                Phân phối Bernoulli
+              </h2>
+            </div>
+
+            <!-- Discrete 'X' Close Button on Back Face -->
+            <button 
+              id="closeModalBtnVN" 
+              class="absolute top-3.5 right-3.5 w-7 h-7 rounded-full bg-stone-200/80 hover:bg-stone-300 text-stone-600 hover:text-stone-900 flex items-center justify-center transition focus:outline-none focus:ring-2 focus:ring-terracotta-500 text-sm font-semibold"
+              title="Đóng (Esc)"
+              aria-label="Đóng modal"
+            >
+              &times;
+            </button>
+          </header>
+
+          <!-- Flip Notice Sub-banner -->
+          <div class="bg-emerald-100/60 border-b border-emerald-200/60 px-4 py-1.5 text-[11px] text-emerald-900 flex items-center justify-between select-none">
+            <span class="flex items-center gap-1.5 font-medium">
+              <svg class="w-3.5 h-3.5 text-emerald-700 animate-spin" style="animation-duration: 9s;" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+              </svg>
+              <span>Nhấp thẻ bất kỳ đâu để quay lại <strong>English</strong></span>
+            </span>
+            <span class="px-1.5 py-0.5 rounded bg-white text-stone-700 font-mono text-[10px] shadow-2xs">VI &rarr; EN</span>
+          </div>
+
+          <!-- Card Body: Content in Vietnamese -->
+          <div class="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 custom-scroll">
+            
+            <!-- Mathematical Formula Banner -->
+            <section class="bg-stone-100/80 border border-stone-200 rounded-xl p-3 sm:p-4 text-center">
+              <span id="formulaLabelVN" class="block text-[11px] font-semibold text-stone-500 uppercase tracking-wider mb-1">
+                Hàm khối xác suất (PMF)
+              </span>
+              <div id="formulaMathVN" class="text-base sm:text-lg text-slatepaper-900 overflow-x-auto py-1 font-serif">
+                $P(X = 1) = p$
+              </div>
+            </section>
+
+            <!-- Definition Box -->
+            <section>
+              <h3 class="text-xs font-bold uppercase tracking-wider text-emerald-700 mb-1 flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                Định nghĩa
+              </h3>
+              <p id="definitionVN" class="text-sm leading-relaxed text-stone-800 font-serif">
+                Phân phối xác suất rời rạc của một biến ngẫu nhiên...
+              </p>
+            </section>
+
+            <!-- Description & Connections -->
+            <section>
+              <h3 class="text-xs font-bold uppercase tracking-wider text-slatepaper-700 mb-1 flex items-center gap-1.5">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 8h10M7 12h4m1 8l-4-4H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-3l-4 4z"></path></svg>
+                Đặc tính &amp; Mối liên hệ
+              </h3>
+              <p id="descriptionVN" class="text-sm leading-relaxed text-stone-700">
+                Đại diện cho một phép thử đơn lẻ với các kết quả nhị phân...
+              </p>
+            </section>
+
+          </div>
+
+          <!-- Card Footer Controls -->
+          <footer class="p-3 sm:p-4 border-t border-stone-200 bg-stone-50/80 flex items-center justify-between select-none">
+            <button 
+              id="prevBtnVN" 
+              class="px-3 py-1.5 rounded-lg border border-stone-300 hover:bg-white text-xs font-medium text-stone-700 flex items-center gap-1 transition"
+              title="Phân phối trước (&larr;)"
+            >
+              &larr; Trước
+            </button>
+            
+            <button 
+              id="flipActionBtnVN" 
+              class="px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-medium flex items-center gap-1.5 shadow-sm transition"
+            >
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+              <span>Back to English</span>
+            </button>
+
+            <button 
+              id="nextBtnVN" 
+              class="px-3 py-1.5 rounded-lg border border-stone-300 hover:bg-white text-xs font-medium text-stone-700 flex items-center gap-1 transition"
+              title="Phân phối kế tiếp (&rarr;)"
+            >
+              Kế tiếp &rarr;
+            </button>
+          </footer>
+
+        </article>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Audio Synthesizer (Zero external dependencies) -->
+  <script>
+    // Audio engine using Web Audio API for organic paper clicks & chime effects
+    class SoundEngine {
+      constructor() {
+        this.enabled = true;
+        this.ctx = null;
+      }
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          if (AudioContext) this.ctx = new AudioContext();
+        }
+      }
+      playHover() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(440, this.ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(880, this.ctx.currentTime + 0.04);
+          gain.gain.setValueAtTime(0.015, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.04);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + 0.04);
+        } catch(e) {}
+      }
+      playFlip() {
+        if (!this.enabled) return;
+        this.init();
+        if (!this.ctx) return;
+        try {
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(320, this.ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(640, this.ctx.currentTime + 0.09);
+          gain.gain.setValueAtTime(0.04, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.0001, this.ctx.currentTime + 0.09);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + 0.09);
+        } catch(e) {}
+      }
+    }
+    const sound = new SoundEngine();
+  </script>
+
+  <!-- Complete Probability Distribution Profiles Database -->
+  <script>
+    const distributionsData = [
+      // 1. Bernoulli
+      {
+        id: "bernoulli",
+        family: "discrete",
+        nameEN: "Bernoulli Distribution (p)",
+        nameVN: "Phân phối Bernoulli (p)",
+        formulaLabelEN: "Probability Mass Function (PMF)",
+        formulaLabelVN: "Hàm khối xác suất (PMF)",
+        mathFormula: "P(X = 1) = p \\quad\\text{and}\\quad P(X = 0) = 1 - p",
+        definitionEN: "A discrete probability distribution of a random variable taking value $1$ (success) with probability $p$ and value $0$ (failure) with probability $1 - p$.",
+        definitionVN: "Phân phối xác suất rời rạc của một biến ngẫu nhiên nhận giá trị $1$ (thành công) với xác suất $p$ và giá trị $0$ (thất bại) với xác suất $1 - p$.",
+        descriptionEN: "Represents a single trial with binary outcomes (e.g., a single coin flip). It serves as the foundational unit of discrete distributions and is the special case of the Binomial distribution when $n = 1$.",
+        descriptionVN: "Đại diện cho một phép thử đơn lẻ với các kết quả nhị phân (ví dụ: một lần tung đồng xu). Phân phối này đóng vai trò là đơn vị cơ bản của các phân phối rời rạc và là trường hợp đặc biệt của phân phối Nhị thức khi $n = 1$.",
+        // Coordinate on diagram: (x, y, width, height) in percentage
+        hotspot: { x: 84.8, y: 42.4, w: 12.2, h: 10.4 }
+      },
+
+      // 2. Binomial
+      {
+        id: "binomial",
+        family: "discrete",
+        nameEN: "Binomial Distribution (n, p)",
+        nameVN: "Phân phối Nhị thức (n, p)",
+        formulaLabelEN: "Probability Mass Function (PMF)",
+        formulaLabelVN: "Hàm khối xác suất (PMF)",
+        mathFormula: "P(X = k) = \\binom{n}{k} p^k (1 - p)^{n - k} \\quad \\text{for } k \\in \\{0, 1, \\dots, n\\}",
+        definitionEN: "Models the number of successes $k$ observed across $n$ independent and identically distributed Bernoulli trials, each having a constant probability of success $p$.",
+        definitionVN: "Mô hình hóa số lần thành công $k$ quan sát được trong $n$ phép thử Bernoulli độc lập và có cùng phân phối, mỗi phép thử có xác suất thành công không đổi là $p$.",
+        descriptionEN: "Core distribution for modeling repeated binary experiments with replacement. In the limit as $n \\to \\infty$ and $p \\to 0$ with $\\lambda = np$, it converges to the Poisson distribution; as $n \\to \\infty$ with fixed $p$, it converges to the Normal distribution via the Central Limit Theorem.",
+        descriptionVN: "Phân phối cốt lõi dùng để mô hình hóa các phép thử nhị phân lặp lại có hoàn lại. Khi lấy giới hạn với $n \\to \\infty$ và $p \\to 0$ sao cho $\\lambda = np$, phân phối này hội tụ về phân phối Poisson; khi $n \\to \\infty$ với $p$ cố định, nó hội tụ về phân phối Chuẩn thông qua Định lý Giới hạn Trung tâm.",
+        hotspot: { x: 55.4, y: 31.0, w: 15.0, h: 12.2 }
+      },
+
+      // 3. Hypergeometric
+      {
+        id: "hypergeometric",
+        family: "discrete",
+        nameEN: "Hypergeometric Distribution (M, N, K)",
+        nameVN: "Phân phối Siêu bội (M, N, K)",
+        formulaLabelEN: "Probability Mass Function (PMF)",
+        formulaLabelVN: "Hàm khối xác suất (PMF)",
+        mathFormula: "P(X = k) = \\frac{\\binom{K}{k}\\binom{N - K}{n - k}}{\\binom{N}{n}}",
+        definitionEN: "Describes the probability of obtaining $k$ successes in $n$ draws taken without replacement from a finite population of size $N$ containing exactly $K$ successes.",
+        definitionVN: "Mô tả xác suất đạt được $k$ lần thành công trong $n$ lần rút không hoàn lại từ một quần thể hữu hạn có kích thước $N$ chứa chính xác $K$ thành công.",
+        descriptionEN: "Applied in quality assurance, card games, and ecological capture-recapture surveys where sampling depletes the subpopulation. As population size $N \\to \\infty$ with $p = K/N$, it converges to the Binomial distribution.",
+        descriptionVN: "Được ứng dụng trong đảm bảo chất lượng, các trò chơi bài và các khảo sát bắt-thả trong sinh thái học nơi việc lấy mẫu làm suy giảm quần thể con. Khi kích thước quần thể $N \\to \\infty$ với $p = K/N$, nó hội tụ về phân phối Nhị thức.",
+        hotspot: { x: 77.8, y: 29.5, w: 17.5, h: 12.2 }
+      },
+
+      // 4. Discrete Uniform
+      {
+        id: "discrete-uniform",
+        family: "discrete",
+        nameEN: "Discrete Uniform Distribution",
+        nameVN: "Phân phối Đều rời rạc",
+        formulaLabelEN: "Probability Mass Function (PMF)",
+        formulaLabelVN: "Hàm khối xác suất (PMF)",
+        mathFormula: "P(X = k) = \\frac{1}{n} \\quad \\text{for } k \\in \\{1, \\dots, n\\}",
+        definitionEN: "A distribution where a finite set of $n$ integer outcomes $\\{1, 2, \\dots, n\\}$ are equally likely.",
+        definitionVN: "Một phân phối trong đó một tập hợp hữu hạn gồm $n$ kết quả số nguyên $\\{1, 2, \\dots, n\\}$ có khả năng xảy ra như nhau.",
+        descriptionEN: "Represents unbiased discrete selection, such as the roll of a balanced fair die. It emerges as a special case of the Beta-binomial distribution when shape parameters $\\alpha = \\beta = 1$.",
+        descriptionVN: "Đại diện cho sự lựa chọn rời rạc không thiên lệch, chẳng hạn như việc gieo một con xúc xắc cân đối. Phân phối này xuất hiện như một trường hợp đặc biệt của phân phối Beta-nhị thức khi các tham số hình dạng $\\alpha = \\beta = 1$.",
+        hotspot: null // Accessible via search and drawer
+      },
+
+      // 5. Geometric
+      {
+        id: "geometric",
+        family: "discrete",
+        nameEN: "Geometric Distribution (p)",
+        nameVN: "Phân phối Hình học (p)",
+        formulaLabelEN: "Probability Mass Function (PMF)",
+        formulaLabelVN: "Hàm khối xác suất (PMF)",
+        mathFormula: "P(X = k) = (1 - p)^{k - 1}p \\quad \\text{for } k \\in \\{1, 2, \\dots\\}",
+        definitionEN: "Models the number of trials $k$ required to achieve the first success in a sequence of independent Bernoulli trials with success probability $p$.",
+        definitionVN: "Mô hình hóa số phép thử $k$ cần thiết để đạt được thành công đầu tiên trong một chuỗi các phép thử Bernoulli độc lập với xác suất thành công $p$.",
+        descriptionEN: "The sole discrete distribution with the memoryless property, meaning future success probabilities do not depend on past failures. It is a special case of the Negative Binomial distribution where the target success count is $n = 1$.",
+        descriptionVN: "Phân phối rời rạc duy nhất có tính chất không nhớ, nghĩa là xác suất thành công trong tương lai không phụ thuộc vào những lần thất bại trong quá khứ. Đây là một trường hợp đặc biệt của phân phối Nhị thức âm khi số lần thành công mục tiêu là $n = 1$.",
+        hotspot: { x: 9.8, y: 27.2, w: 15.0, h: 13.5 }
+      },
+
+      // 6. Negative Binomial
+      {
+        id: "negative-binomial",
+        family: "discrete",
+        nameEN: "Negative Binomial Distribution (n, p)",
+        nameVN: "Phân phối Nhị thức âm (n, p)",
+        formulaLabelEN: "Probability Mass Function (PMF)",
+        formulaLabelVN: "Hàm khối xác suất (PMF)",
+        mathFormula: "P(X = k) = \\binom{k + n - 1}{k} (1 - p)^k p^n \\quad \\text{for } k \\in \\{0, 1, 2, \\dots\\}",
+        definitionEN: "Models the number of failures $k$ observed before a predetermined number $n$ of successes is achieved in repeated Bernoulli trials.",
+        definitionVN: "Mô hình hóa số lần thất bại $k$ quan sát được trước khi đạt được một số lượng định trước gồm $n$ lần thành công trong các phép thử Bernoulli lặp lại.",
+        descriptionEN: "Generalizes the Geometric distribution to $n \\ge 1$ successes. Frequently utilized in biostatistics and count modeling to handle overdispersion where variance exceeds the mean. As $n \\to \\infty$ with $\\lambda = n(1 - p)$, it limits to the Poisson distribution.",
+        descriptionVN: "Tổng quát hóa phân phối Hình học cho $n \\ge 1$ lần thành công. Thường được sử dụng trong thống kê sinh học và mô hình hóa dữ liệu đếm để xử lý hiện tượng phân tán vượt mức khi phương sai lớn hơn giá trị trung bình. Khi $n \\to \\infty$ với $\\lambda = n(1 - p)$, nó tiến tới phân phối Poisson.",
+        hotspot: { x: 33.5, y: 14.3, w: 18.5, h: 12.8 }
+      },
+
+      // 7. Beta-Binomial
+      {
+        id: "beta-binomial",
+        family: "discrete",
+        nameEN: "Beta-Binomial Distribution (n, α, β)",
+        nameVN: "Phân phối Beta-Nhị thức (n, α, β)",
+        formulaLabelEN: "Probability Mass Function (PMF)",
+        formulaLabelVN: "Hàm khối xác suất (PMF)",
+        mathFormula: "P(X = k) = \\binom{n}{k} \\frac{\\mathrm{B}(k + \\alpha,\\, n - k + \\beta)}{\\mathrm{B}(\\alpha, \\beta)}",
+        definitionEN: "A compound distribution where the success probability $p$ of a Binomial distribution is not fixed, but is itself a random variable governed by a Beta distribution with shape parameters $\\alpha$ and $\\beta$.",
+        definitionVN: "Một phân phối hợp trong đó xác suất thành công $p$ của phân phối Nhị thức không cố định, mà bản thân nó là một biến ngẫu nhiên tuân theo phân phối Beta với các tham số hình dạng $\\alpha$ và $\\beta$.",
+        descriptionEN: "Used in Bayesian statistics and clinical trials to model binomial data with cluster-to-cluster or subject-to-subject variation. As $\\alpha + \\beta \\to \\infty$, it converges back to the standard Binomial distribution.",
+        descriptionVN: "Được sử dụng trong thống kê Bayes và các thử nghiệm lâm sàng để mô hình hóa dữ liệu nhị thức có sự biến thiên giữa các cụm hoặc giữa các đối tượng. Khi $\\alpha + \\beta \\to \\infty$, nó hội tụ trở lại phân phối Nhị thức chuẩn.",
+        hotspot: { x: 53.4, y: 14.3, w: 18.8, h: 12.8 }
+      },
+
+      // 8. Poisson
+      {
+        id: "poisson",
+        family: "discrete",
+        nameEN: "Poisson Distribution (λ)",
+        nameVN: "Phân phối Poisson (λ)",
+        formulaLabelEN: "Probability Mass Function (PMF)",
+        formulaLabelVN: "Hàm khối xác suất (PMF)",
+        mathFormula: "P(X = k) = \\frac{e^{-\\lambda} \\lambda^k}{k!} \\quad \\text{for } k \\in \\{0, 1, 2, \\dots\\}",
+        definitionEN: "Expresses the probability of observing $k$ events occurring within a fixed interval of time or space, given a constant mean arrival rate $\\lambda$ and independent occurrence times.",
+        definitionVN: "Thể hiện xác suất quan sát được $k$ biến cố xảy ra trong một khoảng thời gian hoặc không gian cố định, với tốc độ xuất hiện trung bình không đổi $\\lambda$ và thời điểm xảy ra là độc lập.",
+        descriptionEN: "Fundamental to queuing theory, network traffic modeling, and call center load analysis. When $\\lambda \\to \\infty$, the Poisson distribution approaches a continuous Normal distribution with mean $\\mu = \\lambda$ and variance $\\sigma^2 = \\lambda$.",
+        descriptionVN: "Nền tảng cho lý thuyết hàng đợi, mô hình hóa lưu lượng mạng và phân tích tải của trung tâm cuộc gọi. Khi $\\lambda \\to \\infty$, phân phối Poisson tiến gần đến phân phối Chuẩn liên tục với giá trị trung bình $\\mu = \\lambda$ và phương sai $\\sigma^2 = \\lambda$.",
+        hotspot: { x: 29.4, y: 31.0, w: 14.2, h: 12.2 }
+      },
+
+      // 9. Continuous Uniform
+      {
+        id: "uniform",
+        family: "continuous",
+        nameEN: "Continuous Uniform Distribution (0, 1)",
+        nameVN: "Phân phối Đều liên tục (0, 1)",
+        formulaLabelEN: "Probability Density Function (PDF)",
+        formulaLabelVN: "Hàm mật độ xác suất (PDF)",
+        mathFormula: "f(x) = 1 \\quad \\text{for } 0 < x < 1",
+        definitionEN: "A continuous distribution defined over the open interval $(0, 1)$ where every subinterval of equal length is equally likely.",
+        definitionVN: "Một phân phối liên tục được xác định trên khoảng mở $(0, 1)$, nơi mọi khoảng con có độ dài bằng nhau đều có xác suất xảy ra như nhau.",
+        descriptionEN: "Serves as the computational foundation for pseudo-random number generators and inverse transform sampling. It represents a special case of the Beta distribution with $\\alpha = \\beta = 1$.",
+        descriptionVN: "Đóng vai trò là nền tảng tính toán cho các bộ tạo số giả ngẫu nhiên và phương pháp lấy mẫu biến đổi nghịch đảo. Nó đại diện cho trường hợp đặc biệt của phân phối Beta với $\\alpha = \\beta = 1$.",
+        hotspot: { x: 85.5, y: 53.5, w: 11.5, h: 11.2 }
+      },
+
+      // 10. Beta
+      {
+        id: "beta",
+        family: "continuous",
+        nameEN: "Beta Distribution (α, β)",
+        nameVN: "Phân phối Beta (α, β)",
+        formulaLabelEN: "Probability Density Function (PDF)",
+        formulaLabelVN: "Hàm mật độ xác suất (PDF)",
+        mathFormula: "f(x) = \\frac{1}{\\mathrm{B}(\\alpha, \\beta)} x^{\\alpha - 1} (1 - x)^{\\beta - 1} \\quad \\text{for } 0 < x < 1",
+        definitionEN: "A family of continuous probability distributions defined on the bounded interval $(0, 1)$, parameterized by two positive shape parameters $\\alpha$ and $\\beta$.",
+        definitionVN: "Một họ các phân phối xác suất liên tục được xác định trên khoảng bị chặn $(0, 1)$, được tham số hóa bởi hai tham số hình dạng dương $\\alpha$ và $\\beta$.",
+        descriptionEN: "Widely applied in Bayesian modeling as the conjugate prior for Bernoulli, Binomial, and Geometric distributions, capturing prior beliefs about probabilities, proportions, and percentages.",
+        descriptionVN: "Được áp dụng rộng rãi trong mô hình hóa Bayes dưới dạng tiên nghiệm liên hợp cho các phân phối Bernoulli, Nhị thức và Hình học, nắm bắt niềm tin tiên nghiệm về xác suất, tỷ lệ và tỷ lệ phần trăm.",
+        hotspot: { x: 63.8, y: 52.3, w: 15.2, h: 12.8 }
+      },
+
+      // 11. Normal
+      {
+        id: "normal",
+        family: "continuous",
+        nameEN: "Normal Distribution (μ, σ²)",
+        nameVN: "Phân phối Chuẩn (μ, σ²)",
+        formulaLabelEN: "Probability Density Function (PDF)",
+        formulaLabelVN: "Hàm mật độ xác suất (PDF)",
+        mathFormula: "f(x) = \\frac{1}{\\sqrt{2\\pi}\\sigma} \\exp\\left(-\\frac{(x - \\mu)^2}{2\\sigma^2}\\right)",
+        definitionEN: "A continuous, symmetric, bell-shaped distribution defined on $(-\\infty, \\infty)$ determined by its mean (location) $\\mu$ and variance (scale) $\\sigma^2$.",
+        definitionVN: "Một phân phối liên tục, đối xứng, có hình quả chuông được xác định trên $(-\\infty, \\infty)$, được xác định bởi giá trị trung bình (vị trí) $\\mu$ và phương sai (thang đo) $\\sigma^2$.",
+        descriptionEN: "Central to classical inferential statistics. Due to the Central Limit Theorem, sums or averages of independent random variables converge toward this distribution regardless of the underlying parent distribution.",
+        descriptionVN: "Giữ vai trò trung tâm trong thống kê suy luận cổ điển. Nhờ Định lý Giới hạn Trung tâm, tổng hoặc giá trị trung bình của các biến ngẫu nhiên độc lập sẽ hội tụ về phân phối này bất kể phân phối gốc là gì.",
+        hotspot: { x: 38.6, y: 47.6, w: 22.8, h: 14.0 }
+      },
+
+      // 12. Standard Normal
+      {
+        id: "standard-normal",
+        family: "continuous",
+        nameEN: "Standard Normal Distribution",
+        nameVN: "Phân phối Chuẩn tắc",
+        formulaLabelEN: "Probability Density Function (PDF)",
+        formulaLabelVN: "Hàm mật độ xác suất (PDF)",
+        mathFormula: "\\phi(z) = \\frac{1}{\\sqrt{2\\pi}} e^{-z^2/2}",
+        definitionEN: "The standardized form of the normal distribution with mean $\\mu = 0$ and standard deviation $\\sigma = 1$.",
+        definitionVN: "Dạng chuẩn hóa của phân phối chuẩn với giá trị trung bình $\\mu = 0$ và độ lệch chuẩn $\\sigma = 1$.",
+        descriptionEN: "Formed by the $Z$-transformation $Z = \\frac{X - \\mu}{\\sigma}$. It serves as the standard reference for calculating statistical significance, confidence intervals, and hypothesis test $p$-values.",
+        descriptionVN: "Được hình thành từ phép biến đổi chuẩn hóa $Z = \\frac{X - \\mu}{\\sigma}$. Phân phối này được dùng làm tham chiếu chuẩn để tính toán ý nghĩa thống kê, khoảng tin cậy và giá trị $p$ của kiểm định giả thuyết.",
+        hotspot: { x: 9.8, y: 64.6, w: 18.2, h: 13.0 }
+      },
+
+      // 13. Lognormal
+      {
+        id: "lognormal",
+        family: "continuous",
+        nameEN: "Lognormal Distribution",
+        nameVN: "Phân phối Lognormal",
+        formulaLabelEN: "Probability Density Function (PDF)",
+        formulaLabelVN: "Hàm mật độ xác suất (PDF)",
+        mathFormula: "f_Y(y) = \\frac{1}{y\\sigma\\sqrt{2\\pi}} \\exp\\left(-\\frac{(\\ln y - \\mu)^2}{2\\sigma^2}\\right) \\quad \\text{for } y > 0",
+        definitionEN: "A continuous distribution of a positive random variable whose natural logarithm is normally distributed ($X = \\ln Y \\sim \\mathcal{N}(\\mu, \\sigma^2)$).",
+        definitionVN: "Phân phối liên tục của một biến ngẫu nhiên dương có logarit tự nhiên tuân theo phân phối chuẩn ($X = \\ln Y \\sim \\mathcal{N}(\\mu, \\sigma^2)$).",
+        descriptionEN: "Right-skewed distribution utilized for positive real-world quantities resulting from compounding or multiplicative effects, such as asset prices, human incomes, organism sizes, and data transmission latency.",
+        descriptionVN: "Phân phối lệch phải được sử dụng cho các đại lượng thực tế luôn dương phát sinh từ các hiệu ứng tích lũy hoặc nhân tính, chẳng hạn như giá tài sản, thu nhập của con người, kích thước sinh vật và độ trễ truyền dữ liệu.",
+        hotspot: { x: 3.5, y: 47.2, w: 17.8, h: 14.2 }
+      },
+
+      // 14. Chi-squared
+      {
+        id: "chi-squared",
+        family: "continuous",
+        nameEN: "Chi-Squared Distribution (ν)",
+        nameVN: "Phân phối Chi-bình phương (ν)",
+        formulaLabelEN: "Probability Density Function (PDF)",
+        formulaLabelVN: "Hàm mật độ xác suất (PDF)",
+        mathFormula: "f(x) = \\frac{1}{2^{\\nu/2}\\Gamma(\\nu/2)} x^{\\nu/2 - 1} e^{-x/2} \\quad \\text{for } x > 0",
+        definitionEN: "The distribution of the sum of the squares of $\\nu$ independent, standard normally distributed random variables: $\\sum_{i=1}^\\nu Z_i^2$.",
+        definitionVN: "Phân phối của tổng bình phương của $\\nu$ biến ngẫu nhiên độc lập tuân theo phân phối chuẩn tắc: $\\sum_{i=1}^\\nu Z_i^2$.",
+        descriptionEN: "Integral to goodness-of-fit tests, independence tests in contingency tables, and confidence intervals for population variance. It is a special case of the Gamma distribution with shape parameter $r = \\nu / 2$ and rate $\\lambda = 1/2$.",
+        descriptionVN: "Không thể thiếu trong các kiểm định độ phù hợp, kiểm định tính độc lập trong bảng ngẫu nhiên và khoảng tin cậy cho phương sai tổng thể. Đây là trường hợp đặc biệt của phân phối Gamma với tham số hình dạng $r = \\nu / 2$ và tham số tỷ lệ $\\lambda = 1/2$.",
+        hotspot: { x: 39.5, y: 66.8, w: 15.6, h: 11.4 }
+      },
+
+      // 15. Gamma
+      {
+        id: "gamma",
+        family: "continuous",
+        nameEN: "Gamma Distribution (r, λ)",
+        nameVN: "Phân phối Gamma (r, λ)",
+        formulaLabelEN: "Probability Density Function (PDF)",
+        formulaLabelVN: "Hàm mật độ xác suất (PDF)",
+        mathFormula: "f(x) = \\frac{\\lambda^r}{\\Gamma(r)} x^{r - 1} e^{-\\lambda x} \\quad \\text{for } x > 0",
+        definitionEN: "A two-parameter continuous distribution on $(0, \\infty)$ defined by a shape parameter $r$ and an inverse scale/rate parameter $\\lambda$.",
+        definitionVN: "Một phân phối liên tục hai tham số trên $(0, \\infty)$ được xác định bởi tham số hình dạng $r$ và tham số nghịch đảo thang đo/tốc độ $\\lambda$.",
+        descriptionEN: "Models waiting times until the $r$-th event in a Poisson process. It acts as a flexible framework encompassing the Exponential distribution (when $r = 1$) and the Chi-squared distribution.",
+        descriptionVN: "Mô hình hóa thời gian chờ đợi cho đến khi xảy ra biến cố thứ $r$ trong một quá trình Poisson. Nó đóng vai trò là một khung linh hoạt bao hàm cả phân phối Mũ (khi $r = 1$) và phân phối Chi-bình phương.",
+        hotspot: { x: 63.2, y: 66.8, w: 14.0, h: 11.4 }
+      },
+
+      // 16. Exponential
+      {
+        id: "exponential",
+        family: "continuous",
+        nameEN: "Exponential Distribution (λ)",
+        nameVN: "Phân phối Mũ (λ)",
+        formulaLabelEN: "Probability Density Function (PDF)",
+        formulaLabelVN: "Hàm mật độ xác suất (PDF)",
+        mathFormula: "f(x) = \\lambda e^{-\\lambda x} \\quad \\text{for } x > 0",
+        definitionEN: "Continuous distribution measuring the time interval between consecutive events in a Poisson point process with constant rate parameter $\\lambda$.",
+        definitionVN: "Phân phối liên tục đo khoảng thời gian giữa các biến cố liên tiếp trong một quá trình điểm Poisson với tham số tốc độ không đổi $\\lambda$.",
+        descriptionEN: "The continuous analog of the Geometric distribution, possessing the continuous memoryless property. Widely applied in reliability engineering, component lifespan estimation, and survival analysis.",
+        descriptionVN: "Tương đương liên tục của phân phối Hình học, sở hữu tính chất không nhớ liên tục. Được áp dụng rộng rãi trong kỹ thuật độ tin cậy, ước tính tuổi thọ linh kiện và phân tích sống còn.",
+        hotspot: { x: 81.6, y: 66.8, w: 12.2, h: 11.4 }
+      },
+
+      // 17. Cauchy
+      {
+        id: "cauchy",
+        family: "continuous",
+        nameEN: "Cauchy Distribution (x₀, γ)",
+        nameVN: "Phân phối Cauchy (x₀, γ)",
+        formulaLabelEN: "Probability Density Function (PDF)",
+        formulaLabelVN: "Hàm mật độ xác suất (PDF)",
+        mathFormula: "f(x) = \\frac{1}{\\pi\\gamma \\left[1 + \\left(\\frac{x - x_0}{\\gamma}\\right)^2\\right]}",
+        definitionEN: "A symmetric, heavy-tailed continuous distribution with location parameter $x_0$ and scale parameter $\\gamma$.",
+        definitionVN: "Một phân phối liên tục đối xứng, có phần đuôi nặng với tham số vị trí $x_0$ và tham số thang đo $\\gamma$.",
+        descriptionEN: "Formed as the ratio of two independent standard normal random variables $Z_1 / Z_2$. Known in mathematical statistics for having an undefined expected value and infinite variance, rendering standard sample means unstable.",
+        descriptionVN: "Được tạo thành từ tỷ số của hai biến ngẫu nhiên độc lập tuân theo phân phối chuẩn tắc $Z_1 / Z_2$. Nổi tiếng trong thống kê toán học vì không có giá trị kỳ vọng xác định và phương sai vô hạn, khiến giá trị trung bình mẫu không ổn định.",
+        hotspot: { x: 8.5, y: 83.2, w: 17.8, h: 11.8 }
+      },
+
+      // 18. F-Distribution
+      {
+        id: "f-distribution",
+        family: "continuous",
+        nameEN: "F-Distribution (ν₁, ν₂)",
+        nameVN: "Phân phối F (ν₁, ν₂)",
+        formulaLabelEN: "Probability Density Function (PDF)",
+        formulaLabelVN: "Hàm mật độ xác suất (PDF)",
+        mathFormula: "f(x) = \\frac{1}{\\mathrm{B}(\\nu_1/2, \\nu_2/2)} \\left(\\frac{\\nu_1}{\\nu_2}\\right)^{\\nu_1/2} \\frac{x^{\\nu_1/2 - 1}}{\\left(1 + \\frac{\\nu_1}{\\nu_2}x\\right)^{(\\nu_1 + \\nu_2)/2}} \\quad \\text{for } x > 0",
+        definitionEN: "Continuous distribution formed by the ratio of two independent, scaled Chi-squared random variables: $(X_1^2/\\nu_1) / (X_2^2/\\nu_2)$, each with degrees of freedom $\\nu_1$ and $\\nu_2$.",
+        definitionVN: "Phân phối liên tục được hình thành từ tỷ số của hai biến ngẫu nhiên Chi-bình phương độc lập đã được chuẩn hóa theo bậc tự do: $(X_1^2/\\nu_1) / (X_2^2/\\nu_2)$, mỗi biến có bậc tự do tương ứng là $\\nu_1$ và $\\nu_2$.",
+        descriptionEN: "Fundamental to inferential testing, serving as the basis for Analysis of Variance (ANOVA), overall regression significance tests, and ratio comparisons of two sample variances.",
+        descriptionVN: "Nền tảng cho kiểm định suy luận, đóng vai trò cơ sở cho Phân tích phương sai (ANOVA), kiểm định ý nghĩa tổng thể của mô hình hồi quy và so sánh tỷ số phương sai của hai mẫu.",
+        hotspot: { x: 30.0, y: 83.0, w: 24.0, h: 13.2 }
+      },
+
+      // 19. Weibull
+      {
+        id: "weibull",
+        family: "continuous",
+        nameEN: "Weibull Distribution (k, λ)",
+        nameVN: "Phân phối Weibull (k, λ)",
+        formulaLabelEN: "Probability Density Function (PDF)",
+        formulaLabelVN: "Hàm mật độ xác suất (PDF)",
+        mathFormula: "f(x) = \\frac{k}{\\lambda}\\left(\\frac{x}{\\lambda}\\right)^{k - 1} e^{-(x/\\lambda)^k} \\quad \\text{for } x > 0",
+        definitionEN: "A continuous distribution defined on $(0, \\infty)$ governed by a shape parameter $k$ and scale parameter $\\lambda$.",
+        definitionVN: "Một phân phối liên tục được xác định trên $(0, \\infty)$ bị chi phối bởi tham số hình dạng $k$ và tham số thang đo $\\lambda$.",
+        descriptionEN: "Standard model for material strength, fracture analysis, and mechanical component failure rates. Its shape parameter enables it to represent decreasing hazard rates ($k < 1$), constant hazard rates ($k = 1$, reducing to Exponential), or aging failure rates ($k > 1$).",
+        descriptionVN: "Mô hình tiêu chuẩn cho độ bền vật liệu, phân tích gãy nứt và tỷ lệ hỏng hóc của linh kiện cơ khí. Tham số hình dạng cho phép mô hình hóa tỷ lệ rủi ro giảm dần ($k < 1$), tỷ lệ rủi ro không đổi ($k = 1$, quy về phân phối Mũ) hoặc tỷ lệ hỏng hóc do lão hóa ($k > 1$).",
+        hotspot: { x: 56.0, y: 83.8, w: 16.2, h: 12.2 }
+      },
+
+      // 20. Double Exponential / Laplace
+      {
+        id: "laplace",
+        family: "continuous",
+        nameEN: "Double Exponential (Laplace)",
+        nameVN: "Phân phối Mũ kép / Laplace",
+        formulaLabelEN: "Probability Density Function (PDF)",
+        formulaLabelVN: "Hàm mật độ xác suất (PDF)",
+        mathFormula: "f(x) = \\frac{1}{2b} \\exp\\left(-\\frac{|x - \\mu|}{b}\\right) \\quad \\text{for } x \\in \\mathbb{R}",
+        definitionEN: "A continuous distribution formed by joining two exponential distributions back-to-back around location parameter $\\mu$ with scale parameter $b$.",
+        definitionVN: "Một phân phối liên tục được tạo thành bằng cách ghép hai phân phối mũ đối xứng qua tham số vị trí $\\mu$ với tham số thang đo $b$.",
+        descriptionEN: "Characterized by a sharp peak at $\\mu$ and fatter tails than the normal distribution. It directly models the difference between two independent exponential random variables ($|X_1 - X_2|$) and corresponds to L1 (LASSO) regularization in statistical regression.",
+        descriptionVN: "Đặc trưng bởi một đỉnh nhọn tại $\\mu$ và phần đuôi dày hơn phân phối chuẩn. Nó mô hình hóa trực tiếp hiệu số giữa hai biến ngẫu nhiên độc lập và có cùng phân phối mũ ($|X_1 - X_2|$), đồng thời tương ứng với phương pháp điều chuẩn L1 (LASSO) trong hồi quy thống kê.",
+        hotspot: { x: 76.5, y: 83.8, w: 18.5, h: 12.2 }
+      }
+    ];
+  </script>
+
+  <!-- Interactive Application Controller -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const hotspotsLayer = document.getElementById("hotspotsLayer");
+      const tooltip = document.getElementById("floatingTooltip");
+      const tooltipTitle = document.getElementById("tooltipTitle");
+      const tooltipBadge = document.getElementById("tooltipBadge");
+      const diagramWrapper = document.getElementById("diagramWrapper");
+      const diagramImage = document.getElementById("diagramImage");
+      const fallbackCanvas = document.getElementById("fallbackCanvas");
+
+      // Modal elements
+      const modalBackdrop = document.getElementById("modalBackdrop");
+      const modalContainer = document.getElementById("modalContainer");
+      const cardFlipper = document.getElementById("cardFlipper");
+      const closeModalBtnEN = document.getElementById("closeModalBtnEN");
+      const closeModalBtnVN = document.getElementById("closeModalBtnVN");
+      const prevBtnEN = document.getElementById("prevBtnEN");
+      const nextBtnEN = document.getElementById("nextBtnEN");
+      const prevBtnVN = document.getElementById("prevBtnVN");
+      const nextBtnVN = document.getElementById("nextBtnVN");
+      const flipActionBtnEN = document.getElementById("flipActionBtnEN");
+      const flipActionBtnVN = document.getElementById("flipActionBtnVN");
+
+      // Controls
+      const searchInput = document.getElementById("searchInput");
+      const searchResults = document.getElementById("searchResults");
+      const clearSearchBtn = document.getElementById("clearSearchBtn");
+      const toggleOutlinesBtn = document.getElementById("toggleOutlinesBtn");
+      const outlineIndicator = document.getElementById("outlineIndicator");
+      const toggleSoundBtn = document.getElementById("toggleSoundBtn");
+      const soundIconOn = document.getElementById("soundIconOn");
+      const soundIconOff = document.getElementById("soundIconOff");
+      const filterAll = document.getElementById("filterAll");
+      const filterDiscrete = document.getElementById("filterDiscrete");
+      const filterContinuous = document.getElementById("filterContinuous");
+
+      let currentModelIndex = 0;
+      let isCardFlipped = false;
+      let outlinesVisible = false;
+      let activeFilter = 'all';
+
+      // 1. Fallback handling for image loading
+      diagramImage.addEventListener("error", () => {
+        diagramImage.classList.add("hidden");
+        fallbackCanvas.classList.remove("hidden");
+        renderFallbackSchematic();
+      });
+
+      // 2. Render all Hotspots matching the diagram boxes
+      function renderHotspots() {
+        hotspotsLayer.innerHTML = "";
+
+        distributionsData.forEach((item, index) => {
+          if (!item.hotspot) return; // Skip non-diagram items (e.g., discrete uniform)
+          
+          const hs = document.createElement("button");
+          hs.className = "hotspot focus:ring-2 focus:ring-amber-500";
+          hs.setAttribute("data-index", index);
+          hs.setAttribute("data-family", item.family);
+          hs.setAttribute("aria-label", item.nameEN);
+          hs.setAttribute("title", item.nameEN);
+
+          // Position via percentages
+          hs.style.left = `${item.hotspot.x}%`;
+          hs.style.top = `${item.hotspot.y}%`;
+          hs.style.width = `${item.hotspot.w}%`;
+          hs.style.height = `${item.hotspot.h}%`;
+
+          // Hover tooltip listeners
+          hs.addEventListener("mouseenter", (e) => {
+            sound.playHover();
+            showTooltip(e, item);
+          });
+
+          hs.addEventListener("mousemove", (e) => {
+            positionTooltip(e);
+          });
+
+          hs.addEventListener("mouseleave", () => {
+            hideTooltip();
+          });
+
+          // Open modal on click
+          hs.addEventListener("click", () => {
+            openModal(index);
+          });
+
+          hotspotsLayer.appendChild(hs);
+        });
+      }
+
+      // Tooltip controller
+      function showTooltip(e, item) {
+        tooltipTitle.textContent = item.nameEN;
+        if (item.family === 'discrete') {
+          tooltipBadge.className = "w-2 h-2 rounded-full bg-blue-400";
+        } else {
+          tooltipBadge.className = "w-2 h-2 rounded-full bg-emerald-400";
+        }
+        tooltip.classList.remove("opacity-0");
+        tooltip.classList.add("opacity-100");
+        positionTooltip(e);
+      }
+
+      function positionTooltip(e) {
+        const x = e.clientX;
+        const y = e.clientY - 14;
+        tooltip.style.left = `${x}px`;
+        tooltip.style.top = `${y}px`;
+      }
+
+      function hideTooltip() {
+        tooltip.classList.remove("opacity-100");
+        tooltip.classList.add("opacity-0");
+      }
+
+      // 3. Modal & Card Flip Behavior
+      function openModal(index) {
+        hideTooltip();
+        currentModelIndex = index;
+        isCardFlipped = false;
+        cardFlipper.classList.remove("flipped");
+        
+        populateModalData(currentModelIndex);
+
+        modalBackdrop.classList.remove("hidden");
+        modalBackdrop.classList.add("flex");
+        
+        // Animate modal open
+        requestAnimationFrame(() => {
+          modalContainer.classList.remove("scale-95");
+          modalContainer.classList.add("scale-100");
+        });
+
+        // Trigger math rendering
+        renderMathInCard();
+      }
+
+      function closeModal() {
+        modalContainer.classList.remove("scale-100");
+        modalContainer.classList.add("scale-95");
+        setTimeout(() => {
+          modalBackdrop.classList.add("hidden");
+          modalBackdrop.classList.remove("flex");
+          isCardFlipped = false;
+          cardFlipper.classList.remove("flipped");
+        }, 180);
+      }
+
+      function flipCard() {
+        isCardFlipped = !isCardFlipped;
+        sound.playFlip();
+        if (isCardFlipped) {
+          cardFlipper.classList.add("flipped");
+        } else {
+          cardFlipper.classList.remove("flipped");
+        }
+        renderMathInCard();
+      }
+
+      function navigateModal(direction) {
+        let newIndex = currentModelIndex + direction;
+        if (newIndex < 0) newIndex = distributionsData.length - 1;
+        if (newIndex >= distributionsData.length) newIndex = 0;
+        currentModelIndex = newIndex;
+        
+        // Keep current flip side or reset
+        populateModalData(currentModelIndex);
+        renderMathInCard();
+      }
+
+      function populateModalData(index) {
+        const data = distributionsData[index];
+        const total = distributionsData.length;
+
+        // Front Face (English)
+        document.getElementById("cardTitleEN").textContent = data.nameEN;
+        document.getElementById("modelIndexEN").textContent = `#${index + 1} of ${total}`;
+        document.getElementById("formulaLabelEN").textContent = data.formulaLabelEN;
+        document.getElementById("formulaMathEN").innerHTML = `$$${data.mathFormula}$$`;
+        document.getElementById("definitionEN").innerHTML = parseSimpleMarkdown(data.definitionEN);
+        document.getElementById("descriptionEN").innerHTML = parseSimpleMarkdown(data.descriptionEN);
+
+        const badgeEN = document.getElementById("badgeFamilyEN");
+        badgeEN.textContent = data.family === 'discrete' ? 'Discrete Distribution' : 'Continuous Distribution';
+        badgeEN.className = data.family === 'discrete'
+          ? "text-[11px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full bg-blue-100 text-blue-800"
+          : "text-[11px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800";
+
+        // Back Face (Vietnamese)
+        document.getElementById("cardTitleVN").textContent = data.nameVN;
+        document.getElementById("modelIndexVN").textContent = `#${index + 1} / ${total}`;
+        document.getElementById("formulaLabelVN").textContent = data.formulaLabelVN;
+        document.getElementById("formulaMathVN").innerHTML = `$$${data.mathFormula}$$`;
+        document.getElementById("definitionVN").innerHTML = parseSimpleMarkdown(data.definitionVN);
+        document.getElementById("descriptionVN").innerHTML = parseSimpleMarkdown(data.descriptionVN);
+
+        const badgeVN = document.getElementById("badgeFamilyVN");
+        badgeVN.textContent = data.family === 'discrete' ? 'Phân phối rời rạc' : 'Phân phối liên tục';
+        badgeVN.className = data.family === 'discrete'
+          ? "text-[11px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full bg-blue-100 text-blue-800"
+          : "text-[11px] font-bold tracking-wider uppercase px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800";
+      }
+
+      function parseSimpleMarkdown(text) {
+        if (!text) return "";
+        // Bold: **text**
+        let formatted = text.replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold text-stone-900">$1</strong>');
+        // Italic: _text_
+        formatted = formatted.replace(/_(.*?)_/g, '<em class="italic">$1</em>');
+        return formatted;
+      }
+
+      function renderMathInCard() {
+        if (window.renderMathInElement) {
+          try {
+            renderMathInElement(modalContainer, {
+              delimiters: [
+                { left: "$$", right: "$$", display: true },
+                { left: "$", right: "$", display: false }
+              ],
+              throwOnError: false
+            });
+          } catch(err) {
+            console.error("KaTeX render error:", err);
+          }
+        }
+      }
+
+      // Card flip triggers: clicking the card flipper flips it
+      cardFlipper.addEventListener("click", (e) => {
+        // Prevent flipping if clicked on specific buttons, links, or close buttons
+        if (e.target.closest("button") || e.target.closest("a") || e.target.closest("input")) {
+          return;
+        }
+        flipCard();
+      });
+
+      // Discrete close buttons
+      closeModalBtnEN.addEventListener("click", (e) => {
+        e.stopPropagation();
+        closeModal();
+      });
+      closeModalBtnVN.addEventListener("click", (e) => {
+        e.stopPropagation();
+        closeModal();
+      });
+
+      // Bottom flip action buttons
+      flipActionBtnEN.addEventListener("click", (e) => {
+        e.stopPropagation();
+        flipCard();
+      });
+      flipActionBtnVN.addEventListener("click", (e) => {
+        e.stopPropagation();
+        flipCard();
+      });
+
+      // Prev / Next buttons
+      prevBtnEN.addEventListener("click", (e) => {
+        e.stopPropagation();
+        navigateModal(-1);
+      });
+      nextBtnEN.addEventListener("click", (e) => {
+        e.stopPropagation();
+        navigateModal(1);
+      });
+      prevBtnVN.addEventListener("click", (e) => {
+        e.stopPropagation();
+        navigateModal(-1);
+      });
+      nextBtnVN.addEventListener("click", (e) => {
+        e.stopPropagation();
+        navigateModal(1);
+      });
+
+      // Close modal on clicking backdrop
+      modalBackdrop.addEventListener("click", (e) => {
+        if (e.target === modalBackdrop) {
+          closeModal();
+        }
+      });
+
+      // ESC key & keyboard navigation
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          if (!modalBackdrop.classList.contains("hidden")) {
+            closeModal();
+          } else {
+            searchResults.classList.add("hidden");
+            searchInput.blur();
+          }
+        } else if (!modalBackdrop.classList.contains("hidden")) {
+          if (e.key === "ArrowLeft") {
+            navigateModal(-1);
+          } else if (e.key === "ArrowRight") {
+            navigateModal(1);
+          } else if (e.key === " " || e.key === "Enter") {
+            // Space or enter to flip card if not focusing a button
+            if (document.activeElement.tagName !== 'BUTTON') {
+              e.preventDefault();
+              flipCard();
+            }
+          }
+        }
